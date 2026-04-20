@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!--LOGIN TAB-->
+    <div class ="container">
+        <div class ="form-box active" id="login-form">
+            <form action="">
+                <h2 >Login</h2>  
+                <input type="email " name="email" placeholder="email" required>
+                <input type="password" name="password" placeholder="password" required>
+                <br>
+                <button type="Submit" name="login">login</button>
+                <!--onclick="showform(register-form)" this display the register  form when click on it -->
+                <!--showform this the function thats is created in JS -->
+                <p> don't have an account? <a href="#" onclick="showform('Register-form')"> register </a></p>
+            </form>
+        </div> 
+
+
+        <!--Regsistration form to get new user of the system -->
+         <div class ="form-box" id="Register-form">
+            <form action="">
+                <h2 >REGISTER</h2>  
+                <input type="text" name="name" reguired placeholder="Name" required>
+
+                <input type="email " name="email" placeholder="email" required>
+                <input type="text" name="Number Phone" pattern="[0-9]{10}" placeholder="Phone Number">
+                <label for="date">DOB</label><br>
+                <input type="date" name="DOB" placeholder="Date of Birth">
+                <input type="password" name="password" placeholder="password" required>
+                
+                <br> 
+                <label for="gender">Gender</label> <br> <br>
+                <label for="male"> Male</label>
+                <input type="radio" id="male" name="gender">
+                <label for="female">female</label>
+                <input type="radio" id="female" name="gender">
+                <button type="Submit" name="Register">Register</button>
+                <p>already have an account? <a href="#" onclick="showform('login-form')"> login </a></p>
+            </form>
+        </div> 
+    </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
