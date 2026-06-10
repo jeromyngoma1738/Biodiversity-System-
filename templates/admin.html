@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"
+href="{{ url_for('static', filename='dashboardStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Admin Dashboard</h1>
+<header>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('admin') }}">Dashboard</a>
+        <a href="{{ url_for('login') }}">log Out</a>
+    </nav>
+    
+</header>
+
+<div class="main-card">
+    <a href = "{{url_for('managerUser')}}">
+        <div class="card">
+            <h3>Manage Users</h3>
+        </div>
+    </a>
+
+    <div class="card">
+        <h3>Species Database</h3>
+    </div>
+
+    <div class="card">
+        <h3>Reports</h3>
+    </div>
+
+    <div class="card">
+        <h3>Alerts</h3>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registration
+{% endblock %}
+
+{% block css %}
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='loginStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+<div class="form-box active">
+
+    <form method="POST">
+
+        <h2>Register New User</h2>
+
+        <input type="text"  name="first_name" placeholder=" First Name" required>
+        <input type="text"  name="surname" placeholder="Surname" required>
+
+        <input type="email"  name="email"  placeholder="Email" required>
+
+        <input type="text" name="phone" placeholder="Phone Number" required>
+
+        <label>Date of Birth</label>
+        <input type="date" name="dob" required>
+
+        <label>Gender</label><br>
+        <br>
+        <label>Male</label><br>
+        <input type="radio" name="gender"value="Male" required>
+
+        <br><label>Female</label>
+        <input type="radio"  name="gender" value="Female">
+        
+        <br><br>
+
+        <input type="password" name="password" placeholder="Password"  required>
+
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required> 
+
+        <button type="submit">
+            Register
+        </button>
+
+        <p>
+            Already have an account?
+            <a href="{{ url_for('login') }}">
+                Login
+            </a>
+        </p>
+
+    </form>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

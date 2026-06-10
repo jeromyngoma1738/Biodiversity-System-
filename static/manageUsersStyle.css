@@ -1,0 +1,98 @@
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    color: #085b04;
+    margin-bottom: 20px;
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #026413;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 20px;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    color: #3498db;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+}
+
+th {
+    background-color:#219150;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e8f4ff;
+}
+
+/* Role Dropdown */
+select {
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+/* Buttons */
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Update Role Button */
+form:first-child button {
+    background-color: #27ae60;
+    color: white;
+}
+
+form:first-child button:hover {
+    background-color: #219150;
+}
+
+/* Delete Button */
+form:last-child button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+form:last-child button:hover {
+    background-color: #c0392b;
+}
