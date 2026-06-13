@@ -1,14 +1,16 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+import os 
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Details.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Details.db'      # default db
+app.config['SQLALCHEMY_BINDS'] = {'species_db': 'sqlite:///Species.db'}
 
 db = SQLAlchemy(app)
-
 class Details(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     First_name = db.Column(db.String(50), nullable=False)
@@ -23,6 +25,21 @@ class Details(db.Model):
 
     def __repr__(self):
         return '<Name %r>' % self.id
+
+#creating a database for the species to be observed
+class Species (db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    specie_Scientific_Name = db.Column(db.String(50), nullable=False)
+    specie_Common_Name = db.Column(db.String(50), nullable=False)
+    specie_Habitat =db.Column(db.String(50), nullable=False)
+    location =db.Column(db.String(50), nullable=False)
+    date_Created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    population_Count = db.Column(db.String(50),nullable=False)
+    notes = db.Column(db.String)
+    photo = db.Column(db.String (555))
+    
+    def __repr__(self):
+        return '<Species %r>' % self.id
     
     
 @app.route("/")
@@ -37,7 +54,7 @@ def registration():
     if request.method == "POST":
 
         user_first_name = request.form['first_name']
-        user_surname= request.form['surname']
+        user_surname= request.form['surname'] 
         user_email = request.form['email']
         user_phone = request.form['phone']
         user_password = request.form['password']
@@ -76,18 +93,21 @@ def login():
 
         user = Details.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user.password, password):
+    if user and check_password_hash(user.password, password):
+        session['user_id'] = user.id
+        session['user_name'] = f"{user.First_name} {user.surname}"
+        session['role'] = user.role
+        
+        if user.role == "admin":
+            return redirect(url_for('admin'))
+        
+        elif user.role == "field_officer":
+            return redirect(url_for('field_Officer'))
+        
+        elif user.role == "viewer":
+            return redirect(url_for('home'))
 
-            if user.role == "admin":
-                return redirect(url_for('admin'))
-
-            elif user.role == "field_officer":
-                return redirect(url_for('field_Officer'))
-
-            elif user.role == "viewer":
-                return redirect(url_for('home'))
-
-            else:
+        else:
                 return "Unknown role"
 
         return "Invalid email or password"
@@ -131,6 +151,32 @@ def delete_user(id):
 @app.route("/field_Officer")
 def field_Officer():
     return render_template("field_Officer.html")
+
+
+@app.route("/Species", methods=["GET", "POST"])
+def species():
+    if request.method == "POST":
+        specieScientificName = request.form['Specie_Scientific_Name']
+        specieCommonName = request.form['Specie_Common_Name']
+        speciePopulation = request.form['population']
+        notes = request.form['note']
+        specieImage = request.files['image']
+
+        new_species = Species( specie_Scientific_Name=specieScientificName, specie_Common_Name=specieCommonName,
+            population_Count=speciePopulation, notes=notes, photo=specieImage)
+
+        try:
+            db.session.add(new_species)
+            db.session.commit()
+            return redirect(url_for('species'))
+
+        except Exception as e:
+            db.session.rollback()
+            return f"Error: {e}"
+
+    return render_template('Species.html')
+
+        
 
 if __name__ == "__main__":
     with app.app_context():

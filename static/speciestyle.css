@@ -1,0 +1,145 @@
+/* Biodiversity Observation Form */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+
+body{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to right,#e2e2e2,#c9d6ff);
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg,#dff6e3,#b8e6c1,#eafaf0);
+    color: #333;
+    padding: 20px;
+}
+
+/* Navigation */
+header{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.navbar{
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 20px 40px;
+}
+
+.navbar a{
+    text-decoration: none;
+    color: #074212;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.navbar a:hover{
+    color: #1a8f47;
+}
+
+/* Main Container */
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form Card */
+.form-box{
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Title */
+.form-box h2{
+    text-align: center;
+    margin-bottom: 25px;
+    color: #074212;
+    font-size: 28px;
+}
+
+/* Inputs */
+input,
+textarea{
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Focus Effect */
+input:focus,
+textarea:focus{
+    border-color: #2e8b57;
+    box-shadow: 0 0 6px rgba(46,139,87,0.3);
+}
+
+/* Textarea */
+textarea{
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* File Upload */
+input[type="file"]{
+    background: #f4f4f4;
+    cursor: pointer;
+    padding: 10px;
+}
+
+/* Submit Button */
+button{
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #074212;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover{
+    background: #1f8f4d;
+    transform: translateY(-2px);
+}
+
+button:active{
+    transform: translateY(0);
+}
+
+/* Mobile Responsive */
+@media(max-width: 768px){
+    .form-box{
+        padding: 25px;
+    }
+
+    .form-box h2{
+        font-size: 24px;
+    }
+
+    .navbar{
+        justify-content: center;
+        padding: 15px;
+    }
+}
