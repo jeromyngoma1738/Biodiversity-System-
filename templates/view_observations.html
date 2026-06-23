@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+SPECIES DATABASE
+{% endblock %}
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<html>
+<head><title>View Observations</title></head>
+<body>
+    <h1>Observations</h1>
+    <table border="1">
+        <tr>
+            <th>Species</th>
+            <th>Population</th>
+            <th>Notes</th>
+            <th>Date</th>
+        </tr>
+        {% for obs in observations %}
+            <tr>
+                <td>{{ obs.species.specie_Common_Name }}</td>
+                <td>{{ obs.population_count }}</td>
+                <td>{{ obs.notes }}</td>
+                <td>{{ obs.date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+{% endblock %}

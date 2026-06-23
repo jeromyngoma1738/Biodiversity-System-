@@ -19,19 +19,29 @@
 </header>
 
 <div class="main-card">
+    <a href = "{{url_for('view_species')}}">
+        <div class="card">
+            <h3>Species Database</h3>
+        </div>
+    </a>
 
     <div class="card">
-        <h3>Species Database</h3>
+        <a href="{{ url_for('record_observation') }}">
+            <h3>Record Observation</h3>
+        </a>
     </div>
 
     <div class="card">
-        <h3>Record Observation</h3>
+        <a href="{{ url_for('view_observations') }}">View Observations</a>
+        <a href="{{ url_for('report') }}">View Reports</a>
+    </div>
+        <div class="card">
+        <a href="{{ url_for('report') }}">View Reports</a>
     </div>
 
     <div class="card">
-        <h3>Reports</h3>
-    </div>
-
+     
+        <a href="{{ url_for('trends') }}">View Trends</a>
     <div class="card">
         <h3>Alerts</h3>
     </div>

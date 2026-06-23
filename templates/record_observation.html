@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+RECORD OBSERVATION
+{% endblock %}
+
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="form-box active">
+<form method="POST" enctype="multipart/form-data">
+    <label>Species</label>
+    <select name="species_id" required>
+        {% for sp in species_list %}
+            <option value="{{ sp.id }}">
+                {{ sp.specie_Common_Name }} ({{ sp.scientificName }})
+            </option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Population Count</label>
+    <input type="number" name="population" required>
+
+    <br><br>
+
+    <label>Notes</label>
+    <br><br>
+    <textarea name="note"></textarea>
+
+    <br><br>
+
+    <label>Photo</label>
+    <input type="file" name="image">
+
+    <br><br>
+
+    <button type="submit">Save Observation</button>
+</form>
+</div>
+{% endblock %}

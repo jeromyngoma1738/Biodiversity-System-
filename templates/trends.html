@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Species Trends{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+<style>
+    .trends-container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .filter-bar {
+        margin-bottom: 20px;
+    }
+
+    .filter-bar select {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .chart-card h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .no-data {
+        color: #888;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="trends-container">
+    <h2>Population Trends</h2>
+
+    <!-- Filter -->
+    <div class="filter-bar">
+        <label for="speciesFilter"><strong>Filter by Species:</strong></label>
+        <select id="speciesFilter" onchange="filterCharts()">
+            <option value="all">All Species</option>
+            {% for species in species_list %}
+            <option value="{{ species.specie_Common_Name }}">{{ species.specie_Common_Name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Charts -->
+    {% for item in trend_data %}
+    <div class="chart-card" data-species="{{ item.name }}">
+        <h3>{{ item.name }}</h3>
+
+        {% if item.dates %}
+            <canvas id="chart-{{ loop.index }}" height="100"></canvas>
+        {% else %}
+            <p class="no-data">No observations recorded yet.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const trendData = {{ trend_data | tojson }};
+
+    // Render a chart for each species
+    trendData.forEach((item, index) => {
+        if (item.dates.length === 0) return;
+
+        const ctx = document.getElementById(`chart-${index + 1}`);
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: item.dates,
+                datasets: [{
+                    label: 'Population Count',
+                    data: item.counts,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Date' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Population Count' }
+                    }
+                }
+            }
+        });
+    });
+
+    // Filter charts by species name
+    function filterCharts() {
+        const selected = document.getElementById('speciesFilter').value;
+        const cards = document.querySelectorAll('.chart-card');
+
+        cards.forEach(card => {
+            if (selected === 'all' || card.dataset.species === selected) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

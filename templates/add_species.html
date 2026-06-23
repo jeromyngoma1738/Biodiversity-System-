@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+SPECIES DATABASE
+{% endblock %}
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="form-box active">
+    <form method="POST">
+        <label>Scientific Name</label>
+        <input type="text" name="scientificName" required>
+
+        <br><br>
+
+        <label>Common Name</label>
+        <input type="text" name="commonName" required>
+
+        <br><br>
+
+        <label>Habitat</label>
+        <input type="text" name="habitat" required>
+
+        <br><br>
+
+        <label>Location</label>
+        <input type="text" name="location" required>
+
+        <br><br>
+
+        <button type="submit">Add Species</button>
+    </form>
+</div>
+{% endblock %}

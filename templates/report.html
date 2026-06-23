@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+SPECIES DATABASE
+{% endblock %}
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+<h1>Report</h1>
+<header>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('admin') }}">DashBoard</a>
+        <a href="{{ url_for('login') }}">log Out</a>
+    </nav>
+    
+</header>
+
+
+{% endblock %}<h2>Species</h2>
+
