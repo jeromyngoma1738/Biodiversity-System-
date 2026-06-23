@@ -29,9 +29,7 @@ SPECIES DATABASE
         <th>Common Name</th>
         <th>Habitat</th>
         <th>Location</th>
-        <th>Population</th>
-        <th>Date</th>
-        <th>Notes</th>
+
     </tr>
 
     {% for species in species_list %}
@@ -41,9 +39,7 @@ SPECIES DATABASE
         <td>{{ species.specie_Common_Name}}</td>
         <td>{{ species.specie_Habitat}}</td>
         <td>{{ species.location }}</td>
-        <td>{{ species.population_Count }}</td>
-        <td>{{ species.date_Created }}</td>
-        <td>{{ species.notes }}</td>
+     
     </tr>
     {% endfor %}
 
