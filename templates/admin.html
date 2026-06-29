@@ -1,54 +1,78 @@
 {% extends "base.html" %}
 
 {% block title %}
-Dashboard
+Admin Dashboard
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet"
-href="{{ url_for('static', filename='dashboardStyle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
 {% endblock %}
 
 {% block content %}
 
 <h1>Admin Dashboard</h1>
+
 <header>
     <nav class="navbar">
-        <a href="{{ url_for('home') }}">Home</a>
         <a href="{{ url_for('admin') }}">Dashboard</a>
-        <a href="{{ url_for('login') }}">log Out</a>
+        <a href="{{ url_for('login') }}">Log Out</a>
     </nav>
-    
 </header>
 
-<div class="main-card">
-    <a href = "{{url_for('managerUser')}}">
-        <div class="card">
-            <h3>Manage Users</h3>
-        </div>
-    </a>
-    <a href = "{{url_for('view_species')}}">
-        <div class="card">
-            <h3>Species Database</h3>
-        </div>
-    </a>
-    <div class="card">
-        <h3>Reports</h3>
+<!-- ================= SUMMARY CARDS ================= -->
+<div class="dashboard-summary">
+
+    <div class="summary-card">
+        <h2>{{ total_users }}</h2>
+        <p>End Users</p>
     </div>
 
-    <div class="card">
-        <h3>Alerts</h3>
+    <div class="summary-card">
+        <h2>{{ total_field_officers }}</h2>
+        <p>Field Officers</p>
     </div>
-     <div class="card">
-        <a href="{{url_for('view_observations')}}">
-            <h3>View Observations</h3>
+
+    <div class="summary-card">
+        <h2>{{ total_species }}</h2>
+        <p>Species</p>
     </div>
-         <div class="card">
-        <a href="{{url_for('trends')}}">
-            <h3>Trends</h3>
-        </a>
+
+    <div class="summary-card">
+        <h2>{{ total_notifications }}</h2>
+        <p>Notifications</p>
     </div>
-    
+
+</div>
+
+<!-- ================= MAIN MENU CARDS ================= -->
+<div class="main-card">
+
+    <a href="{{ url_for('managerUser') }}" class="card">
+        <h3>Manage Users</h3>
+    </a>
+
+    <a href="{{ url_for('view_species') }}" class="card">
+        <h3>Species Database</h3>
+    </a>
+
+    <a href="#" class="card">
+        <h3>Reports</h3>
+    </a>
+
+    <a href="{{ url_for('notifications') }}" class="card">
+        <h3>Notifications</h3>
+    </a>
+</div>
+
+<div class="main-card">
+    <a href="{{ url_for('view_observations') }}" class="card">
+        <h3>View Observations</h3>
+    </a>
+
+    <a href="{{ url_for('trends') }}" class="card">
+        <h3>Trends</h3>
+    </a>
+
 </div>
 
 {% endblock %}

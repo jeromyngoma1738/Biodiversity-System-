@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+Notifications
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Notifications</h2>
+
+    {% if notifications %}
+
+        {% for n in notifications %}
+
+        <div class="card mb-3">
+            <div class="card-body">
+
+                <h5 class="card-title">{{ n.title }}</h5>
+
+                <p class="card-text">
+                    {{ n.message }}
+                </p>
+
+                <small class="text-muted">
+                    {{ n.created_at.strftime('%d %B %Y %I:%M %p') }}
+                </small>
+
+            </div>
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No notifications available.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

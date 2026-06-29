@@ -1,47 +1,44 @@
-
-<!--THE LOGIN EFFECT-->
-*{
+* {
     margin: 0;
-    align-items: center;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins";
 }
-body{
+
+body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(to right,#e2e2e2,#c9d6ff);
     justify-content: center;
     align-items: center;
-    min-width: 100px;
-    background: linear-gradient(to right,#e2e2e2, #c9d6ff);
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
     color: #333;
 }
 
 .container {
-    margin:0 15px;
+    margin: 0 15px;
 }
-  
-.form-box{
-    align-items: center;
+
+.form-box {
     width: 400px;
     padding: 30px;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgb(0,0,0,0 .1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: none;
 }
-.form-box.active{
+
+.form-box.active {
     display: block;
 }
 
-h2{
-  font-size: 34px;
-  text-align: center;
-  margin-bottom: 20px;  
+h2 {
+    font-size: 34px;
+    text-align: center;
+    margin-bottom: 20px;
 }
-select, input{
+
+input {
     width: 100%;
     padding: 12px;
     background: #e2e2e2;
@@ -49,34 +46,34 @@ select, input{
     border: none;
     outline: none;
     font-size: 16px;
-    color: #333 ;
     margin-bottom: 20px;
 }
-button{
+
+button {
     width: 100%;
     padding: 12px;
     background: #074212;
     border-radius: 6px;
     border: none;
     cursor: pointer;
-    font-weight: 16px;
-    color:#fff;
-    margin-bottom: 20px;
+    color: #fff;
     transition: 0.5s;
 }
-button:hover{
+
+button:hover {
     background: #68d39c;
 }
-p{
-    font-size: 15.4px;
+
+p {
+    font-size: 15px;
     text-align: center;
-    margin-bottom: 10px;
 }
 
-p a{
+p a {
     color: #094623;
     text-decoration: none;
 }
-p a:hover{
+
+p a:hover {
     text-decoration: underline;
 }

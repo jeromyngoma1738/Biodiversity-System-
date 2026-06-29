@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
 {% block title %}
-Home
+DASHBOARD
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
 {% endblock %}
 
 {% block content %}
 <header>
     <nav class="navbar">
-        <a href="{{ url_for('home') }}">Home</a>
         <a href="{{ url_for('login') }}">log Out</a>
+        <a href="{{url_for('notifications')}}">Notifications</a>    
     </nav>
     <br>
 </header> 
