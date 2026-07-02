@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+FIELD OFFICERS
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Manage Field Officers</h1>
+
+<header>
+    <nav class="navbar">
+        <a href="{{ url_for('admin') }}">Dashboard</a>
+        <a href="{{ url_for('login') }}">Log Out</a>
+    </nav>
+</header>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Surname</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Gender</th>
+        <th>Date Created</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for field_officer in field_officers %}
+    <tr>
+        <td>{{ field_officer.id }}</td>
+        <td>{{ field_officer.First_name }}</td>
+        <td>{{ field_officer.surname }}</td>
+        <td>{{ field_officer.email }}</td>
+        <td>{{ field_officer.DOB }}</td>
+        <td>{{ field_officer.gender }}</td>
+        <td>{{ field_officer.date_Created }}</td>
+        <td>{{ field_officer.role }}</td>
+
+        <td>
+
+            <!-- Update Role -->
+            <form action="{{ url_for('change_role', id=field_officer.id) }}"
+                  method="POST"
+                  onsubmit="return confirmRoleUpdate();">
+
+                <select name="role" required>
+                    <option value="viewer" {% if field_officer.role == 'viewer' %}selected{% endif %}>Viewer</option>
+                    <option value="field_officer" {% if field_officer.role == 'field_officer' %}selected{% endif %}>Field Officer</option>
+                    <option value="admin" {% if field_officer.role == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+
+                <button type="submit">Update Role</button>
+            </form>
+
+            <br>
+
+            <!-- Delete User -->
+            <form action="{{ url_for('delete_user', id=field_officer.id) }}"
+                  method="POST"
+                  onsubmit="return confirmDelete();">
+
+                <button type="submit" style="background-color:red; color:white;">
+                    Delete
+                </button>
+
+            </form>
+
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<script>
+function confirmDelete() {
+    return confirm("Are you sure you want to delete this field officer? This action cannot be undone.");
+}
+
+function confirmRoleUpdate() {
+    return confirm("Are you sure you want to update this user's role?");
+}
+</script>
+
+{% endblock %}

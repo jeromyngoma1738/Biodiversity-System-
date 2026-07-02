@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+Species Database
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h2>Species Database</h2>
+
+<a href="{{ url_for('add_species') }}">
+    <button type="button">+ Add New Species</button>
+</a>
+<a href="{{ url_for('view_species') }}">
+    <button>View Species</button>
+</a>
+
+<a href="{{ url_for('add_species') }}">
+    <button>Add New Species</button>
+</a>
+
+<a href="{{ url_for('record_observation') }}">
+    <button>Record Observation</button>
+</a>
+
+<br><br>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Scientific Name</th>
+        <th>Common Name</th>
+        <th>Habitat</th>
+        <th>Location</th>
+        <th>Action</th>
+    </tr>
+
+    {% for species in species %}
+    <tr>
+        <td>{{ species.id }}</td>
+        <td>{{ species.scientificName }}</td>
+        <td>{{ species.specie_Common_Name }}</td>
+        <td>{{ species.specie_Habitat }}</td>
+        <td>{{ species.location }}</td>
+
+        <td>
+            <form action="{{ url_for('delete_species', id=species.id) }}" method="POST"
+                  onsubmit="return confirm('Are you sure you want to delete this species?');">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}

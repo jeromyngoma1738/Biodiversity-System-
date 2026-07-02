@@ -233,3 +233,7 @@ body{
 }
 
 }
+.summary-card:hover{
+    background-color: rgb(9, 208, 32);
+    cursor: pointer;
+   } 

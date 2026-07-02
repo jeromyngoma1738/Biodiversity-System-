@@ -82,17 +82,9 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime,
                            default=lambda: datetime.now(timezone.utc))
     
-def create_notification(role, title, message,
-                        notification_type="Info",
-                        user_id=None):
+def create_notification(role, title, message,notification_type="Info", user_id=None):
 
-    notification = Notification(
-        role=role,
-        user_id=user_id,
-        title=title,
-        message=message,
-        notification_type=notification_type
-    )
+    notification = Notification(role=role,user_id=user_id, title=title,message=message,notification_type=notification_type )
 
     db.session.add(notification)
     db.session.commit()
@@ -204,9 +196,21 @@ def admin():
             total_field_officers = Details.query.filter_by(role="field_officer").count()
             total_species = Species.query.count()
             total_notifications = Notification.query.count()
-            return render_template( "admin.html", total_users=total_users, total_field_officers=total_field_officers,
-                                   total_species=total_species, total_notifications=total_notifications)
-           
+            return render_template( "admin.html", total_users=total_users, total_field_officers=total_field_officers, total_species=total_species, total_notifications=total_notifications)
+
+@app.route("/view_user")
+@login_required
+@role_required("admin")
+def view_user():
+    users=Details.query.filter_by(role="viewer")
+    return render_template("view_user.html", users=users)
+
+@app.route("/view_field_Officer")
+@login_required
+@role_required("admin")
+def view_field_Officer():
+    field_officers=Details.query.filter_by(role="field_officer")
+    return render_template("view_field_Officer.html", field_officers=field_officers)    
 
 @app.route("/manageUser")
 @login_required
@@ -214,6 +218,8 @@ def admin():
 def managerUser():
     users = Details.query.all()
     return render_template("manageUser.html", users=users)
+
+
 
 @app.route("/change_role/<int:id>", methods=["POST"])
 def change_role(id):
@@ -454,6 +460,56 @@ def notifications():
 
     return render_template("notifications.html", notifications=notifications)
 
+@app.route("/manageSpecies", methods=["GET", "POST"])
+@login_required
+@role_required("field_officer")
+def manageSpecies():
+    species = Species.query.all()
+    return render_template("manageSpecies.html", species=species)
+
+@app.route("/delete_species/<int:id>", methods=["POST"])
+@login_required
+@role_required("admin", "field_officer")
+def delete_species(id):
+
+    species = Species.query.get_or_404(id)
+
+    db.session.delete(species)
+    db.session.commit()
+
+    create_notification(
+        role="admin",
+        title="Species Deleted",
+        message=f"{session['user_name']} removed {species.specie_Common_Name}.",
+        notification_type="Warning"
+    )
+
+    return redirect(url_for("view_species"))
+
+@app.route("/add_species", methods=["GET", "POST"])
+@login_required
+@role_required("field_officer")
+def add_species():
+
+    if request.method == "POST":
+        scientific_name = request.form["scientificName"]
+        common_name = request.form["commonName"]
+        habitat = request.form["habitat"]
+        location = request.form["location"]
+
+        new_species = Species(
+            scientificName=scientific_name,
+            specie_Common_Name=common_name,
+            specie_Habitat=habitat,
+            location=location
+        )
+
+        db.session.add(new_species)
+        db.session.commit()
+
+        return redirect(url_for("view_species"))
+
+    return render_template("add_species.html")
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

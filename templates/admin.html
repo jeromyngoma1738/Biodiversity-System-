@@ -14,33 +14,45 @@ Admin Dashboard
 
 <header>
     <nav class="navbar">
+        <input type="text" placeholder="Search..." id="searchInput" onkeyup="searchTable()">
         <a href="{{ url_for('admin') }}">Dashboard</a>
         <a href="{{ url_for('login') }}">Log Out</a>
+        
     </nav>
 </header>
 
 <!-- ================= SUMMARY CARDS ================= -->
 <div class="dashboard-summary">
 
-    <div class="summary-card">
-        <h2>{{ total_users }}</h2>
-        <p>End Users</p>
-    </div>
+    <a href="{{ url_for('view_user') }}">
+        <div class="summary-card">
+            <h2>{{ total_users }}</h2>
+            
+                <p>End Users</p>
+        
+        </div>
+    </a>
+    
+    <a href="{{ url_for('view_field_Officer') }}">
+        <div class="summary-card">
+            <h2>{{ total_field_officers }}</h2>
+            <p>Field Officers</p>
+        </div>
+    </a>
+    <a href="{{ url_for('view_species') }}">
+        <div class="summary-card">
+            <h2>{{ total_species }}</h2>
+            <p>Species</p>
+        </div>
+    </a>
 
-    <div class="summary-card">
-        <h2>{{ total_field_officers }}</h2>
-        <p>Field Officers</p>
-    </div>
 
-    <div class="summary-card">
-        <h2>{{ total_species }}</h2>
-        <p>Species</p>
-    </div>
-
-    <div class="summary-card">
-        <h2>{{ total_notifications }}</h2>
-        <p>Notifications</p>
-    </div>
+    <a href="{{ url_for('notifications') }}">
+        <div class="summary-card">
+            <h2>{{ total_notifications }}</h2>
+            <p>Notifications</p>
+        </div>
+    </a>
 
 </div>
 
