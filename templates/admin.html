@@ -14,38 +14,40 @@ Admin Dashboard
 
 <header>
     <nav class="navbar">
-        <input type="text" placeholder="Search..." id="searchInput" onkeyup="searchTable()">
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <input type="text" name="search" placeholder="Search..." value="{{ search }}">
+            <button type="submit">Search</button>
+        </form>
+
         <a href="{{ url_for('admin') }}">Dashboard</a>
         <a href="{{ url_for('login') }}">Log Out</a>
-        
     </nav>
 </header>
 
 <!-- ================= SUMMARY CARDS ================= -->
+
 <div class="dashboard-summary">
 
     <a href="{{ url_for('view_user') }}">
         <div class="summary-card">
             <h2>{{ total_users }}</h2>
-            
-                <p>End Users</p>
-        
+            <p>End Users</p>
         </div>
     </a>
-    
+
     <a href="{{ url_for('view_field_Officer') }}">
         <div class="summary-card">
             <h2>{{ total_field_officers }}</h2>
             <p>Field Officers</p>
         </div>
     </a>
+
     <a href="{{ url_for('view_species') }}">
         <div class="summary-card">
             <h2>{{ total_species }}</h2>
             <p>Species</p>
         </div>
     </a>
-
 
     <a href="{{ url_for('notifications') }}">
         <div class="summary-card">
@@ -54,9 +56,18 @@ Admin Dashboard
         </div>
     </a>
 
+    <a href="{{ url_for('pending_observations') }}">
+        <div class="summary-card">
+            
+            <p>Pending Observation</p>
+  
+        </div>
+    </a>
+
 </div>
 
-<!-- ================= MAIN MENU CARDS ================= -->
+<!-- ================= MENU ================= -->
+
 <div class="main-card">
 
     <a href="{{ url_for('managerUser') }}" class="card">
@@ -67,24 +78,27 @@ Admin Dashboard
         <h3>Species Database</h3>
     </a>
 
-    <a href="#" class="card">
+    <a href="{{ url_for('report') }}" class="card">
         <h3>Reports</h3>
     </a>
 
     <a href="{{ url_for('notifications') }}" class="card">
         <h3>Notifications</h3>
     </a>
+
 </div>
 
 <div class="main-card">
+
     <a href="{{ url_for('view_observations') }}" class="card">
         <h3>View Observations</h3>
     </a>
 
     <a href="{{ url_for('trends') }}" class="card">
-        <h3>Trends</h3>
+        <h3>Population Trends</h3>
     </a>
 
 </div>
+
 
 {% endblock %}

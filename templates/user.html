@@ -11,8 +11,12 @@ DASHBOARD
 {% block content %}
 <header>
     <nav class="navbar">
-        <a href="{{ url_for('login') }}">log Out</a>
-        <a href="{{url_for('notifications')}}">Notifications</a>    
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <input type="text" name="search" placeholder="Search..." value="{{ search }}">
+            <button type="submit">Search</button>
+        </form>
+        <a href="{{url_for('notifications')}}">Notifications</a>   
+        <a href="{{ url_for('login') }}">log Out</a>    
     </nav>
     <br>
 </header> 

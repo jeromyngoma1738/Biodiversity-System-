@@ -1,202 +1,121 @@
-/* General Page Styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f7fc;
-    margin: 0;
-    padding: 20px;
+/* =====================================================
+   BIODIVERSITY MONITORING SYSTEM
+   Main Stylesheet
+======================================================*/
+
+/* ===========================
+   GENERAL STYLES
+===========================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-/* Heading */
-h1 {
-    text-align: center;
-    color: #085b04;
-    margin-bottom: 20px;
+body{
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:#eef3f8;
+    color:#333;
+    padding:20px;
 }
 
-/* Navigation Bar */
-.navbar {
-    background-color: #026413;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 20px;
+h1{
+    text-align:center;
+    color:#026413;
+    margin-bottom:25px;
+    font-size:34px;
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    margin: 0 20px;
-    font-weight: bold;
+h2{
+    color:#026413;
+    margin-bottom:15px;
 }
 
-.navbar a:hover {
-    color: #3498db;
+.container{
+    width:95%;
+    max-width:1400px;
+    margin:auto;
 }
 
-/* Table Styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+
+/* ===========================
+   NAVIGATION BAR
+===========================*/
+
+.navbar{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+    background:linear-gradient(90deg,#026413,#219150);
+    padding:18px;
+    border-radius:12px;
+    margin-bottom:30px;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
 }
 
-th {
-    background-color:#219150;
-    color: white;
-    padding: 12px;
-}
-
-td {
-    padding: 12px;
-    text-align: center;
-}
-    .trends-container {
-        max-width: 900px;
-        margin: 30px auto;
-        padding: 0 20px;
-    }
-
-    h2 {
-        margin-bottom: 20px;
-    }
-
-    .filter-bar {
-        margin-bottom: 20px;
-    }
-
-    .filter-bar select {
-        padding: 8px 12px;
-        font-size: 14px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-
-.chart-card {
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        padding: 20px;
-        margin-bottom: 30px;
-    }
-
- .chart-card h3 {
-        margin-bottom: 15px;
-        font-size: 18px;
-        color: #333;
-    }
-
-.no-data {
-    color: #888;
-    font-style: italic;
-    }
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #e8f4ff;
-}
-
-/* Role Dropdown */
-select {
-    padding: 6px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-}
-
-/* Buttons */
-button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* Update Role Button */
-form:first-child button {
-    background-color: #27ae60;
-    color: white;
-}
-
-form:first-child button:hover {
-    background-color: #219150;
-}
-
-/* Delete Button */
-form:last-child button {
-    background-color: #e74c3c;
-    color: white;
-}
-
-form:last-child button:hover {
-    background-color: #c0392b;
-}
-.btn-download{
-    display:inline-block;
-    padding:10px 18px;
-    background:#2e7d32;
+.navbar a{
     color:white;
     text-decoration:none;
-    border-radius:6px;
-    font-weight:bold;
+    font-weight:600;
+    padding:10px 18px;
+    border-radius:8px;
+    transition:.3s;
 }
 
-.btn-download:hover{
-    background:#1b5e20;
+.navbar a:hover{
+    background:rgba(255,255,255,.2);
 }
+
+
 /* ===========================
-   Dashboard Summary Cards
-=========================== */
+   DASHBOARD SUMMARY
+===========================*/
 
 .dashboard-summary{
     display:flex;
-    justify-content:space-between;
     gap:20px;
-    margin:30px 0;
     flex-wrap:wrap;
+    margin-bottom:30px;
 }
 
 .summary-card{
     flex:1;
-    min-width:200px;
-    background:#fff;
-    border-radius:12px;
-    padding:20px;
+    min-width:220px;
+    background:linear-gradient(135deg,#026413,#2ecc71);
+    color:white;
+    padding:25px;
+    border-radius:15px;
     text-align:center;
-    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
     transition:.3s;
 }
 
 .summary-card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-6px);
 }
 
 .summary-card h2{
-    font-size:42px;
-    margin:0;
-    color:#026413;
+    color:white;
+    font-size:48px;
 }
 
 .summary-card p{
     margin-top:10px;
     font-size:18px;
-    color:#555;
-    font-weight:bold;
 }
 
+
 /* ===========================
-   Dashboard Menu Cards
-=========================== */
+   MENU CARDS
+===========================*/
 
 .main-card{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-    margin-top:30px;
+    gap:25px;
 }
 
 .main-card a{
@@ -204,25 +123,287 @@ form:last-child button:hover {
 }
 
 .card{
-    background:#ffffff;
-    border-radius:10px;
-    padding:35px 20px;
+    background:white;
+    padding:35px;
+    border-radius:15px;
     text-align:center;
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
+    box-shadow:0 6px 18px rgba(0,0,0,.15);
     transition:.3s;
 }
 
 .card:hover{
     background:#026413;
-    color:white;
-    transform:scale(1.03);
+    transform:translateY(-5px);
 }
 
 .card h3{
-    margin:0;
     color:#026413;
 }
 
 .card:hover h3{
     color:white;
+}
+
+
+/* ===========================
+   MODERN TABLES
+===========================*/
+
+.table-container{
+    overflow-x:auto;
+    margin-top:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+thead{
+    background:linear-gradient(90deg,#024d0f,#064621);
+}
+
+th{
+    color:rgb(2, 32, 4);
+    padding:16px;
+    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:1px;
+}
+
+td{
+    padding:15px;
+    border-bottom:1px solid #0c0c0c;
+    text-align:center;
+}
+
+tbody tr{
+    transition:.3s;
+}
+
+tbody tr:nth-child(even){
+    background:#f8fafb;
+}
+
+tbody tr:hover{
+    background:#d8f5df;
+    transform:scale(1.01);
+    cursor:pointer;
+}
+
+td img{
+    width:75px;
+    height:75px;
+    object-fit:cover;
+    border-radius:10px;
+    border:2px solid #219150;
+}
+
+
+/* ===========================
+   STATUS BADGES
+===========================*/
+
+.badge{
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:20px;
+    color:rgb(15, 196, 69);
+    font-size:13px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#f39c12;
+}
+
+.approved{
+    background:#27ae60;
+}
+
+.rejected{
+    background:#e74c3c;
+}
+
+
+/* ===========================
+   BUTTONS
+===========================*/
+
+button,
+.btn-download{
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn-approve{
+    background:#27ae60;
+    color:white;
+}
+
+.btn-approve:hover{
+    background:#1f8a4d;
+}
+
+.btn-reject{
+    background:#e74c3c;
+    color:white;
+}
+
+.btn-reject:hover{
+    background:#c0392b;
+}
+
+.btn-edit{
+    background:#3498db;
+    color:white;
+}
+
+.btn-edit:hover{
+    background:#2874a6;
+}
+
+.btn-download{
+    display:inline-block;
+    background:#2e7d32;
+    color:white;
+    text-decoration:none;
+}
+
+.btn-download:hover{
+    background:#1b5e20;
+}
+
+
+/* ===========================
+   FORMS
+===========================*/
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    margin-bottom:15px;
+    font-size:15px;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    outline:none;
+    border-color:#219150;
+    box-shadow:0 0 10px rgba(33,145,80,.3);
+}
+
+
+/* ===========================
+   SEARCH BAR
+===========================*/
+
+.search-box{
+    display:flex;
+    justify-content:center;
+    margin:20px 0;
+}
+
+.search-box input{
+    width:400px;
+    border-radius:30px;
+}
+
+.search-box button{
+    margin-left:10px;
+}
+
+
+/* ===========================
+   CHARTS
+===========================*/
+
+.trends-container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.chart-card{
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    margin-bottom:30px;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+
+.chart-card h3{
+    margin-bottom:20px;
+    color:#026413;
+}
+
+.filter-bar{
+    margin-bottom:20px;
+}
+
+.no-data{
+    color:#999;
+    font-style:italic;
+}
+
+
+/* ===========================
+   FOOTER
+===========================*/
+
+footer{
+    margin-top:40px;
+    text-align:center;
+    color:#666;
+}
+
+
+/* ===========================
+   RESPONSIVE
+===========================*/
+
+@media(max-width:768px){
+
+    .navbar{
+        flex-direction:column;
+    }
+
+    .dashboard-summary{
+        flex-direction:column;
+    }
+
+    table{
+        font-size:14px;
+    }
+
+    th,
+    td{
+        padding:10px;
+    }
+
+    .search-box{
+        flex-direction:column;
+    }
+
+    .search-box input{
+        width:100%;
+    }
+
+    .search-box button{
+        margin-left:0;
+        margin-top:10px;
+    }
+
 }

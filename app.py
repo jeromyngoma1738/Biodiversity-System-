@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template, session, send_file
+from flask import Flask, flash, redirect, url_for, request, render_template, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,16 +8,27 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
 import matplotlib.pyplot as plt
 from reportlab.lib.units import inch
+from sqlalchemy import or_
 
 
 app = Flask(__name__)
+
+
 app.secret_key = "my_super_secret_key_12345"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Details.db'      # default db
-app.config['SQLALCHEMY_BINDS'] = {'species_db': 'sqlite:///Species.db'}
+# Single database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Biodiversity.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+
+# ==========================clear
+# USER TABLE
+# ==========================
 class Details(db.Model):
+    __tablename__ = "details"
+
     id = db.Column(db.Integer, primary_key=True)
     First_name = db.Column(db.String(50), nullable=False)
     surname = db.Column(db.String(50), nullable=False)
@@ -26,47 +37,102 @@ class Details(db.Model):
     DOB = db.Column(db.String(20))
     gender = db.Column(db.String(10))
     password = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(50), nullable=False, default='viewer')
-    date_Created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    role = db.Column(db.String(50), nullable=False, default="viewer")
+    date_Created = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+    # Relationship with Observation
+    reviewed_observations = db.relationship(
+        "Observation",
+        foreign_keys="Observation.reviewed_by",
+        backref="reviewer",
+        lazy=True
+    )
 
     def __repr__(self):
-        return '<Name %r>' % self.id
+        return f"<User {self.First_name} {self.surname}>"
 
-#creating a database for the species to be observed
+
+# ==========================
+# SPECIES TABLE
+# ==========================
 class Species(db.Model):
-    __bind_key__ = 'species_db'
+    __tablename__ = "species"
+
     id = db.Column(db.Integer, primary_key=True)
     scientificName = db.Column(db.String(50), nullable=False)
     specie_Common_Name = db.Column(db.String(50), nullable=False)
-    specie_Habitat = db.Column(db.String(50), nullable=False, default='savannah')
-    location = db.Column(db.String(50), nullable=False, default='CBU nature Park')
+    specie_Habitat = db.Column(db.String(50), nullable=False, default="savannah")
+    location = db.Column(db.String(50), nullable=False, default="CBU Nature Park")
 
-    # relationship
-    observations = db.relationship('Observation', backref='species', lazy=True)
+    observations = db.relationship(
+        "Observation",
+        backref="species",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Species {self.specie_Common_Name}>"
-    
+
+
+# ==========================
+# OBSERVATION TABLE
+# ==========================
 class Observation(db.Model):
-    __bind_key__ = 'species_db'
+    __tablename__ = "observation"
+
     id = db.Column(db.Integer, primary_key=True)
 
-    species_id = db.Column(db.Integer, db.ForeignKey('species.id'), nullable=False)
+    species_id = db.Column(
+        db.Integer,
+        db.ForeignKey("species.id"),
+        nullable=False
+    )
 
-    observation_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    observation_date = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
     population_count = db.Column(db.Integer, nullable=False)
 
-    notes = db.Column(db.String)
+    notes = db.Column(db.Text)
+
     photo = db.Column(db.String(555))
 
+    status = db.Column(
+        db.String(20),
+        default="Pending"
+    )
+
+    reviewed_by = db.Column(
+        db.Integer,
+        db.ForeignKey("details.id"),
+        nullable=True
+    )
+
+    reviewed_at = db.Column(db.DateTime)
+
     def __repr__(self):
-        return f"<Observation {self.id} - Species {self.species_id}>"
+        return f"<Observation {self.id}>"
 
 
+# ==========================
+# NOTIFICATION TABLE
+# ==========================
 class Notification(db.Model):
+    __tablename__ = "notification"
+
     id = db.Column(db.Integer, primary_key=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('details.id'), nullable=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("details.id"),
+        nullable=True
+    )
 
     role = db.Column(db.String(30), nullable=False)
 
@@ -74,17 +140,36 @@ class Notification(db.Model):
 
     message = db.Column(db.Text, nullable=False)
 
-    notification_type = db.Column(db.String(20), default="Info")
-    # Info, Success, Warning, Critical
+    notification_type = db.Column(
+        db.String(20),
+        default="Info"
+    )
 
-    is_read = db.Column(db.Boolean, default=False)
+    is_read = db.Column(
+        db.Boolean,
+        default=False
+    )
 
-    created_at = db.Column(db.DateTime,
-                           default=lambda: datetime.now(timezone.utc))
-    
-def create_notification(role, title, message,notification_type="Info", user_id=None):
+    created_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc)
+    )
 
-    notification = Notification(role=role,user_id=user_id, title=title,message=message,notification_type=notification_type )
+
+# ==========================
+# CREATE NOTIFICATION
+# ==========================
+def create_notification(role, title, message,
+                        notification_type="Info",
+                        user_id=None):
+
+    notification = Notification(
+        role=role,
+        user_id=user_id,
+        title=title,
+        message=message,
+        notification_type=notification_type
+    )
 
     db.session.add(notification)
     db.session.commit()
@@ -162,42 +247,42 @@ def login():
         password = request.form['password']
 
         user = Details.query.filter_by(email=email).first()
-
-    if user and check_password_hash(user.password, password):
-        session['user_id'] = user.id
-        session['user_name'] = f"{user.First_name} {user.surname}"
-        session['role'] = user.role
-        
-        if user.role == "admin":
-            return redirect(url_for('admin'))
-        
-        elif user.role == "field_officer":
-            return redirect(url_for('field_Officer'))
-        
-        elif user.role == "viewer":
-            return redirect(url_for('user'))
-
-        else:
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            session['user_name'] = f"{user.First_name} {user.surname}"
+            session['role'] = user.role
+            if user.role == "admin":
+                return redirect(url_for('admin'))
+            
+            elif user.role == "field_officer":
+                return redirect(url_for('field_Officer'))
+            
+            elif user.role == "viewer":
+                return redirect(url_for('user'))
+            else:
                 return "Unknown role"
+        else:
+            flash("Incorrect email or password.", "danger")
+    
     return render_template("login.html")
 
 @app.route("/user")
 def user():
     return render_template("user.html") 
 
-@app.route("/admin")
-@login_required
-@role_required("admin")
-def admin():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    else:
-            total_users = Details.query.filter_by(role="viewer").count()
-            total_field_officers = Details.query.filter_by(role="field_officer").count()
-            total_species = Species.query.count()
-            total_notifications = Notification.query.count()
-            return render_template( "admin.html", total_users=total_users, total_field_officers=total_field_officers, total_species=total_species, total_notifications=total_notifications)
 
+@app.route("/admin")
+##@login_required
+##@role_required("admin")
+def admin():
+    total_users = Details.query.filter_by(role="viewer").count()
+    total_field_officers = Details.query.filter_by(role="field_officer").count()
+    total_species = Species.query.count()
+    total_notifications = Notification.query.count()
+
+    return render_template( "admin.html",total_users=total_users, total_field_officers=total_field_officers, total_species=total_species,
+        total_notifications=total_notifications)
+    
 @app.route("/view_user")
 @login_required
 @role_required("admin")
@@ -268,8 +353,8 @@ def record_observation():
             image.save(os.path.join("static/uploads", filename))
 
         try:
-            new_observation = Observation(species_id=int(species_id), population_count=int(population), 
-                            notes=notes,photo=filename,observation_date=datetime.now(timezone.utc) )
+            new_observation = Observation(species_id=int(species_id), population_count=int(population),notes=notes,photo=filename,
+                     observation_date=datetime.now(timezone.utc),status="Pending")
 
             db.session.add(new_observation)
             db.session.commit()
@@ -280,7 +365,7 @@ def record_observation():
                 notification_type="Success")
             # Notify all admins
             create_notification(role="admin",title="New Observation Submitted",
-                                message=f"{session['user_name']} submitted a new observation.",notification_type="Info")
+                    message=f"{session['user_name']} submitted a new observation.",notification_type="Info")
 
             return redirect(url_for('view_observations'))
 
@@ -289,6 +374,52 @@ def record_observation():
             return f"Error: {e}"
 
     return render_template("record_observation.html", species_list=species_list)
+
+@app.route("/pending_observations")
+@login_required
+@role_required("admin")
+def pending_observations():
+
+    observations = Observation.query.filter_by(status="Pending").order_by(Observation.observation_date.desc()).all()
+
+    return render_template("pending_observations.html", observations=observations)
+
+@app.route("/approve_observation/<int:id>", methods=["POST"])
+@login_required
+@role_required("admin")
+def approve_observation(id):
+
+    observation = Observation.query.get_or_404(id)
+
+    observation.status = "Approved"
+    observation.reviewed_by = session["user_id"]
+    observation.reviewed_at = datetime.now(timezone.utc)
+
+    db.session.commit()
+
+    create_notification(role="field_officer", title="Observation Approved", message="One of your observations has been approved.",
+        notification_type="Success"
+    )
+
+    return redirect(url_for("pending_observations"))
+
+@app.route("/reject_observation/<int:id>", methods=["POST"])
+@login_required
+@role_required("admin")
+def reject_observation(id):
+
+    observation = Observation.query.get_or_404(id)
+
+    observation.status = "Rejected"
+    observation.reviewed_by = session["user_id"]
+    observation.reviewed_at = datetime.now(timezone.utc)
+
+    db.session.commit()
+
+    create_notification(role="field_officer", title="Observation Rejected", message="One of your observations has been rejected.", 
+                        notification_type="Warning" )
+
+    return redirect(url_for("pending_observations"))
 
 @app.route("/view_observations")
 @login_required
@@ -453,11 +584,7 @@ def download_report():
 @login_required
 def notifications():
 
-    notifications = Notification.query.filter(
-        (Notification.role == session["role"]) |
-        (Notification.user_id == session["user_id"])
-    ).order_by(Notification.created_at.desc()).all()
-
+    notifications = Notification.query.filter((Notification.role == session["role"]) |(Notification.user_id == session["user_id"]) ).order_by(Notification.created_at.desc()).all()
     return render_template("notifications.html", notifications=notifications)
 
 @app.route("/manageSpecies", methods=["GET", "POST"])
@@ -477,12 +604,7 @@ def delete_species(id):
     db.session.delete(species)
     db.session.commit()
 
-    create_notification(
-        role="admin",
-        title="Species Deleted",
-        message=f"{session['user_name']} removed {species.specie_Common_Name}.",
-        notification_type="Warning"
-    )
+    create_notification( role="admin", title="Species Deleted", message=f"{session['user_name']} removed {species.specie_Common_Name}.", notification_type="Warning")
 
     return redirect(url_for("view_species"))
 
@@ -510,6 +632,65 @@ def add_species():
         return redirect(url_for("view_species"))
 
     return render_template("add_species.html")
+@app.route("/search")
+@login_required
+@role_required("admin", "field_officer", "viewer")
+def search():
+
+    search = request.args.get("search", "").strip()
+    role = session.get("role")
+
+    results = {
+        "users": [],
+        "species": [],
+        "observations": []
+    }
+
+    if search:
+
+        # Admin can search everything
+        if role == "admin":
+
+            results["users"] = Details.query.filter(
+                (Details.First_name.contains(search)) |
+                (Details.surname.contains(search)) |
+                (Details.email.contains(search)) |
+                (Details.role.contains(search))
+            ).all()
+
+            results["species"] = Species.query.filter(
+                (Species.scientificName.contains(search)) |
+                (Species.specie_Common_Name.contains(search)) |
+                (Species.location.contains(search))
+            ).all()
+
+            results["observations"] = Observation.query.join(Species).filter(
+                (Species.scientificName.contains(search)) |
+                (Species.specie_Common_Name.contains(search)) |
+                (Observation.notes.contains(search))
+            ).all()
+
+        # Field officers cannot search users
+        elif role == "field_officer":
+
+            results["species"] = Species.query.filter((Species.scientificName.contains(search)) |(Species.specie_Common_Name.contains(search)) |(Species.location.contains(search))
+            ).all()
+
+            results["observations"] = Observation.query.join(Species).filter( (Species.scientificName.contains(search)) |(Species.specie_Common_Name.contains(search)) |
+                (Observation.notes.contains(search))).all()
+
+        # Viewers can search species only
+        elif role == "viewer":
+            results["species"] = Species.query.filter((Species.scientificName.contains(search)) | (Species.specie_Common_Name.contains(search)) |
+                (Species.location.contains(search))).all()
+
+    return render_template("search_results.html",search=search,  results=results)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

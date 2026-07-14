@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search Results
+{% endblock %}
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+{% if search %}
+
+<hr> <h2>Search Results for "{{ search }}"</h2>
+
+<!-- USERS -->
+
+{% if results.users %}
+
+<h3>Users</h3>
+
+<table>
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+        
+    </tr>
+
+    {% for user in results.users %}
+
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.First_name }} {{ user.surname }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+         <td>
+            <!-- Change Role -->
+            <form action="{{ url_for('change_role', id=user.id) }}" method="POST">
+
+                <select name="role">
+                    <option value="viewer">Viewer</option>
+                    <option value="field_officer">Field Officer</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <button type="submit">
+                    Update Role
+                </button>
+
+            </form>
+
+            <br>
+
+            <!-- Delete User -->
+            <form action="{{ url_for('delete_user', id=user.id) }}" method="POST">
+
+                <button type="submit"
+                        onclick="return confirm('Delete this user?')">
+                    Delete
+                </button>
+
+            </form>
+
+        </td>        
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<br>
+
+{% endif %}
+
+<!-- SPECIES -->
+
+{% if results.species %}
+
+<h3>Species</h3>
+
+<table>
+
+    <tr>
+        <th>ID</th>
+        <th>Common Name</th>
+        <th>Scientific Name</th>
+        <th>Habitat</th>
+        <th>Location</th>
+    </tr>
+
+    {% for species in results.species %}
+
+    <tr>
+        <td>{{ species.id }}</td>
+        <td>{{ species.specie_Common_Name }}</td>
+        <td>{{ species.scientificName }}</td>
+        <td>{{ species.specie_Habitat }}</td>
+        <td>{{ species.location }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<br>
+
+{% endif %}
+
+<!-- OBSERVATIONS -->
+
+{% if results.observations %}
+
+<h3>Observations</h3>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>ID</th>
+        <th>Species</th>
+        <th>Date</th>
+        <th>Population</th>
+        <th>Notes</th>
+    </tr>
+
+    {% for observation in results.observations %}
+
+    <tr>
+        <td>{{ observation.id }}</td>
+        <td>{{ observation.species.specie_Common_Name }}</td>
+        <td>{{ observation.observation_date.strftime("%d-%m-%Y") }}</td>
+        <td>{{ observation.population_count }}</td>
+        <td>{{ observation.notes }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endif %}
+
+{% if not results.users and not results.species and not results.observations %}
+
+<p><strong>No matching records found.</strong></p>
+
+{% endif %}
+
+{% endif %}
+
+
+
+{% endblock %}
