@@ -163,22 +163,22 @@ def admin():
      total_notifications=total_notifications, total_pending_observation=total_pending_observation)
 
 @app.route("/view_user")
-#@login_required
-#@role_required("admin")
+@login_required
+@role_required("admin")
 def view_user():
     users=Details.query.filter_by(role="viewer")
     return render_template("view_user.html", users=users)
 
 @app.route("/view_field_Officer")
-#login_required
-#@role_required("admin")
+@login_required
+@role_required("admin")
 def view_field_Officer():
     field_officers=Details.query.filter_by(role="field_officer")
     return render_template("view_field_Officer.html", field_officers=field_officers)    
 
 @app.route("/manageUser")
-#@login_required
-#role_required("admin")
+@login_required
+@role_required("admin")
 def managerUser():
     users = Details.query.all()
     return render_template("manageUser.html", users=users)
@@ -186,8 +186,8 @@ def managerUser():
 
 
 @app.route("/change_role/<int:id>", methods=["POST"])
-#@login_required
-#@role_required("admin")
+@login_required
+@role_required("admin")
 def change_role(id):
     user = Details.query.get_or_404(id)
 
