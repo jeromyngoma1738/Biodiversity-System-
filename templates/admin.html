@@ -20,7 +20,9 @@ Admin Dashboard
         </form>
 
         <a href="{{ url_for('admin') }}">Dashboard</a>
-        <a href="{{ url_for('login') }}">Log Out</a>
+        <a href="{{ url_for('login') }}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Log Out</a>
     </nav>
 </header>
 
@@ -30,6 +32,7 @@ Admin Dashboard
 
     <a href="{{ url_for('view_user') }}">
         <div class="summary-card">
+            <i class="fa-solid fa-users dashboard-icon"></i>
             <h2>{{ total_users }}</h2>
             <p>End Users</p>
         </div>
@@ -37,20 +40,15 @@ Admin Dashboard
 
     <a href="{{ url_for('view_field_Officer') }}">
         <div class="summary-card">
+            <i class="fa-solid fa-user-shield dashboard-icon"></i>
             <h2>{{ total_field_officers }}</h2>
             <p>Field Officers</p>
         </div>
     </a>
 
-    <a href="{{ url_for('view_species') }}">
-        <div class="summary-card">
-            <h2>{{ total_species }}</h2>
-            <p>Species</p>
-        </div>
-    </a>
-
     <a href="{{ url_for('notifications') }}">
         <div class="summary-card">
+            <i class="fa-solid fa-bell dashboard-icon"></i>
             <h2>{{ total_notifications }}</h2>
             <p>Notifications</p>
         </div>
@@ -58,8 +56,10 @@ Admin Dashboard
 
     <a href="{{ url_for('pending_observations') }}">
         <div class="summary-card">
+            <i class="fa-solid fa-clipboard-check card-icon"></i>
+            <h2>{{ total_pending_observation }}</h2>
             
-            <p>Pending Observation</p>
+            <p>Approve Observation</p>
   
         </div>
     </a>
@@ -71,30 +71,35 @@ Admin Dashboard
 <div class="main-card">
 
     <a href="{{ url_for('managerUser') }}" class="card">
+        <i class="fa-solid fa-users-gear card-icon"></i>
         <h3>Manage Users</h3>
     </a>
 
-    <a href="{{ url_for('view_species') }}" class="card">
-        <h3>Species Database</h3>
+    <a href="{{ url_for('view_species') }}">
+        <div class="summary-card">
+            <i class="fa-solid fa-paw card-icon"></i>
+            <h2>{{ total_species }}</h2>
+            <p>Species</p>
+        </div>
     </a>
 
     <a href="{{ url_for('report') }}" class="card">
+        <i class="fa-solid fa-chart-pie card-icon"></i>
         <h3>Reports</h3>
     </a>
 
-    <a href="{{ url_for('notifications') }}" class="card">
-        <h3>Notifications</h3>
-    </a>
 
 </div>
 
 <div class="main-card">
 
     <a href="{{ url_for('view_observations') }}" class="card">
-        <h3>View Observations</h3>
+         <i class="fa-solid fa-eye card-icon"></i>
+         <h3>View Observations</h3>
     </a>
 
     <a href="{{ url_for('trends') }}" class="card">
+         <i class="fa-solid fa-chart-line card-icon"></i>
         <h3>Population Trends</h3>
     </a>
 

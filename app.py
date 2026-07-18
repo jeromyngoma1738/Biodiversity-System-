@@ -1,5 +1,8 @@
+import email
 from flask import Flask, flash, redirect, url_for, request, render_template, session, send_file
 from flask_sqlalchemy import SQLAlchemy
+from extensions import db
+from models import Details, Species, Observation, Notification
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -9,167 +12,34 @@ from reportlab.lib.styles import getSampleStyleSheet
 import matplotlib.pyplot as plt
 from reportlab.lib.units import inch
 from sqlalchemy import or_
+from mail_config import mail, configure_mail 
+import secrets
+from datetime import datetime, timedelta
+from datetime import datetime, timezone
+from flask_mail import Mail, Message
+
 
 
 app = Flask(__name__)
 
+configure_mail(app)
 
 app.secret_key = "my_super_secret_key_12345"
 
-# Single database
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Biodiversity.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-db = SQLAlchemy(app)
-
-
-# ==========================clear
-# USER TABLE
-# ==========================
-class Details(db.Model):
-    __tablename__ = "details"
-
-    id = db.Column(db.Integer, primary_key=True)
-    First_name = db.Column(db.String(50), nullable=False)
-    surname = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    phone = db.Column(db.String(20))
-    DOB = db.Column(db.String(20))
-    gender = db.Column(db.String(10))
-    password = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(50), nullable=False, default="viewer")
-    date_Created = db.Column(
-        db.DateTime,
-        default=lambda: datetime.now(timezone.utc)
-    )
-
-    # Relationship with Observation
-    reviewed_observations = db.relationship(
-        "Observation",
-        foreign_keys="Observation.reviewed_by",
-        backref="reviewer",
-        lazy=True
-    )
-
-    def __repr__(self):
-        return f"<User {self.First_name} {self.surname}>"
+db.init_app(app)
 
 
-# ==========================
-# SPECIES TABLE
-# ==========================
-class Species(db.Model):
-    __tablename__ = "species"
 
-    id = db.Column(db.Integer, primary_key=True)
-    scientificName = db.Column(db.String(50), nullable=False)
-    specie_Common_Name = db.Column(db.String(50), nullable=False)
-    specie_Habitat = db.Column(db.String(50), nullable=False, default="savannah")
-    location = db.Column(db.String(50), nullable=False, default="CBU Nature Park")
-
-    observations = db.relationship(
-        "Observation",
-        backref="species",
-        lazy=True,
-        cascade="all, delete-orphan"
-    )
-
-    def __repr__(self):
-        return f"<Species {self.specie_Common_Name}>"
-
-
-# ==========================
-# OBSERVATION TABLE
-# ==========================
-class Observation(db.Model):
-    __tablename__ = "observation"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    species_id = db.Column(
-        db.Integer,
-        db.ForeignKey("species.id"),
-        nullable=False
-    )
-
-    observation_date = db.Column(
-        db.DateTime,
-        default=lambda: datetime.now(timezone.utc)
-    )
-
-    population_count = db.Column(db.Integer, nullable=False)
-
-    notes = db.Column(db.Text)
-
-    photo = db.Column(db.String(555))
-
-    status = db.Column(
-        db.String(20),
-        default="Pending"
-    )
-
-    reviewed_by = db.Column(
-        db.Integer,
-        db.ForeignKey("details.id"),
-        nullable=True
-    )
-
-    reviewed_at = db.Column(db.DateTime)
-
-    def __repr__(self):
-        return f"<Observation {self.id}>"
-
-
-# ==========================
-# NOTIFICATION TABLE
-# ==========================
-class Notification(db.Model):
-    __tablename__ = "notification"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey("details.id"),
-        nullable=True
-    )
-
-    role = db.Column(db.String(30), nullable=False)
-
-    title = db.Column(db.String(150), nullable=False)
-
-    message = db.Column(db.Text, nullable=False)
-
-    notification_type = db.Column(
-        db.String(20),
-        default="Info"
-    )
-
-    is_read = db.Column(
-        db.Boolean,
-        default=False
-    )
-
-    created_at = db.Column(
-        db.DateTime,
-        default=lambda: datetime.now(timezone.utc)
-    )
-
-
-# ==========================
 # CREATE NOTIFICATION
-# ==========================
-def create_notification(role, title, message,
-                        notification_type="Info",
-                        user_id=None):
 
-    notification = Notification(
-        role=role,
-        user_id=user_id,
-        title=title,
-        message=message,
-        notification_type=notification_type
-    )
+def create_notification(role, title, message, notification_type="Info", user_id=None):
+
+    notification = Notification(role=role,user_id=user_id, title=title,message=message,
+        notification_type=notification_type)
 
     db.session.add(notification)
     db.session.commit()
@@ -194,19 +64,26 @@ def registration():
         user_DOB = request.form['dob']
         user_confirm_password = request.form['confirm_password']
         
-        if user_password == user_confirm_password: 
-            user_password = generate_password_hash(request.form['password'])  
-            new_user = Details( First_name = user_first_name, surname=user_surname,email=user_email, phone=user_phone, DOB=user_DOB, gender=user_gender,
-            password=user_password)
-            
+        if user_password == user_confirm_password:
+            if len(user_password) >= 8:
+                user_password = generate_password_hash(request.form['password'])  
+                new_user = Details( First_name = user_first_name, surname=user_surname,email=user_email, phone=user_phone, DOB=user_DOB, gender=user_gender,
+                password=user_password)
+
+                flash ("Password must be at least 8 characters long.") 
+                
+                
         else:
             return "Passwords do not match."
+    
 
         try:
             db.session.add(new_user)
             db.session.commit()
             create_notification(role="admin", title="New User Registration",message=f"{user_first_name} {user_surname} has registered.",
                                 notification_type="Info")
+            flash("User registered successfully.", "success")
+        
 
             return redirect(url_for('login'))
 
@@ -251,6 +128,7 @@ def login():
             session['user_id'] = user.id
             session['user_name'] = f"{user.First_name} {user.surname}"
             session['role'] = user.role
+            
             if user.role == "admin":
                 return redirect(url_for('admin'))
             
@@ -272,34 +150,35 @@ def user():
 
 
 @app.route("/admin")
-##@login_required
-##@role_required("admin")
+@login_required
+@role_required("admin")
 def admin():
     total_users = Details.query.filter_by(role="viewer").count()
     total_field_officers = Details.query.filter_by(role="field_officer").count()
     total_species = Species.query.count()
-    total_notifications = Notification.query.count()
+    total_notifications = Notification.query.filter_by(role="admin",  is_read=True).count()
+    total_pending_observation=Observation.query.filter_by(status="Pending").count()
 
-    return render_template( "admin.html",total_users=total_users, total_field_officers=total_field_officers, total_species=total_species,
-        total_notifications=total_notifications)
-    
+    return render_template("admin.html", total_users=total_users, total_field_officers=total_field_officers, total_species=total_species,
+     total_notifications=total_notifications, total_pending_observation=total_pending_observation)
+
 @app.route("/view_user")
-@login_required
-@role_required("admin")
+#@login_required
+#@role_required("admin")
 def view_user():
     users=Details.query.filter_by(role="viewer")
     return render_template("view_user.html", users=users)
 
 @app.route("/view_field_Officer")
-@login_required
-@role_required("admin")
+#login_required
+#@role_required("admin")
 def view_field_Officer():
     field_officers=Details.query.filter_by(role="field_officer")
     return render_template("view_field_Officer.html", field_officers=field_officers)    
 
 @app.route("/manageUser")
-@login_required
-@role_required("admin")
+#@login_required
+#role_required("admin")
 def managerUser():
     users = Details.query.all()
     return render_template("manageUser.html", users=users)
@@ -307,6 +186,8 @@ def managerUser():
 
 
 @app.route("/change_role/<int:id>", methods=["POST"])
+#@login_required
+#@role_required("admin")
 def change_role(id):
     user = Details.query.get_or_404(id)
 
@@ -316,17 +197,27 @@ def change_role(id):
     db.session.commit()
     create_notification( role=new_role, user_id=user.id, title="Role Updated",
     message=f"Your role has been changed to {new_role}.",notification_type="Success")
-
     return redirect(url_for('managerUser'))
+
 
 @app.route("/delete_user/<int:id>", methods=["POST"])
+@login_required
+@role_required("admin")
 def delete_user(id):
-    user = Details.query.get_or_404(id)
+   
+    
+    try:
+        user = Details.query.get_or_404(id)
+        create_notification(role="admin", user_id=user.id, title="User Deleted", message=f"User {user.name} has been deleted.", notification_type="Info")
+        db.session.delete(user)
+        db.session.commit()
+        
+        return redirect(url_for('managerUser'))
+    
+    except Exception as e:
+        db.session.rollback()
+        return f"Error: {e}"
 
-    db.session.delete(user)
-    db.session.commit()
-
-    return redirect(url_for('managerUser'))
 
 @app.route("/field_Officer")
 @login_required
@@ -381,7 +272,6 @@ def record_observation():
 def pending_observations():
 
     observations = Observation.query.filter_by(status="Pending").order_by(Observation.observation_date.desc()).all()
-
     return render_template("pending_observations.html", observations=observations)
 
 @app.route("/approve_observation/<int:id>", methods=["POST"])
@@ -413,11 +303,11 @@ def reject_observation(id):
     observation.status = "Rejected"
     observation.reviewed_by = session["user_id"]
     observation.reviewed_at = datetime.now(timezone.utc)
-
+    
+    db.session.delete(observation)
     db.session.commit()
 
-    create_notification(role="field_officer", title="Observation Rejected", message="One of your observations has been rejected.", 
-                        notification_type="Warning" )
+    create_notification(role="field_officer", title="Observation Rejected", message="One of your observations has been rejected.", notification_type="Warning" )
 
     return redirect(url_for("pending_observations"))
 
@@ -619,19 +509,15 @@ def add_species():
         habitat = request.form["habitat"]
         location = request.form["location"]
 
-        new_species = Species(
-            scientificName=scientific_name,
-            specie_Common_Name=common_name,
-            specie_Habitat=habitat,
-            location=location
-        )
+        new_species = Species(scientificName=scientific_name, specie_Common_Name=common_name,
+            specie_Habitat=habitat, location=location)
 
         db.session.add(new_species)
         db.session.commit()
-
         return redirect(url_for("view_species"))
 
     return render_template("add_species.html")
+
 @app.route("/search")
 @login_required
 @role_required("admin", "field_officer", "viewer")
@@ -651,18 +537,11 @@ def search():
         # Admin can search everything
         if role == "admin":
 
-            results["users"] = Details.query.filter(
-                (Details.First_name.contains(search)) |
-                (Details.surname.contains(search)) |
-                (Details.email.contains(search)) |
-                (Details.role.contains(search))
-            ).all()
+            results["users"] = Details.query.filter((Details.First_name.contains(search)) |(Details.surname.contains(search)) |
+                (Details.email.contains(search)) | (Details.role.contains(search))).all()
 
-            results["species"] = Species.query.filter(
-                (Species.scientificName.contains(search)) |
-                (Species.specie_Common_Name.contains(search)) |
-                (Species.location.contains(search))
-            ).all()
+            results["species"] = Species.query.filter((Species.scientificName.contains(search)) | (Species.specie_Common_Name.contains(search)) |
+                (Species.location.contains(search)) ).all()
 
             results["observations"] = Observation.query.join(Species).filter(
                 (Species.scientificName.contains(search)) |
@@ -685,6 +564,76 @@ def search():
                 (Species.location.contains(search))).all()
 
     return render_template("search_results.html",search=search,  results=results)
+
+@app.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+
+        user = Details.query.filter_by(email=email).first()
+
+        if not user:
+            return "Email not found"
+
+
+        # Generate token
+        token = secrets.token_urlsafe(32)
+
+        user.reset_token = token
+        user.reset_token_expiry = datetime.now(timezone.utc) + timedelta(minutes=30)
+
+        db.session.commit()
+
+
+        reset_link = url_for(
+            "resetPassword",
+            token=token,
+            _external=True
+        )
+
+
+        # Instead of sending email, display link
+        return f"""
+        Password reset link created:<br><br>
+        <a href="{reset_link}">
+        {reset_link}
+        </a>
+        """
+    return render_template("forgot_password.html")
+
+
+@app.route("/resetPassword", methods=["GET", "POST"])
+def resetPassword():
+
+    token = request.args.get("token")
+
+    user = Details.query.filter_by(reset_token=token).first()
+
+
+    if not user:
+        return "Invalid reset link"
+
+
+    if request.method == "POST":
+
+        password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
+
+        if password != confirm_password:
+            return "Passwords do not match"
+
+        user.password = generate_password_hash(password)
+
+        user.reset_token = None
+        user.reset_token_expiry = None
+
+        db.session.commit()
+        return redirect(url_for("login"))
+
+
+    return render_template( "resetPassword.html")
 
 @app.route("/logout")
 def logout():
