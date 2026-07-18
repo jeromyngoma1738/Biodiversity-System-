@@ -5,19 +5,53 @@ System View
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
 {% endblock %}
 
 {% block content %}
 
 <h1>Manage Users</h1>
 
-<header>
-    <nav class="navbar">
-        <a href="{{ url_for('admin') }}">Dashboard</a>
-        <a href="{{ url_for('login') }}">Log Out</a>
-    </nav>
-</header>
+<div class="admin-container">
+
+    <header class="top-bar">
+
+        <div class="logo">
+            <h1>🌿 Biodiversity Monitoring System</h1>
+            <p>Administrator Dashboard</p>
+        </div>
+
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <input
+                type="text"
+                name="search"
+                placeholder="Search users, species or observations..."
+                value="{{ search if search else '' }}"
+            >
+
+            <button type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+
+        <div class="nav-buttons">
+
+            <a href="{{ url_for('admin') }}" class="nav-btn">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('login') }}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+
 
 <table border="1">
     <tr>

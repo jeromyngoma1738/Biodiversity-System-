@@ -69,13 +69,9 @@ def registration():
                 user_password = generate_password_hash(request.form['password'])  
                 new_user = Details( First_name = user_first_name, surname=user_surname,email=user_email, phone=user_phone, DOB=user_DOB, gender=user_gender,
                 password=user_password)
-
-                flash ("Password must be at least 8 characters long.") 
-                
-                
+                flash ("Password must be at least 8 characters long.")  
         else:
             return "Passwords do not match."
-    
 
         try:
             db.session.add(new_user)
@@ -204,11 +200,10 @@ def change_role(id):
 @login_required
 @role_required("admin")
 def delete_user(id):
-   
-    
+       
     try:
-        user = Details.query.get_or_404(id)
-        create_notification(role="admin", user_id=user.id, title="User Deleted", message=f"User {user.name} has been deleted.", notification_type="Info")
+        user=Details.query.get_or_404(id)
+        create_notification(role="admin", user_id=user.id, title="User Deleted", message=f"User {user.First_name} has been deleted.", notification_type="Info")
         db.session.delete(user)
         db.session.commit()
         
@@ -250,9 +245,7 @@ def record_observation():
             db.session.add(new_observation)
             db.session.commit()
             # Notify the field officer
-            create_notification(role="field_officer", user_id=session["user_id"],
-                title="Observation Recorded",
-                message="Your observation has been successfully recorded.",
+            create_notification(role="field_officer", user_id=session["user_id"], title="Observation Recorded", message="Your observation has been successfully recorded.",
                 notification_type="Success")
             # Notify all admins
             create_notification(role="admin",title="New Observation Submitted",
@@ -403,12 +396,7 @@ def download_report():
             dates.append(obs.observation_date.strftime('%Y-%m-%d'))
             counts.append(obs.population_count)
 
-            story.append(
-                Paragraph(
-                    f"Date: {obs.observation_date.strftime('%Y-%m-%d %H:%M')}",
-                    styles["Normal"]
-                )
-            )
+            story.append(Paragraph(f"Date: {obs.observation_date.strftime('%Y-%m-%d %H:%M')}",styles["Normal"]))
 
             story.append(Paragraph(f"Population: {obs.population_count}",styles["Normal"]))
 

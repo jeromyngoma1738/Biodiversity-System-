@@ -1,62 +1,292 @@
 {% extends "base.html" %}
 
-{% block title %} Dashboard {% endblock %}
+{% block title %}
+Field Officer Dashboard
+{% endblock %}
+
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
 {% endblock %}
+
+
 
 {% block content %}
 
-<h1>field Officer</h1>
 
-<header>
-    <nav class="navbar">
-         <form action="{{ url_for('search') }}" method="GET" class="search-form">
-            <input type="text" name="search" placeholder="Search..." value="{{ search }}">
-            <button type="submit">Search</button>
-        </form>
-        <a href="{{ url_for('login') }}">log Out</a>
-    </nav>
-    <br>
+<div class="admin-container">
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-bar">
+
+    <div class="logo">
+
+        <h1>
+            Field Officer Dashboard
+        </h1>
+
+        <p>
+            Biodiversity Monitoring System
+        </p>
+
+    </div>
+
+
+
+    <form action="{{ url_for('search') }}" method="GET" class="search-form">
+
+        <input 
+        type="text" 
+        name="search" 
+        placeholder="Search species, observations..."
+        value="{{ search }}">
+
+        <button type="submit">
+            <i class="fa-solid fa-search"></i>
+        </button>
+
+    </form>
+
+
+
+    <div class="nav-buttons">
+
+
+        <a href="{{ url_for('notifications') }}" class="nav-btn">
+
+            <i class="fa-solid fa-bell"></i>
+            Notifications
+
+        </a>
+
+
+
+        <a href="{{ url_for('login') }}" class="logout-btn">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+
+        </a>
+
+
+    </div>
+
+
 </header>
 
+
+
+
+<!-- ================= WELCOME SECTION ================= -->
+
+
+<h2 class="section-title">
+    Welcome Field Officer
+</h2>
+
+
+<p>
+    Manage species records, collect observations, analyze biodiversity data and monitor ecological trends.
+</p>
+
+
+
+
+
+<!-- ================= DASHBOARD CARDS ================= -->
+
+
 <div class="main-card">
- 
-    </a>
-        <a href = "{{url_for('manageSpecies')}}">
+
+
+
+    <a href="{{ url_for('manageSpecies') }}">
+
         <div class="card">
-            <h3>Manager Species
+
+            <i class="fa-solid fa-paw card-icon"></i>
+
+            <h3>
+                Manage Species
             </h3>
+
+            <p>
+                Add, update and manage species information.
+            </p>
+
         </div>
+
     </a>
 
-    <div class="card">
-        <a href="{{ url_for('record_observation') }}">
-            <h3>Record Observation</h3>
-        </a>
-    </div>
 
-    <div class="card">
-        <a href="{{ url_for('view_observations') }}">View Observations</a>
-     </div>
-   
-    <div class="card">
-        <a href="{{ url_for('report') }}"><h3>View Reports</h3></a>
-    </div>
+
+
+
+    <a href="{{ url_for('record_observation') }}">
+
+        <div class="card">
+
+            <i class="fa-solid fa-clipboard-check card-icon"></i>
+
+            <h3>
+                Record Observation
+            </h3>
+
+
+            <p>
+                Capture field observations and biodiversity data.
+            </p>
+
+        </div>
+
+    </a>
+
+
+
+
+
+
+    <a href="{{ url_for('view_observations') }}">
+
+        <div class="card">
+
+
+            <i class="fa-solid fa-eye card-icon"></i>
+
+
+            <h3>
+                View Observations
+            </h3>
+
+
+            <p>
+                Review previously recorded observations.
+            </p>
+
+
+        </div>
+
+
+    </a>
+
+
+
+
+
+
+    <a href="{{ url_for('report') }}">
+
+        <div class="card">
+
+
+            <i class="fa-solid fa-chart-pie card-icon"></i>
+
+
+            <h3>
+                View Reports
+            </h3>
+
+
+            <p>
+                Generate biodiversity monitoring reports.
+            </p>
+
+
+        </div>
+
+
+    </a>
+
+
+
+
 </div>
+
+
+
+
+
+<!-- ================= SECOND ROW ================= -->
+
 
 <div class="main-card">
 
-    <div class="card">
-     
-        <a href="{{ url_for('trends') }}"> <h3>View Trends</h3></a>
-    </div>
 
-    <div class="card">
-        <a href="{{ url_for('notifications') }}"> <h3>View Notifications</h3></a>
-    </div>
+
+    <a href="{{ url_for('trends') }}">
+
+
+        <div class="card">
+
+
+            <i class="fa-solid fa-chart-line card-icon"></i>
+
+
+            <h3>
+                View Trends
+            </h3>
+
+
+            <p>
+                Analyze biodiversity changes over time.
+            </p>
+
+
+        </div>
+
+
+    </a>
+
+
+
+
+
+
+    <a href="{{ url_for('notifications') }}">
+
+
+        <div class="card">
+
+
+            <i class="fa-solid fa-bell card-icon"></i>
+
+
+            <h3>
+                Notifications
+            </h3>
+
+
+            <p>
+                View system alerts and updates.
+            </p>
+
+
+        </div>
+
+
+    </a>
+
+
 
 </div>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <p>
+        Biodiversity Monitoring System © 2026
+    </p>
+
+</footer>
+
+
+
+</div>
+
 
 {% endblock %}

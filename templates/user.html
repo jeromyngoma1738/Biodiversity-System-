@@ -1,54 +1,296 @@
 {% extends "base.html" %}
 
+
 {% block title %}
-DASHBOARD
+User Dashboard
 {% endblock %}
+
+
 
 {% block css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+
 {% endblock %}
 
+
+
+
 {% block content %}
-<header>
-    <nav class="navbar">
-        <form action="{{ url_for('search') }}" method="GET" class="search-form">
-            <input type="text" name="search" placeholder="Search..." value="{{ search }}">
-            <button type="submit">Search</button>
-        </form>
-        <a href="{{url_for('notifications')}}">Notifications</a>   
-        <a href="{{ url_for('login') }}">log Out</a>    
-    </nav>
-    <br>
-</header> 
-<div class="grid">
-    <div class="card small">
-        <h2>WELCOME TO THE</h2>
+
+
+
+<div class="admin-container">
+
+
+
+<!-- ================= HEADER ================= -->
+
+
+<header class="top-bar">
+
+
+    <div class="logo">
 
         <h1>
-            BIODIVERSITY MONITORING, DATA COLLECTION
-            AND ECOLOGICAL ANALYSIS SYSTEM
+            Biodiversity Monitoring System
         </h1>
 
         <p>
-            Explore, Observe, Analyze and Protect
-            the Biodiversity Around Us.
+            Explore and understand nature through data
         </p>
+
     </div>
+
+
+
+
+    <form action="{{ url_for('search') }}" method="GET" class="search-form">
+
+
+        <input 
+        type="text"
+        name="search"
+        placeholder="Search species..."
+        value="{{ search }}">
+
+
+
+        <button type="submit">
+
+            <i class="fa-solid fa-search"></i>
+
+        </button>
+
+
+
+    </form>
+
+
+
+
+
+    <div class="nav-buttons">
+
+
+        <a href="{{ url_for('notifications') }}" class="nav-btn">
+
+            <i class="fa-solid fa-bell"></i>
+
+            Notifications
+
+        </a>
+
+
+
+        <a href="{{ url_for('login') }}" class="logout-btn">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</header>
+
+
+
+
+
+
+
+<!-- ================= WELCOME SECTION ================= -->
+
+
+<h2 class="section-title">
+
+    Welcome to Biodiversity Explorer
+
+</h2>
+
+
+
+<div class="main-card">
+
+
 
     <div class="card">
-        <img src="{{ url_for('static', filename='static/Waterbuck  Maasai Mara   Kenya.jpg') }}"
-             alt="Waterbuck">
+
+
+        <h2 style="color:#1b5e20;">
+
+            Explore, Observe and Protect
+
+        </h2>
+
+
+        <p>
+
+            Discover biodiversity information,
+            observe ecological changes and
+            understand species around us.
+
+        </p>
+
+
     </div>
 
+
+
+
+
+    <div class="card">
+
+
+        <img 
+        src="{{ url_for('static', filename='Waterbuck Maasai Mara Kenya.jpg') }}"
+        alt="Waterbuck"
+        style="
+        width:100%;
+        height:250px;
+        object-fit:cover;
+        border-radius:15px;
+        ">
+
+
+    </div>
+
+
+
 </div>
-<div class="grid">
-    <div class="card small">
-        <a href="{{ url_for('report') }}">Review Report</a>
-    </div>
-    
-        <div class="card small">
-        <a href="{{ url_for('trends') }}">Review the Trend</a>
-    </div>
- </div>
+
+
+
+
+
+
+
+<!-- ================= USER OPTIONS ================= -->
+
+
+<h2 class="section-title">
+
+    Biodiversity Analysis
+
+</h2>
+
+
+
+
+<div class="main-card">
+
+
+
+
+
+<a href="{{ url_for('report') }}">
+
+
+<div class="card">
+
+
+    <i class="fa-solid fa-chart-pie card-icon"></i>
+
+
+    <h3>
+
+        Review Reports
+
+    </h3>
+
+
+    <p>
+
+        View biodiversity reports and ecological summaries.
+
+    </p>
+
+
+
+</div>
+
+
+</a>
+
+
+
+
+
+
+<a href="{{ url_for('trends') }}">
+
+
+<div class="card">
+
+
+    <i class="fa-solid fa-chart-line card-icon"></i>
+
+
+    <h3>
+
+        Review Trends
+
+    </h3>
+
+
+    <p>
+
+        Analyze biodiversity patterns and changes over time.
+
+    </p>
+
+
+
+</div>
+
+
+</a>
+
+
+
+
+
+<a href="{{ url_for('view_species') }}">
+
+
+<div class="card">
+
+
+    <i class="fa-solid fa-paw card-icon"></i>
+
+
+    <h3>
+
+        Explore Species
+
+    </h3>
+
+
+    <p>
+
+        Browse recorded species information.
+
+    </p>
+
+
+
+</div>
+
+
+</a>
+
+
+
+
+
+</div>
+
+
+
+
 
 {% endblock %}

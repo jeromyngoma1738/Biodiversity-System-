@@ -1,83 +1,311 @@
 {% extends "base.html" %}
 
+
 {% block title %}
 Manage Users
 {% endblock %}
+
+
+
 {% block css %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='manageUsersStyle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+
 {% endblock %}
+
+
+
 
 {% block content %}
 
 
-<h1>Manage Users</h1>
-<header>
-    <nav class="navbar">
-        <a href="{{ url_for('admin') }}">DashBoard</a>
-        <a href="{{ url_for('login') }}">log Out</a>
-    </nav>
-    
-</header>
+<div class="admin-container">
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>First Name</th>
-        <th>Surname</th>
-        <th>Email</th>
-        <th>DOB</th>
-        <th>Gender</th>
-        <th>Date Created</th>
-        <th>Role</th>
-        <th>Actions</th>
-    </tr>
 
-    {% for user in users %}
-    <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.First_name}}</td>
-        <td>{{ user.surname}}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.DOB }}</td>
-        <td>{{ user.gender }}</td>
-        <td>{{ user.date_Created}}</td>
-        <td>{{ user.role }}</td>
+    <!-- HEADER -->
 
-        <td>
+    <header class="top-bar">
 
-            <!-- Change Role -->
-            <form action="{{ url_for('change_role', id=user.id) }}" method="POST">
 
-                <select name="role">
-                    <option value="viewer">Viewer</option>
-                    <option value="field_officer">Field Officer</option>
-                    <option value="admin">Admin</option>
-                </select>
+        <div class="logo">
 
-                <button type="submit">
-                    Update Role
-                </button>
+            <h1>🌿 Biodiversity Monitoring System</h1>
 
-            </form>
+            <p>Administrator Dashboard</p>
 
-            <br>
+        </div>
 
-            <!-- Delete User -->
-            <form action="{{ url_for('delete_user', id=user.id) }}" method="POST">
 
-                <button type="submit"
-                        onclick="return confirm('Delete this user?')">
-                    Delete
-                </button>
 
-            </form>
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
 
-        </td>
-    </tr>
-    {% endfor %}
 
-</table>
+            <input 
+                type="text"
+                name="search"
+                placeholder="Search users, species or observations..."
+                value="{{ search if search else '' }}"
+            >
+
+
+            <button type="submit">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+            </button>
+
+
+        </form>
+
+
+
+
+        <div class="nav-buttons">
+
+
+            <a href="{{ url_for('admin') }}" class="nav-btn">
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+
+
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </a>
+
+
+        </div>
+
+
+    </header>
+
+
+
+
+
+
+    <!-- TITLE -->
+
+
+    <h2 class="section-title">
+
+        Manage System Users
+
+    </h2>
+
+
+
+    <p class="description">
+
+        View registered users, assign roles and manage system access permissions.
+
+    </p>
+
+
+
+
+
+
+
+    <!-- USERS TABLE -->
+
+
+    <div class="table-container">
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>First Name</th>
+
+                    <th>Surname</th>
+
+                    <th>Email</th>
+
+                    <th>DOB</th>
+
+                    <th>Gender</th>
+
+                    <th>Date Created</th>
+
+                    <th>Role</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+            <tbody>
+
+
+            {% for user in users %}
+
+
+                <tr>
+
+
+                    <td>{{ user.id }}</td>
+
+                    <td>{{ user.First_name }}</td>
+
+                    <td>{{ user.surname }}</td>
+
+                    <td>{{ user.email }}</td>
+
+                    <td>{{ user.DOB }}</td>
+
+                    <td>{{ user.gender }}</td>
+
+                    <td>{{ user.date_Created }}</td>
+
+
+
+
+                    <td>
+
+                        <span class="role-badge">
+
+                            {{ user.role }}
+
+                        </span>
+
+                    </td>
+
+
+
+
+
+
+                    <td class="actions">
+
+
+                        <form 
+                        action="{{ url_for('change_role', id=user.id) }}" 
+                        method="POST"
+                        class="role-form">
+
+
+                            <select name="role">
+
+
+                                <option value="viewer"
+                                {% if user.role == "viewer" %}selected{% endif %}>
+
+                                    Viewer
+
+                                </option>
+
+
+
+                                <option value="field_officer"
+                                {% if user.role == "field_officer" %}selected{% endif %}>
+
+                                    Field Officer
+
+                                </option>
+
+
+
+                                <option value="admin"
+                                {% if user.role == "admin" %}selected{% endif %}>
+
+                                    Admin
+
+                                </option>
+
+
+
+                            </select>
+
+
+
+
+                            <button type="submit" class="update-btn">
+
+                                <i class="fa-solid fa-user-shield"></i>
+
+                                Update
+
+                            </button>
+
+
+
+                        </form>
+
+
+
+
+
+                        <form 
+                        action="{{ url_for('delete_user', id=user.id) }}" 
+                        method="POST">
+
+
+                            <button 
+                            type="submit"
+                            class="delete-btn"
+                            onclick="return confirm('Delete this user?')">
+
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+
+                            </button>
+
+
+
+                        </form>
+
+
+
+                    </td>
+
+
+
+
+                </tr>
+
+
+            {% endfor %}
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+</div>
 
 
 

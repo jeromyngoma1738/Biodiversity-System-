@@ -6,104 +6,168 @@ Admin Dashboard
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 
-<h1>Admin Dashboard</h1>
+<div class="admin-container">
 
-<header>
-    <nav class="navbar">
+    <header class="top-bar">
+
+        <div class="logo">
+            <h1>🌿 Biodiversity Monitoring System</h1>
+            <p>Administrator Dashboard</p>
+        </div>
+
         <form action="{{ url_for('search') }}" method="GET" class="search-form">
-            <input type="text" name="search" placeholder="Search..." value="{{ search }}">
-            <button type="submit">Search</button>
+            <input
+                type="text"
+                name="search"
+                placeholder="Search users, species or observations..."
+                value="{{ search if search else '' }}"
+            >
+
+            <button type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
         </form>
 
-        <a href="{{ url_for('admin') }}">Dashboard</a>
-        <a href="{{ url_for('login') }}">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Log Out</a>
-    </nav>
-</header>
+        <div class="nav-buttons">
 
-<!-- ================= SUMMARY CARDS ================= -->
+            <a href="{{ url_for('admin') }}" class="nav-btn">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
 
-<div class="dashboard-summary">
+            <a href="{{ url_for('login') }}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
 
-    <a href="{{ url_for('view_user') }}">
-        <div class="summary-card">
-            <i class="fa-solid fa-users dashboard-icon"></i>
-            <h2>{{ total_users }}</h2>
-            <p>End Users</p>
         </div>
-    </a>
 
-    <a href="{{ url_for('view_field_Officer') }}">
-        <div class="summary-card">
-            <i class="fa-solid fa-user-shield dashboard-icon"></i>
-            <h2>{{ total_field_officers }}</h2>
-            <p>Field Officers</p>
-        </div>
-    </a>
+    </header>
 
-    <a href="{{ url_for('notifications') }}">
-        <div class="summary-card">
-            <i class="fa-solid fa-bell dashboard-icon"></i>
-            <h2>{{ total_notifications }}</h2>
-            <p>Notifications</p>
-        </div>
-    </a>
 
-    <a href="{{ url_for('pending_observations') }}">
-        <div class="summary-card">
-            <i class="fa-solid fa-clipboard-check card-icon"></i>
-            <h2>{{ total_pending_observation }}</h2>
-            
-            <p>Approve Observation</p>
-  
+    <!-- SUMMARY -->
+
+    <section>
+
+        <h2 class="section-title">
+            Dashboard Overview
+        </h2>
+
+        <div class="dashboard-summary">
+
+            <a href="{{ url_for('view_user') }}" class="summary-card">
+
+                <div class="icon-circle">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <h2>{{ total_users }}</h2>
+
+                <p>Registered Users</p>
+
+            </a>
+
+            <a href="{{ url_for('view_field_Officer') }}" class="summary-card">
+
+                <div class="icon-circle">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+
+                <h2>{{ total_field_officers }}</h2>
+
+                <p>Field Officers</p>
+
+            </a>
+
+            <a href="{{ url_for('notifications') }}" class="summary-card">
+
+                <div class="icon-circle">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+
+                <h2>{{ total_notifications }}</h2>
+
+                <p>Notifications</p>
+
+            </a>
+
+            <a href="{{ url_for('pending_observations') }}" class="summary-card">
+
+                <div class="icon-circle">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+
+                <h2>{{ total_pending_observation }}</h2>
+
+                <p>Pending Approvals</p>
+
+            </a>
+
         </div>
-    </a>
+
+    </section>
+
+
+
+    <!-- MENU -->
+
+    <section>
+
+        <h2 class="section-title">
+            Administration
+        </h2>
+
+        <div class="menu-grid">
+
+            <a href="{{ url_for('managerUser') }}" class="menu-card">
+
+                <i class="fa-solid fa-users-gear menu-icon"></i>
+
+                <h3>Manage Users</h3>
+
+            </a>
+
+            <a href="{{ url_for('view_species') }}" class="menu-card">
+
+                <i class="fa-solid fa-paw menu-icon"></i>
+
+                <h3>Species Database</h3>
+
+            </a>
+
+            <a href="{{ url_for('report') }}" class="menu-card">
+
+                <i class="fa-solid fa-chart-pie menu-icon"></i>
+
+                <h3>Reports</h3>
+
+            </a>
+
+            <a href="{{ url_for('view_observations') }}" class="menu-card">
+
+                <i class="fa-solid fa-eye menu-icon"></i>
+
+                <h3>Observations</h3>
+
+            </a>
+
+            <a href="{{ url_for('trends') }}" class="menu-card">
+
+                <i class="fa-solid fa-chart-line menu-icon"></i>
+
+                <h3>Population Trends</h3>
+
+            </a>
+
+        </div>
+
+    </section>
 
 </div>
-
-<!-- ================= MENU ================= -->
-
-<div class="main-card">
-
-    <a href="{{ url_for('managerUser') }}" class="card">
-        <i class="fa-solid fa-users-gear card-icon"></i>
-        <h3>Manage Users</h3>
-    </a>
-
-    <a href="{{ url_for('view_species') }}">
-        <div class="summary-card">
-            <i class="fa-solid fa-paw card-icon"></i>
-            <h2>{{ total_species }}</h2>
-            <p>Species</p>
-        </div>
-    </a>
-
-    <a href="{{ url_for('report') }}" class="card">
-        <i class="fa-solid fa-chart-pie card-icon"></i>
-        <h3>Reports</h3>
-    </a>
-
-
-</div>
-
-<div class="main-card">
-
-    <a href="{{ url_for('view_observations') }}" class="card">
-         <i class="fa-solid fa-eye card-icon"></i>
-         <h3>View Observations</h3>
-    </a>
-
-    <a href="{{ url_for('trends') }}" class="card">
-         <i class="fa-solid fa-chart-line card-icon"></i>
-        <h3>Population Trends</h3>
-    </a>
-
-</div>
-
 
 {% endblock %}

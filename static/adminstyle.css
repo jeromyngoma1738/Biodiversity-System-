@@ -1,838 +1,84 @@
-/* ==============================
-   Biodiversity Monitoring System
-   Admin Dashboard CSS
-================================*/
+/* =====================================================
+   BIODIVERSITY MONITORING SYSTEM
+   GLOBAL DASHBOARD CSS
+   Admin | User | Field Officer | Manage Users
+===================================================== */
+
+
+/* ================= GLOBAL ================= */
 
 
 *{
+    margin:0;
+    padding:0;
     box-sizing:border-box;
 }
 
 
 body{
-    margin:0;
-    padding:0;
-    background:#eef7ee;
-    color:#263238;
-    font-family:'Segoe UI', sans-serif;
-}
 
+    font-family:'Segoe UI',Tahoma,sans-serif;
 
-/* ==============================
-        GRID LAYOUT
-================================*/
-
-.grid-container{
-
-    display:grid;
-
-    grid-template-columns:260px 1fr;
-
-    grid-template-rows:70px 1fr;
-
-    grid-template-areas:
-
-    "sidebar header"
-
-    "sidebar main";
-
-    height:100vh;
-
-}
-
-
-/* ==============================
-        HEADER
-================================*/
-
-.header{
-
-    grid-area:header;
-
-    background:white;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 35px;
-
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
-
-    color:#1b5e20;
-
-}
-
-
-/* ==============================
-        SIDEBAR
-================================*/
-
-#sidebar{
-
-    grid-area:sidebar;
-
-    background:linear-gradient(
-        180deg,
-        #1b5e20,
-        #2e7d32
-    );
-
-    color:white;
-
-    overflow:auto;
-
-}
-
-
-
-.sidebar-title{
-
-    padding:25px;
-
-    text-align:center;
-
-}
-
-
-.sidebar-brand{
-
-    font-size:22px;
-
-    font-weight:bold;
-
-}
-
-
-
-.sidebar-list{
-
-    list-style:none;
-
-    padding:0;
-
-}
-
-
-
-.sidebar-list-item{
-
-    padding:18px 25px;
-
-    font-size:17px;
-
-    transition:.3s;
-
-}
-
-
-
-.sidebar-list-item:hover{
-
-    background:#43a047;
-
-    border-left:5px solid #c8e6c9;
-
-    cursor:pointer;
-
-}
-
-
-
-.sidebar-list-item a{
-
-    color:white;
-
-    text-decoration:none;
-
-}
-
-
-
-/* ==============================
-        MAIN CONTENT
-================================*/
-
-
-.main-container{
-
-    grid-area:main;
-
-    overflow:auto;
-
-    padding:30px;
-
-}
-
-
-
-
-.main-title{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-}
-
-
-
-.main-title h1{
-
-    color:#1b5e20;
-
-}
-
-
-
-/* ==============================
-        SUMMARY CARDS
-================================*/
-
-
-.dashboard-summary{
-
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:25px;
-
-    margin:30px 0;
-
-
-}
-
-
-
-.summary-card{
-
-
-    background:white;
-
-    padding:25px;
-
-    border-radius:18px;
-
-    text-align:center;
-
-    box-shadow:
-
-    0 8px 20px rgba(0,0,0,.12);
-
-
-    border-top:5px solid #2e7d32;
-
-
-    transition:.3s;
-
-
-}
-
-
-
-.summary-card:hover{
-
-
-    transform:translateY(-8px);
-
-    background:#e8f5e9;
-
-}
-
-
-
-.summary-card h2{
-
-
-    margin:10px 0;
-
-    font-size:40px;
-
-    color:#1b5e20;
-
-
-}
-
-
-
-.summary-card p{
-
-
-    font-size:18px;
-
-    color:#558b2f;
-
-}
-
-
-
-
-
-/* ==============================
-        MENU CARDS
-================================*/
-
-
-.main-card{
-
-
-    display:grid;
-
-
-    grid-template-columns:repeat(4,1fr);
-
-
-    gap:25px;
-
-
-    margin-top:30px;
-
-
-}
-
-
-
-.card{
-
-
-    padding:30px;
-
-
-    border-radius:18px;
-
-
-    color:white;
-
-
-    text-align:center;
-
-
-    text-decoration:none;
-
-
-    box-shadow:
-
-    0 8px 20px rgba(0,0,0,.18);
-
-
-    transition:.3s;
-
-
-}
-
-
-
-.card:hover{
-
-
-    transform:translateY(-8px);
-
-
-}
-
-
-
-/* Nature card colors */
-
-.card:nth-child(1){
-
-    background:linear-gradient(
+    background:
+    linear-gradient(
         135deg,
-        #388e3c,
-        #66bb6a
-    );
-
-}
-
-
-.card:nth-child(2){
-
-    background:linear-gradient(
-        135deg,
-        #795548,
-        #a1887f
-    );
-
-}
-
-
-
-.card:nth-child(3){
-
-    background:linear-gradient(
-        135deg,
-        #23622c,
-        #307246
-    );
-
-}
-
-
-
-.card:nth-child(4){
-
-    background:linear-gradient(
-        135deg,
-        #ef6c00,
-        #ffb74d
-    );
-
-}
-
-
-
-
-.card h3{
-
-    margin-top:15px;
-
-}
-
-
-
-
-
-/* ==============================
-        ICONS
-================================*/
-
-
-.card-icon,
-.dashboard-icon{
-
-
-    font-size:40px;
-
-
-    width:75px;
-
-
-    height:75px;
-
-
-    line-height:75px;
-
-
-    border-radius:50%;
-
-
-    background:#e8f5e9;
-
-
-    margin:auto;
-
-
-    transition:.3s;
-
-
-}
-
-
-
-.card:hover .card-icon,
-.summary-card:hover .dashboard-icon{
-
-
-    transform:scale(1.15) rotate(5deg);
-
-
-}
-
-
-
-
-/* Icon colors */
-
-
-.fa-users-gear{
-
-    color:#6a1b9a;
-
-}
-
-
-
-.fa-paw{
-
-    color:#795548;
-
-}
-
-
-
-.fa-leaf{
-
-    color:#2e7d32;
-
-}
-
-
-
-.fa-eye{
-
-    color:#1565c0;
-
-}
-
-
-
-.fa-file-chart-column{
-
-    color:#ef6c00;
-
-}
-
-
-
-.fa-chart-line{
-
-    color:#00897b;
-
-}
-
-
-
-.fa-clipboard-check{
-
-    color:#1565c0;
-
-}
-
-
-
-.fa-bell{
-
-    color:#f9a825;
-
-}
-
-
-
-.fa-right-from-bracket{
-
-    color:#c62828;
-
-}
-
-
-
-
-
-/* ==============================
-        CHARTS
-================================*/
-
-
-.charts{
-
-
-    display:grid;
-
-
-    grid-template-columns:1fr 1fr;
-
-
-    gap:25px;
-
-
-    margin-top:40px;
-
-
-}
-
-
-
-.charts-card{
-
-
-    background:white;
-
-
-    padding:25px;
-
-
-    border-radius:18px;
-
-
-    box-shadow:
-
-    0 8px 20px rgba(0,0,0,.12);
-
-
-}
-
-
-
-.chart-title{
-
-
-    text-align:center;
-
-
-    color:#1b5e20;
-
-
-}
-
-
-
-
-
-/* ==============================
-        RESPONSIVE DESIGN
-================================*/
-
-
-@media(max-width:992px){
-
-
-.grid-container{
-
-    grid-template-columns:1fr;
-
-    grid-template-areas:
-
-    "header"
-
-    "main";
-
-}
-
-
-#sidebar{
-
-    display:none;
-
-}
-
-
-.dashboard-summary,
-
-.main-card{
-
-    grid-template-columns:repeat(2,1fr);
-
-}
-
-
-}
-
-
-
-
-@media(max-width:576px){
-
-
-.dashboard-summary,
-
-.main-card,
-
-.charts{
-
-    grid-template-columns:1fr;
-
-}
-
-
-}
-/* ==============================
-        DASHBOARD STYLING
-================================*/
-
-
-/* Dashboard background area */
-.main-container{
-
-    background:linear-gradient(
-        135deg,
+        #e8f5e9,
         #f1f8e9,
-        #e8f5e9
+        #e0f2f1
     );
 
-}
-
-
-
-/* Dashboard heading */
-
-.main-title h1{
-
-    font-size:32px;
-
-    font-weight:700;
-
-    color:#1b5e20;
-
-    letter-spacing:1px;
+    color:#263238;
 
 }
 
 
 
-.main-title p{
+a{
 
-    color:#558b2f;
+    text-decoration:none;
 
-    font-size:16px;
-
-}
-
-
-
-/* Add space between sections */
-
-.dashboard-summary{
-
-    margin-top:35px;
-
-    margin-bottom:40px;
+    color:inherit;
 
 }
 
 
 
-/* Summary cards animation */
 
-.summary-card{
-
-    position:relative;
-
-    overflow:hidden;
-
-}
+/* ================= CONTAINER ================= */
 
 
-
-.summary-card::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:0;
+.admin-container{
 
     width:100%;
 
-    height:5px;
-
-    background:#43a047;
+    padding:35px;
 
 }
 
 
 
-.summary-card:hover{
-
-    box-shadow:
-
-    0 15px 30px rgba(46,125,50,.25);
-
-}
 
 
 
-/* Number styling */
-
-.summary-card h2{
-
-    font-weight:700;
-
-    letter-spacing:1px;
-
-}
+/* ================= HEADER ================= */
 
 
+.top-bar{
 
-/* Dashboard links */
+    background:
 
-.dashboard-summary a{
+    linear-gradient(
+        120deg,
+        #14532d,
+        #2e7d32,
+        #00897b
+    );
 
-    text-decoration:none;
-
-}
-
-
-
-/* Menu section title */
-
-.menu-title{
-
-    margin-top:40px;
-
-    margin-bottom:20px;
-
-    color:#1b5e20;
-
-    font-size:25px;
-
-    font-weight:600;
-
-}
-
-
-
-/* Main dashboard cards */
-
-.main-card .card{
-
-    min-height:180px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-}
-
-
-
-/* Card text */
-
-.card h3{
-
-    font-size:20px;
-
-    font-weight:600;
-
-    letter-spacing:.5px;
-
-}
-
-
-
-/* Card glow hover */
-
-.card:hover{
-
-    box-shadow:
-
-    0 18px 35px rgba(0,0,0,.25);
-
-}
-
-
-
-/* ==============================
-      DASHBOARD TOP HEADER
-================================*/
-
-
-.dashboard-header{
-
-    background:white;
 
     padding:25px;
 
-    border-radius:18px;
+    border-radius:25px;
+
 
     display:flex;
 
@@ -840,52 +86,166 @@ body{
 
     align-items:center;
 
-    margin-bottom:30px;
+    flex-wrap:wrap;
+
+    gap:25px;
+
 
     box-shadow:
 
-    0 8px 20px rgba(0,0,0,.1);
+    0 12px 30px rgba(0,0,0,.25);
+
 
 }
 
 
 
-.dashboard-header h1{
+.logo h1{
 
-    margin:0;
+    color:white;
 
-    color:#1b5e20;
+    font-size:30px;
+
+}
+
+
+.logo p{
+
+    color:#dcedc8;
+
+    margin-top:8px;
 
 }
 
 
 
-.dashboard-header span{
 
-    color:#558b2f;
+
+/* ================= SEARCH ================= */
+
+
+.search-form{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+
+.search-form input{
+
+
+    width:340px;
+
+    padding:15px 20px;
+
+    border:none;
+
+    border-radius:30px;
+
+    outline:none;
+
+    font-size:15px;
+
 
 }
 
 
 
-/* ==============================
-      LOGOUT BUTTON
-================================*/
+.search-form button{
+
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    border:none;
+
+    cursor:pointer;
+
+
+    background:#ffc107;
+
+    color:white;
+
+    font-size:18px;
+
+
+}
+
+
+
+.search-form button:hover{
+
+    background:#ff9800;
+
+    transform:scale(1.1);
+
+}
+
+
+
+
+
+
+/* ================= NAV BUTTONS ================= */
+
+
+.nav-buttons{
+
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+
+.nav-btn,
+.logout-btn{
+
+
+    padding:13px 25px;
+
+    border-radius:30px;
+
+    color:white;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+
+}
+
+
+
+
+.nav-btn{
+
+    background:#0288d1;
+
+}
+
+
+.nav-btn:hover{
+
+    background:#01579b;
+
+    transform:translateY(-3px);
+
+}
+
 
 
 .logout-btn{
 
     background:#c62828;
-
-    color:white;
-
-    padding:12px 20px;
-
-    border-radius:25px;
-
-    text-decoration:none;
-
-    transition:.3s;
 
 }
 
@@ -895,7 +255,7 @@ body{
 
     background:#8e0000;
 
-    transform:scale(1.05);
+    transform:translateY(-3px);
 
 }
 
@@ -903,96 +263,657 @@ body{
 
 
 
-/* ==============================
-      SEARCH BAR
-================================*/
+
+/* ================= TITLES ================= */
 
 
-.search-box{
+h1{
 
-    display:flex;
-
-    gap:10px;
+    color:#1b5e20;
 
 }
 
 
 
-.search-box input{
+.section-title{
 
-    border:none;
+    margin:35px 0 15px;
 
-    padding:12px 20px;
+    color:#1b5e20;
+
+    font-size:28px;
+
+}
+
+
+
+p{
+
+    line-height:1.6;
+
+}
+
+
+
+
+
+
+/* ================= CARDS ================= */
+
+
+
+.main-card,
+.dashboard-summary,
+.menu-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+
+    gap:30px;
+
+
+    margin-top:30px;
+
+
+}
+
+
+
+
+.card,
+.menu-card,
+.summary-card{
+
+
+    background:white;
+
+
+    padding:35px;
+
 
     border-radius:25px;
 
-    outline:none;
+
+    text-align:center;
+
 
     box-shadow:
 
-    0 3px 10px rgba(0,0,0,.1);
+    0 10px 25px rgba(0,0,0,.12);
+
+
+    transition:.35s;
+
 
 }
 
 
 
-.search-box button{
-
-    border:none;
-
-    background:#2e7d32;
-
-    color:white;
-
-    padding:12px 20px;
-
-    border-radius:25px;
-
-    cursor:pointer;
-
-}
+.card:hover,
+.menu-card:hover,
+.summary-card:hover{
 
 
+    transform:translateY(-12px);
 
-.search-box button:hover{
 
-    background:#1b5e20;
+    box-shadow:
+
+    0 18px 35px rgba(0,0,0,.18);
+
+
+    background:#f1f8e9;
+
 
 }
 
 
 
 
+.card h3{
 
-/* ==============================
-      RESPONSIVE DASHBOARD
-================================*/
+
+    margin-top:15px;
+
+    color:#1b5e20;
+
+}
+
+
+
+.card p{
+
+
+    margin-top:12px;
+
+    color:#546e7a;
+
+}
+
+
+
+
+
+
+/* ================= ICONS ================= */
+
+
+.card-icon,
+.icon-circle{
+
+
+    width:90px;
+
+    height:90px;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    margin:auto;
+
+
+    border-radius:50%;
+
+
+    background:#e8f5e9;
+
+
+    font-size:42px;
+
+
+}
+
+
+
+
+
+.fa-users{
+
+color:#1565c0;
+
+}
+
+
+.fa-user-shield{
+
+color:#6a1b9a;
+
+}
+
+
+
+.fa-bell{
+
+color:#ff9800;
+
+}
+
+
+
+.fa-paw{
+
+color:#795548;
+
+}
+
+
+
+.fa-eye{
+
+color:#1976d2;
+
+}
+
+
+
+.fa-chart-line{
+
+color:#00897b;
+
+}
+
+
+
+.fa-chart-pie{
+
+color:#ef6c00;
+
+}
+
+
+
+.fa-clipboard-check{
+
+color:#2e7d32;
+
+}
+
+
+
+.fa-right-from-bracket{
+
+color:#c62828;
+
+}
+
+
+
+
+
+
+/* ================= TABLE ================= */
+
+
+.table-container{
+
+    margin-top:35px;
+
+    overflow-x:auto;
+
+}
+
+
+
+table{
+
+
+    width:100%;
+
+    border-collapse:collapse;
+
+
+    background:white;
+
+
+    border-radius:20px;
+
+
+    overflow:hidden;
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.15);
+
+
+}
+
+
+
+
+/* ================= TABLE HEADER ================= */
+
+
+thead{
+
+    background:
+    linear-gradient(
+        90deg,
+        #1b5e20,
+        #2e7d32,
+        #43a047
+    );
+
+}
+
+
+
+th{
+
+    padding:18px;
+
+    color:rgb(7, 71, 6) !important;
+
+    font-size:14px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-weight:700;
+
+    border-bottom:4px solid #ffc107;
+
+}
+
+
+
+
+td{
+
+
+    padding:15px;
+
+
+    text-align:center;
+
+
+    border-bottom:1px solid #ddd;
+
+
+}
+
+
+
+tbody tr:nth-child(even){
+
+background:#f7faf7;
+
+}
+
+
+
+tbody tr:hover{
+
+
+background:#dcfce7;
+
+
+transform:scale(1.01);
+
+
+}
+
+
+
+
+
+
+/* ================= ROLE BADGE ================= */
+
+
+.role-badge{
+
+
+display:inline-block;
+
+
+padding:8px 18px;
+
+
+border-radius:20px;
+
+
+background:#d1fae5;
+
+
+color:#065f46;
+
+
+font-weight:bold;
+
+
+text-transform:capitalize;
+
+
+}
+
+
+
+
+
+
+
+/* ================= BUTTONS ================= */
+
+
+
+button{
+
+
+padding:10px 18px;
+
+
+border:none;
+
+
+border-radius:25px;
+
+
+cursor:pointer;
+
+
+font-weight:bold;
+
+
+transition:.3s;
+
+
+}
+
+
+
+
+form button[type="submit"]{
+
+
+background:#2e7d32;
+
+
+color:white;
+
+
+}
+
+
+
+form button[type="submit"]:hover{
+
+
+background:#1b5e20;
+
+
+transform:scale(1.05);
+
+
+}
+
+
+
+form button[onclick]{
+
+
+background:#c62828;
+
+
+color:white;
+
+
+}
+
+
+
+form button[onclick]:hover{
+
+
+background:#8e0000;
+
+
+}
+
+
+
+
+
+
+td select{
+
+
+padding:10px;
+
+
+border-radius:10px;
+
+
+border:1px solid #ccc;
+
+
+}
+
+
+
+
+
+
+
+
+/* ================= USER IMAGE ================= */
+
+
+
+.card img{
+
+
+max-width:100%;
+
+
+border-radius:20px;
+
+
+box-shadow:
+
+0 8px 20px rgba(0,0,0,.2);
+
+
+}
+
+
+
+
+
+
+
+/* ================= FOOTER ================= */
+
+
+
+footer{
+
+
+margin-top:50px;
+
+
+padding:25px;
+
+
+text-align:center;
+
+
+background:
+
+
+linear-gradient(
+120deg,
+#14532d,
+#2e7d32
+);
+
+
+color:white;
+
+
+font-weight:bold;
+
+
+border-radius:20px;
+
+
+box-shadow:
+
+0 10px 20px rgba(0,0,0,.2);
+
+
+}
+
+
+
+
+
+
+
+/* ================= RESPONSIVE ================= */
+
 
 
 @media(max-width:768px){
 
 
-.dashboard-header{
+.admin-container{
 
-    flex-direction:column;
-
-    gap:15px;
+padding:20px;
 
 }
 
 
-.main-title h1{
 
-    font-size:25px;
+.top-bar{
+
+flex-direction:column;
+
+}
+
+
+
+.search-form{
+
+width:100%;
 
 }
 
 
+
+.search-form input{
+
+width:100%;
+
 }
-.search-form i{
 
-    color:#2e7d32;
 
-    font-size:18px;
+
+.nav-buttons{
+
+width:100%;
+
+flex-direction:column;
+
+}
+
+
+
+.nav-btn,
+.logout-btn{
+
+text-align:center;
+
+}
+
+
+
+table{
+
+font-size:13px;
+
+}
+
+
+
+th,
+td{
+
+padding:10px;
+
+}
+
+
 
 }
