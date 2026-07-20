@@ -4,83 +4,202 @@
 RECORD OBSERVATION
 {% endblock %}
 
+
 {% block css %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
+<link rel="stylesheet" 
+href="{{ url_for('static', filename='adminstyle.css') }}">
+
 {% endblock %}
+
+
 
 {% block content %}
 
+
 <div class="admin-container">
 
-    <header class="top-bar">
 
-        <div class="logo">
-            <h1>🌿 Biodiversity Monitoring System</h1>
-            <p>Administrator Dashboard</p>
-        </div>
+<!-- HEADER -->
 
-        <form action="{{ url_for('search') }}" method="GET" class="search-form">
-            <input
-                type="text"
-                name="search"
-                placeholder="Search users, species or observations..."
-                value="{{ search if search else '' }}"
-            >
+<header class="top-bar">
 
-            <button type="submit">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </form>
+    <div class="logo">
 
-        <div class="nav-buttons">
+        <h1>
+            🌿 Biodiversity Monitoring System
+        </h1>
 
-            <a href="{{ url_for('field_Officer') }}" class="nav-btn">
-                <i class="fa-solid fa-house"></i>
-                Dashboard
-            </a>
+        <p>
+            Field Officer Dashboard
+        </p>
 
-            <a href="{{ url_for('logout') }}" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Logout
-            </a>
-
-        </div>
-
-    </header>
+    </div>
 
 
 
-<div class="form-box active">
+    <form action="{{ url_for('search') }}" method="GET" class="search-form">
+
+        <input
+        type="text"
+        name="search"
+        placeholder="Search species..."
+        value="{{ search if search else '' }}">
+
+
+        <button type="submit">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+        </button>
+
+
+    </form>
+
+
+
+
+    <div class="nav-buttons">
+
+
+        <a href="{{ url_for('field_Officer') }}" class="nav-btn">
+
+            <i class="fa-solid fa-house"></i>
+
+            Dashboard
+
+        </a>
+
+
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</header>
+
+
+
+
+
+<!-- OBSERVATION FORM -->
+
+<div class="observation-container">
+
+
+<div class="observation-form">
+
+
 <form method="POST" enctype="multipart/form-data">
-    <label>Species</label>
-    <select name="species_id" required>
-        {% for sp in species_list %}
-            <option value="{{ sp.id }}">
-                {{ sp.specie_Common_Name }} ({{ sp.scientificName }})
-            </option>
-        {% endfor %}
-    </select>
 
-    <br><br>
 
-    <label>Population Count</label>
-    <input type="number" name="population" required>
+<h2>
+    Record Observation
+</h2>
 
-    <br><br>
 
-    <label>Notes</label>
-    <br><br>
-    <textarea name="note" cols="40" rows="5">notes</textarea>
 
-    <br><br>
+<label>
+    Species
+</label>
 
-    <label>Photo</label>
-    <input type="file" name="image">
 
-    <br><br>
+<select name="species_id" required>
 
-    <button type="submit">Save Observation</button>
+
+<option value="">
+-- Select Species --
+</option>
+
+
+{% for sp in species_list %}
+
+
+<option value="{{ sp.id }}">
+
+{{ sp.specie_Common_Name }}
+({{ sp.scientificName }})
+
+</option>
+
+
+{% endfor %}
+
+
+</select>
+
+
+
+
+<label>
+    Population Count
+</label>
+
+
+<input 
+type="number"
+name="population"
+placeholder="Enter population"
+required>
+
+
+
+
+
+<label>
+    Notes
+</label>
+
+
+<textarea 
+name="note"
+placeholder="Observation details..."></textarea>
+
+
+
+
+
+<label>
+    Upload Photo
+</label>
+
+
+<input 
+type="file"
+name="image"
+accept="image/*">
+
+
+
+
+
+<button type="submit">
+
+Save Observation
+
+</button>
+
+
+
 </form>
+
+
 </div>
+
+
+</div>
+
+
+
+</div>
+
+
 {% endblock %}

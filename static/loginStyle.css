@@ -1,113 +1,456 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins";
+/* =====================================================
+   BIODIVERSITY MONITORING SYSTEM
+   FORM PAGES CSS
+   Login | Registration | Species | Observation
+===================================================== */
+
+
+/* ================= GLOBAL ================= */
+
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
 }
 
-body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
-    color: #333;
+
+body{
+
+    font-family:'Segoe UI',Tahoma,sans-serif;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #e8f5e9,
+        #f1f8e9,
+        #e0f2f1
+    );
+
+    color:#263238;
+
 }
 
-.container {
-    margin: 0 15px;
+
+
+a{
+
+    text-decoration:none;
+
+    color:#2e7d32;
+
 }
 
-.form-box {
-    width: 400px;
-    padding: 30px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: none;
+
+
+/* =====================================================
+   FORM CONTAINER
+===================================================== */
+
+
+.container,
+.species-container,
+.observation-container{
+
+
+    min-height:85vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
 }
 
-.form-box.active {
-    display: block;
+
+
+/* =====================================================
+   FORM CARD
+===================================================== */
+
+
+.form-box,
+.species-form,
+.observation-form{
+
+
+    width:450px;
+
+    background:white;
+
+    padding:40px;
+
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    0 12px 30px rgba(0,0,0,.15);
+
+
 }
 
-h2 {
-    font-size: 34px;
-    text-align: center;
-    margin-bottom: 20px;
+
+
+.form-box:hover,
+.species-form:hover,
+.observation-form:hover{
+
+
+    transform:translateY(-5px);
+
+    transition:.3s;
+
 }
 
-input {
-    width: 100%;
-    padding: 12px;
-    background: #e2e2e2;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    margin-bottom: 20px;
+
+
+/* ================= TITLES ================= */
+
+
+h1,
+h2{
+
+
+    text-align:center;
+
+    color:#1b5e20;
+
+    margin-bottom:25px;
+
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    background: #074212;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    color: #fff;
-    transition: 0.5s;
+
+
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+
+input,
+select,
+textarea{
+
+
+    width:100%;
+
+
+    padding:13px;
+
+
+    margin:10px 0;
+
+
+    border-radius:10px;
+
+
+    border:1px solid #ccc;
+
+
+    font-size:15px;
+
+
 }
 
-button:hover {
-    background: #68d39c;
+
+
+textarea{
+
+
+    resize:none;
+
+    height:120px;
+
 }
 
-p {
-    font-size: 15px;
-    text-align: center;
+
+
+input:focus,
+select:focus,
+textarea:focus{
+
+
+    outline:none;
+
+
+    border-color:#2e7d32;
+
+
+    box-shadow:
+
+    0 0 8px #81c784;
+
+
 }
 
-p a {
-    color: #094623;
-    text-decoration: none;
+
+
+/* =====================================================
+   LABELS
+===================================================== */
+
+
+label{
+
+
+    display:block;
+
+    margin-top:12px;
+
+    color:#2e7d32;
+
+    font-weight:bold;
+
+
 }
 
-p a:hover {
-    text-decoration: underline;
-}
-.alert {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 350px;
-    padding: 15px 20px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: bold;
-    z-index: 1000;
-    animation: fadeIn 0.5s ease;
+
+
+/* =====================================================
+   RADIO BUTTONS
+===================================================== */
+
+
+input[type="radio"]{
+
+
+    width:auto;
+
+    margin-right:10px;
+
+
 }
 
-.alert-success {
-    background: #28a745;
-    color: white;
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+
+button{
+
+
+    width:100%;
+
+
+    padding:14px;
+
+
+    margin-top:20px;
+
+
+    background:#2e7d32;
+
+
+    color:white;
+
+
+    border:none;
+
+
+    border-radius:30px;
+
+
+    cursor:pointer;
+
+
+    font-size:16px;
+
+
+    font-weight:bold;
+
+
 }
 
-.alert-danger {
-    background: #dc3545;
-    color: white;
+
+
+button:hover{
+
+
+    background:#14532d;
+
+
+    transform:scale(1.02);
+
+
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -20px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
+
+
+/* =====================================================
+   LINKS
+===================================================== */
+
+
+.form-box p{
+
+
+    text-align:center;
+
+    margin-top:20px;
+
+
+}
+
+
+
+.form-box a{
+
+
+    font-weight:bold;
+
+
+}
+
+
+
+.form-box a:hover{
+
+
+    text-decoration:underline;
+
+
+}
+
+
+
+/* =====================================================
+   SPECIES FORM
+===================================================== */
+
+
+.species-container{
+
+
+    flex-direction:column;
+
+
+}
+
+
+
+.species-container h2{
+
+
+    font-size:30px;
+
+
+}
+
+
+
+.species-form label{
+
+
+    margin-top:15px;
+
+
+}
+
+
+
+/* =====================================================
+   OBSERVATION FORM
+===================================================== */
+
+
+.observation-container{
+
+
+    flex-direction:column;
+
+
+}
+
+
+
+.observation-form label{
+
+
+    margin-top:15px;
+
+
+}
+
+
+
+/* =====================================================
+   ALERTS
+===================================================== */
+
+
+.alert{
+
+
+    width:400px;
+
+    margin:20px auto;
+
+
+    padding:15px;
+
+
+    border-radius:10px;
+
+
+    text-align:center;
+
+
+}
+
+
+
+.alert-success{
+
+
+    background:#c8e6c9;
+
+    color:#1b5e20;
+
+
+}
+
+
+
+.alert-danger{
+
+
+    background:#ffcdd2;
+
+    color:#b71c1c;
+
+
+}
+
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+
+@media(max-width:600px){
+
+
+.form-box,
+.species-form,
+.observation-form{
+
+
+    width:90%;
+
+    padding:25px;
+
+
+}
+
+
 }

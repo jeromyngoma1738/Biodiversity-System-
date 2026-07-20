@@ -1,62 +1,142 @@
 {% extends "base.html" %}
 
 {% block title %}
-REPORT
+Record Observation
 {% endblock %}
 
+
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='adminstyle.css') }}">
+
 {% endblock %}
+
+
 
 {% block content %}
 
-<h1>📄 Biodiversity Review Report</h1>
+
+<div class="container">
 
 
-<hr>
+<div class="form-box active">
 
-{% for item in report_data %}
 
-<div class="chart-card">
+<form method="POST" enctype="multipart/form-data">
 
-    <h2>{{ item.name }}</h2>
-    <p><b>Scientific Name:</b> {{ item.scientific }}</p>
 
-    <h3>Observations</h3>
+<h2>
+    Record Biodiversity Observation
+</h2>
 
-    {% for obs in item.observations %}
-        <p>
-            📅 {{ obs.observation_date.strftime('%Y-%m-%d %H:%M') }} <br>
-            🐾 Population: {{ obs.population_count }} <br>
-            📝 Notes: {{ obs.notes }}
-        </p>
 
-        {% if obs.photo %}
-            <img src="{{ url_for('static', filename='uploads/' + obs.photo) }}"
-                 width="200">
-        {% endif %}
 
-        <hr>
+<label>
+    Select Species
+</label>
+
+
+<select name="species_id" required>
+
+    <option value="">
+        -- Select Species --
+    </option>
+
+
+    {% for sp in species_list %}
+
+    <option value="{{ sp.id }}">
+
+        {{ sp.specie_Common_Name }}
+        ({{ sp.scientificName }})
+
+    </option>
+
+
     {% endfor %}
 
-    {% if item.chart %}
-        <h3>📊 Population Trend</h3>
-        <img src="{{ url_for('static', filename=item.chart) }}"
-             width="500">
-    {% else %}
-        <p>No graph available</p>
-    {% endif %}
+
+</select>
+
+
+
+
+
+<label>
+    Population Count
+</label>
+
+
+<input 
+type="number"
+name="population"
+placeholder="Enter population count"
+min="1"
+required>
+
+
+
+
+
+<label>
+    Observation Notes
+</label>
+
+
+<textarea
+name="note"
+rows="5"
+placeholder="Describe the observation..."
+required></textarea>
+
+
+
+
+
+<label>
+    Upload Species Photo
+</label>
+
+
+<input 
+type="file"
+name="image"
+accept="image/*">
+
+
+
+
+
+<button type="submit">
+
+    Save Observation
+
+</button>
+
+
+
+<p>
+
+    Return to Dashboard?
+
+    <a href="{{ url_for('field_Officer') }}">
+        Back
+    </a>
+
+
+</p>
+
+
+
+</form>
+
 
 </div>
-<div class="trends-container">
-    <h2>Population Trends</h2>
 
-    <div style="margin-bottom:20px;">
-        <a href="{{ url_for('download_report') }}" class="btn-download">
-            📄 Download PDF Report
-        </a>
-    </div>
 
-{% endfor %}
+</div>
+
+
 
 {% endblock %}

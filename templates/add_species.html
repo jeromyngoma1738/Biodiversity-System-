@@ -4,34 +4,68 @@
 Species Database
 {% endblock %}
 
+
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
-{% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='manageUser.css') }}">
-{% endblock %}
 {% endblock %}
 
+
+
 {% block content %}
-<h2>Add New Species</h2>
-<div class="form-box active">
+
+
+<div class="species-container">
+
+
+<h2>🌿 Add New Species</h2>
+
+
+<div class="species-form">
+
 
 <form action="{{ url_for('add_species') }}" method="POST">
 
-    <label>Scientific Name</label><br>
-    <input type="text" name="scientificName" required><br><br>
 
-    <label>Common Name</label><br>
-    <input type="text" name="commonName" required><br><br>
+<label>Scientific Name</label>
 
-    <label>Habitat</label><br>
-    <input type="text" name="habitat" required><br><br>
+<input 
+type="text" 
+name="scientificName"
+placeholder="Enter scientific name"
+required>
 
-    <label>Location</label><br>
-    <input type="text" name="location" required><br><br>
 
-    <button type="submit">Add Species</button>
+<label>Common Name</label>
+
+<input 
+type="text"
+name="commonName"
+placeholder="Enter common name"
+required>
+
+
+
+<label>Habitat</label>
+
+<input type="text"name="habitat" placeholder="Enter habitat"required>
+
+
+<label>Location</label>
+
+<input type="text"name="location"placeholder="Enter location" required>
+
+
+<button type="submit">➕ Add Species</button>
+
 
 </form>
+
+
 </div>
-<hr>
+
+
+</div>
+
+
+
 {% endblock %}

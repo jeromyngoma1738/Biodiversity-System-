@@ -163,11 +163,20 @@ Admin Dashboard
                 <h3>Population Trends</h3>
 
             </a>
+                <a href="{{url_for('gallery')}}">
+                     <div class="card">
+                        <i class="fa-solid fa-camera"></i>
+                        <h2 style="color:#1b5e20;">Species Gallery</h2>
+                        <p> photos of different type of Species Found in CBU nature Park </p>
+                    </div>
+    </a>
+
 
         </div>
 
     </section>
 
 </div>
+<script src="{{ url_for('static', filename='js.js') }}"></script>
 
 {% endblock %}

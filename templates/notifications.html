@@ -8,42 +8,63 @@ Notifications
 <link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
 {% endblock %}
 
+
 {% block content %}
 
-<div class="container mt-4">
 
-    <h2 class="mb-4">Notifications</h2>
+<div class="notification-container">
 
-    {% if notifications %}
 
-        {% for n in notifications %}
+<h2>🔔 Notifications</h2>
 
-        <div class="card mb-3">
-            <div class="card-body">
 
-                <h5 class="card-title">{{ n.title }}</h5>
+{% if notifications %}
 
-                <p class="card-text">
-                    {{ n.message }}
-                </p>
 
-                <small class="text-muted">
-                    {{ n.created_at.strftime('%d %B %Y %I:%M %p') }}
-                </small>
+{% for n in notifications %}
 
-            </div>
-        </div>
 
-        {% endfor %}
+<div class="notification-card">
 
-    {% else %}
 
-        <div class="alert alert-info">
-            No notifications available.
-        </div>
+<h5>{{ n.title }}</h5>
 
-    {% endif %}
+
+<p>
+{{ n.message }}
+</p>
+
+
+<small>
+{{ n.created_at.strftime('%d %B %Y %I:%M %p') }}
+</small>
+
 
 </div>
+
+
+{% endfor %}
+
+
+{% else %}
+
+
+<div class="alert">
+
+No notifications available.
+
+</div>
+
+
+{% endif %}
+
+
+</div>
+
+
+<a href="{{ url_for('back') }}" class="back-btn">
+← Back
+</a>
+
 
 {% endblock %}

@@ -191,8 +191,7 @@ def change_role(id):
     user.role = new_role
 
     db.session.commit()
-    create_notification( role=new_role, user_id=user.id, title="Role Updated",
-    message=f"Your role has been changed to {new_role}.",notification_type="Success")
+    create_notification( role=new_role, user_id=user.id, title="Role Updated",message=f"Your role has been changed to {new_role}.",notification_type="Success")
     return redirect(url_for('managerUser'))
 
 
@@ -581,16 +580,20 @@ def forgot_password():
             _external=True
         )
 
-
         # Instead of sending email, display link
-        return f"""
-        Password reset link created:<br><br>
-        <a href="{reset_link}">
+        return f"""Password reset link created:<br><br><a href="{reset_link}">
         {reset_link}
         </a>
         """
     return render_template("forgot_password.html")
 
+@app.route("/gallery")
+@role_required("admin", "field_officer", "viewer")
+def gallery():
+
+    observations = Observation.query.filter(Observation.photo.isnot(None)).order_by(Observation.observation_date.desc()).all()
+    
+    return render_template("gallery.html",observations=observations)
 
 @app.route("/resetPassword", methods=["GET", "POST"])
 def resetPassword():
@@ -623,6 +626,22 @@ def resetPassword():
 
     return render_template( "resetPassword.html")
 
+@app.route ("/back")
+@login_required
+def back ():
+    role = session.get('role')
+    if role == "admin":
+        return redirect(url_for("admin"))
+    elif role == "field_officer":
+        return redirect(url_for("field_Officer"))
+    elif role == "viewer":
+        return redirect(url_for("user"))
+    else: 
+        flash("Unexpected Error as occurred ")
+        return redirect(url_for ("login"))
+    
+      
+    
 @app.route("/logout")
 def logout():
     session.clear()

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}
+Wildlife Gallery
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="gallery-container">
+
+    <h1>🌿 Wildlife Photo Gallery</h1>
+    <p class="subtitle">
+        Biodiversity Monitoring, Data Collection and Ecological Analysis System
+    </p>
+
+    <div class="slider">
+
+        {% for obs in observations %}
+
+        <div class="slide">
+
+            <img src="{{ url_for('static', filename='uploads/' + obs.photo) }}" alt="{{ obs.species.specie_Common_Name }}">
+
+            <div class="overlay">
+
+                <h2>{{ obs.species.specie_Common_Name }}</h2>
+
+                <p>
+                    <strong>Scientific Name:</strong>
+                    {{ obs.species.scientificName }}
+                </p>
+
+                <p>
+                    <strong>Habitat:</strong>
+                    {{ obs.species.specie_Habitat }}
+                </p>
+
+                <p> <strong>Location:</strong>
+                    {{ obs.species.location }}
+                </p>
+
+                <p>
+                    <strong>Population:</strong>
+                    {{ obs.population_count }}
+                </p>
+
+                <p>
+                    <strong>Observation Date:</strong>
+                    {{ obs.observation_date.strftime('%d %B %Y') }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <button class="prev">&#10094;</button>
+        <button class="next">&#10095;</button>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js.js') }}"></script>
+<button onclick="window.location.href='{{ url_for('back') }}'" class="back-btn"> ← Back</button>
+{% endblock %}

@@ -12,20 +12,25 @@ Species Database
 
 <h2>Species Database</h2>
 
-<a href="{{ url_for('add_species') }}">
-    <button type="button">+ Add New Species</button>
-</a>
-<a href="{{ url_for('view_species') }}">
-    <button>View Species</button>
-</a>
+<nav class="action-buttons">
 
-<a href="{{ url_for('add_species') }}">
-    <button>Add New Species</button>
-</a>
+    <a href="{{ url_for('add_species') }}" class="btn add-species">
+        <i class="fa-solid fa-plus"></i>
+        Add New Species
+    </a>
 
-<a href="{{ url_for('record_observation') }}">
-    <button>Record Observation</button>
-</a>
+
+    <a href="{{ url_for('view_species') }}" class="btn view-species">
+        <i class="fa-solid fa-leaf"></i>
+        View Species
+    </a>
+
+
+    <a href="{{ url_for('record_observation') }}" class="btn record-observation">
+        Record Observation
+    </a>
+
+</nav>
 
 <br><br>
 

@@ -1,12 +1,11 @@
 /* =====================================================
    BIODIVERSITY MONITORING SYSTEM
-   GLOBAL DASHBOARD CSS
-   Admin | User | Field Officer | Manage Users
+   ADMIN DASHBOARD STYLE
+   Admin | User | Field Officer | Reports | Species
 ===================================================== */
 
 
 /* ================= GLOBAL ================= */
-
 
 *{
     margin:0;
@@ -32,31 +31,25 @@ body{
 }
 
 
-
 a{
-
     text-decoration:none;
-
     color:inherit;
-
 }
 
 
 
+/* ================= MAIN CONTAINER ================= */
 
-/* ================= CONTAINER ================= */
 
+.admin-container,
+.user-container,
+.gallery-container{
 
-.admin-container{
-
-    width:100%;
-
+    width:95%;
+    margin:auto;
     padding:35px;
 
 }
-
-
-
 
 
 
@@ -66,7 +59,6 @@ a{
 .top-bar{
 
     background:
-
     linear-gradient(
         120deg,
         #14532d,
@@ -74,11 +66,9 @@ a{
         #00897b
     );
 
-
     padding:25px;
 
     border-radius:25px;
-
 
     display:flex;
 
@@ -88,13 +78,11 @@ a{
 
     flex-wrap:wrap;
 
-    gap:25px;
+    gap:20px;
 
 
     box-shadow:
-
-    0 12px 30px rgba(0,0,0,.25);
-
+    0 10px 30px rgba(0,0,0,.25);
 
 }
 
@@ -109,15 +97,12 @@ a{
 }
 
 
+
 .logo p{
 
     color:#dcedc8;
 
-    margin-top:8px;
-
 }
-
-
 
 
 
@@ -128,28 +113,23 @@ a{
 
     display:flex;
 
-    align-items:center;
-
     gap:10px;
 
 }
 
 
+
 .search-form input{
 
+    width:330px;
 
-    width:340px;
-
-    padding:15px 20px;
-
-    border:none;
+    padding:14px 20px;
 
     border-radius:30px;
 
+    border:none;
+
     outline:none;
-
-    font-size:15px;
-
 
 }
 
@@ -157,24 +137,19 @@ a{
 
 .search-form button{
 
-
     width:50px;
 
     height:50px;
 
     border-radius:50%;
 
-    border:none;
-
-    cursor:pointer;
-
-
     background:#ffc107;
 
     color:white;
 
-    font-size:18px;
+    border:none;
 
+    cursor:pointer;
 
 }
 
@@ -182,22 +157,16 @@ a{
 
 .search-form button:hover{
 
-    background:#ff9800;
-
     transform:scale(1.1);
 
 }
 
 
 
-
-
-
-/* ================= NAV BUTTONS ================= */
+/* ================= NAVIGATION ================= */
 
 
 .nav-buttons{
-
 
     display:flex;
 
@@ -206,11 +175,12 @@ a{
 }
 
 
+
 .nav-btn,
 .logout-btn{
 
 
-    padding:13px 25px;
+    padding:12px 25px;
 
     border-radius:30px;
 
@@ -218,11 +188,7 @@ a{
 
     font-weight:bold;
 
-    transition:.3s;
-
-
 }
-
 
 
 
@@ -237,8 +203,6 @@ a{
 
     background:#01579b;
 
-    transform:translateY(-3px);
-
 }
 
 
@@ -250,29 +214,15 @@ a{
 }
 
 
-
 .logout-btn:hover{
 
     background:#8e0000;
 
-    transform:translateY(-3px);
-
 }
-
-
-
 
 
 
 /* ================= TITLES ================= */
-
-
-h1{
-
-    color:#1b5e20;
-
-}
-
 
 
 .section-title{
@@ -287,19 +237,15 @@ h1{
 
 
 
-p{
+h1{
 
-    line-height:1.6;
+    color:#1b5e20;
 
 }
 
 
 
-
-
-
-/* ================= CARDS ================= */
-
+/* ================= DASHBOARD CARDS ================= */
 
 
 .main-card,
@@ -309,16 +255,12 @@ p{
 
     display:grid;
 
-
     grid-template-columns:
     repeat(auto-fit,minmax(250px,1fr));
 
-
     gap:30px;
 
-
     margin-top:30px;
-
 
 }
 
@@ -332,12 +274,9 @@ p{
 
     background:white;
 
-
     padding:35px;
 
-
     border-radius:25px;
-
 
     text-align:center;
 
@@ -347,8 +286,7 @@ p{
     0 10px 25px rgba(0,0,0,.12);
 
 
-    transition:.35s;
-
+    transition:.3s;
 
 }
 
@@ -359,48 +297,15 @@ p{
 .summary-card:hover{
 
 
-    transform:translateY(-12px);
-
-
-    box-shadow:
-
-    0 18px 35px rgba(0,0,0,.18);
-
+    transform:translateY(-10px);
 
     background:#f1f8e9;
 
-
 }
 
 
 
-
-.card h3{
-
-
-    margin-top:15px;
-
-    color:#1b5e20;
-
-}
-
-
-
-.card p{
-
-
-    margin-top:12px;
-
-    color:#546e7a;
-
-}
-
-
-
-
-
-
-/* ================= ICONS ================= */
+/* ICONS */
 
 
 .card-icon,
@@ -414,9 +319,9 @@ p{
 
     display:flex;
 
-    justify-content:center;
-
     align-items:center;
+
+    justify-content:center;
 
 
     margin:auto;
@@ -428,86 +333,34 @@ p{
     background:#e8f5e9;
 
 
-    font-size:42px;
+    font-size:40px;
 
 
-}
-
-
-
-
-
-.fa-users{
-
-color:#1565c0;
-
-}
-
-
-.fa-user-shield{
-
-color:#6a1b9a;
+    color:#2e7d32;
 
 }
 
 
 
-.fa-bell{
-
-color:#ff9800;
-
-}
+.card h3,
+.menu-card h3{
 
 
+    margin-top:20px;
 
-.fa-paw{
-
-color:#795548;
+    color:#1b5e20;
 
 }
 
 
 
-.fa-eye{
+.card p{
 
-color:#1976d2;
+    margin-top:10px;
 
-}
-
-
-
-.fa-chart-line{
-
-color:#00897b;
+    color:#546e7a;
 
 }
-
-
-
-.fa-chart-pie{
-
-color:#ef6c00;
-
-}
-
-
-
-.fa-clipboard-check{
-
-color:#2e7d32;
-
-}
-
-
-
-.fa-right-from-bracket{
-
-color:#c62828;
-
-}
-
-
-
 
 
 
@@ -531,36 +384,28 @@ table{
 
     border-collapse:collapse;
 
-
     background:white;
 
-
     border-radius:20px;
-
 
     overflow:hidden;
 
 
     box-shadow:
-
-    0 10px 30px rgba(0,0,0,.15);
-
+    0 10px 25px rgba(0,0,0,.15);
 
 }
 
 
 
-
-/* ================= TABLE HEADER ================= */
-
-
 thead{
 
+
     background:
+
     linear-gradient(
         90deg,
         #1b5e20,
-        #2e7d32,
         #43a047
     );
 
@@ -570,22 +415,14 @@ thead{
 
 th{
 
+
     padding:18px;
 
-    color:rgb(7, 71, 6) !important;
-
-    font-size:14px;
+    color:white;
 
     text-transform:uppercase;
 
-    letter-spacing:1px;
-
-    font-weight:700;
-
-    border-bottom:4px solid #ffc107;
-
 }
-
 
 
 
@@ -594,20 +431,9 @@ td{
 
     padding:15px;
 
-
     text-align:center;
 
-
     border-bottom:1px solid #ddd;
-
-
-}
-
-
-
-tbody tr:nth-child(even){
-
-background:#f7faf7;
 
 }
 
@@ -616,241 +442,251 @@ background:#f7faf7;
 tbody tr:hover{
 
 
-background:#dcfce7;
-
-
-transform:scale(1.01);
-
+    background:#dcfce7;
 
 }
 
 
 
-
-
-
-/* ================= ROLE BADGE ================= */
+/* ================= ROLE ================= */
 
 
 .role-badge{
 
 
-display:inline-block;
+    background:#d1fae5;
 
+    color:#065f46;
 
-padding:8px 18px;
+    padding:8px 18px;
 
+    border-radius:20px;
 
-border-radius:20px;
-
-
-background:#d1fae5;
-
-
-color:#065f46;
-
-
-font-weight:bold;
-
-
-text-transform:capitalize;
-
+    font-weight:bold;
 
 }
-
-
-
-
 
 
 
 /* ================= BUTTONS ================= */
 
 
-
 button{
 
 
-padding:10px 18px;
+    border:none;
 
+    padding:10px 18px;
 
-border:none;
+    border-radius:25px;
 
+    cursor:pointer;
 
-border-radius:25px;
-
-
-cursor:pointer;
-
-
-font-weight:bold;
-
-
-transition:.3s;
-
+    font-weight:bold;
 
 }
 
 
 
+.update-btn{
 
-form button[type="submit"]{
+    background:#2e7d32;
 
-
-background:#2e7d32;
-
-
-color:white;
-
+    color:white;
 
 }
 
 
 
-form button[type="submit"]:hover{
+.delete-btn{
 
+    background:#c62828;
 
-background:#1b5e20;
-
-
-transform:scale(1.05);
-
+    color:white;
 
 }
 
 
 
-form button[onclick]{
+button:hover{
 
-
-background:#c62828;
-
-
-color:white;
-
+    transform:scale(1.05);
 
 }
 
 
 
-form button[onclick]:hover{
+/* ================= REPORT ================= */
 
 
-background:#8e0000;
+.chart-card{
 
 
-}
+    background:white;
+
+    padding:30px;
+
+    margin:30px auto;
+
+    width:90%;
+
+    border-radius:25px;
 
 
+    box-shadow:
 
-
-
-
-td select{
-
-
-padding:10px;
-
-
-border-radius:10px;
-
-
-border:1px solid #ccc;
-
+    0 10px 25px rgba(0,0,0,.15);
 
 }
 
 
 
+.chart-card img{
 
 
+    max-width:100%;
 
-
-
-/* ================= USER IMAGE ================= */
-
-
-
-.card img{
-
-
-max-width:100%;
-
-
-border-radius:20px;
-
-
-box-shadow:
-
-0 8px 20px rgba(0,0,0,.2);
-
+    border-radius:15px;
 
 }
 
 
 
+/* DOWNLOAD */
 
 
+.btn-download{
 
 
-/* ================= FOOTER ================= */
+    display:inline-block;
 
+    padding:14px 25px;
 
+    background:#1565c0;
 
-footer{
+    color:white;
 
+    border-radius:30px;
 
-margin-top:50px;
-
-
-padding:25px;
-
-
-text-align:center;
-
-
-background:
-
-
-linear-gradient(
-120deg,
-#14532d,
-#2e7d32
-);
-
-
-color:white;
-
-
-font-weight:bold;
-
-
-border-radius:20px;
-
-
-box-shadow:
-
-0 10px 20px rgba(0,0,0,.2);
-
+    font-weight:bold;
 
 }
 
 
 
+.btn-download:hover{
+
+    background:#0d47a1;
+
+}
 
 
 
+/* ================= SPECIES ACTION BUTTONS ================= */
 
-/* ================= RESPONSIVE ================= */
 
+.action-buttons{
+
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin:30px;
+
+}
+
+
+
+.action-buttons .btn{
+
+
+    padding:15px 25px;
+
+    border-radius:30px;
+
+    color:white;
+
+    font-weight:bold;
+
+}
+
+
+
+.add-species{
+
+    background:#43a047;
+
+}
+
+
+
+.view-species{
+
+    background:#00897b;
+
+}
+
+
+
+.record-observation{
+
+    background:#1565c0;
+
+}
+
+
+
+/* ================= GALLERY ================= */
+
+
+.slider{
+
+
+    width:100%;
+
+    height:650px;
+
+    border-radius:25px;
+
+    overflow:hidden;
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.25);
+
+}
+
+
+
+.slide img{
+
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+
+
+/* ================= MOBILE ================= */
 
 
 @media(max-width:768px){
 
 
-.admin-container{
+.admin-container,
+.user-container,
+.gallery-container{
 
-padding:20px;
+    padding:15px;
 
 }
 
@@ -858,15 +694,7 @@ padding:20px;
 
 .top-bar{
 
-flex-direction:column;
-
-}
-
-
-
-.search-form{
-
-width:100%;
+    flex-direction:column;
 
 }
 
@@ -874,7 +702,7 @@ width:100%;
 
 .search-form input{
 
-width:100%;
+    width:100%;
 
 }
 
@@ -882,38 +710,388 @@ width:100%;
 
 .nav-buttons{
 
-width:100%;
+    flex-direction:column;
 
-flex-direction:column;
-
-}
-
-
-
-.nav-btn,
-.logout-btn{
-
-text-align:center;
+    width:100%;
 
 }
 
 
 
-table{
+.main-card,
+.dashboard-summary,
+.menu-grid{
 
-font-size:13px;
+    grid-template-columns:1fr;
+
+}
+
+}
+/* ==========================================
+   OBSERVATION FORM CENTERING
+========================================== */
+
+
+.observation-container{
+
+    min-height:75vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px;
 
 }
 
 
 
-th,
-td{
+.observation-form{
 
-padding:10px;
+
+    width:450px;
+
+    background:white;
+
+    padding:40px;
+
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    0 12px 30px rgba(0,0,0,.15);
+
+
+    transition:.3s;
 
 }
 
+
+
+.observation-form:hover{
+
+    transform:translateY(-5px);
+
+}
+
+
+
+.observation-form h2{
+
+
+    text-align:center;
+
+    color:#1b5e20;
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+.observation-form label{
+
+
+    display:block;
+
+    margin-top:15px;
+
+    color:#2e7d32;
+
+    font-weight:bold;
+
+
+}
+
+
+
+.observation-form input,
+.observation-form select,
+.observation-form textarea{
+
+
+    width:100%;
+
+    padding:13px;
+
+    margin-top:8px;
+
+    border-radius:10px;
+
+    border:1px solid #ccc;
+
+    font-size:15px;
+
+
+}
+
+
+
+.observation-form textarea{
+
+
+    height:120px;
+
+    resize:none;
+
+
+}
+
+
+
+.observation-form button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    border-radius:30px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.observation-form button:hover{
+    background:#14532d;
+}
+/* =====================================================
+   NOTIFICATIONS PAGE
+===================================================== */
+
+
+/* Main notification wrapper */
+
+.notification-container{
+
+    width:90%;
+
+    margin:40px auto;
+
+    padding:30px;
+
+}
+
+
+
+/* Page title */
+
+.notification-container h2{
+
+    text-align:center;
+
+    color:#1b5e20;
+
+    font-size:30px;
+
+    margin-bottom:35px;
+
+}
+
+
+
+/* Notification card */
+
+.notification-card{
+
+
+    background:white;
+
+    padding:25px;
+
+
+    margin-bottom:25px;
+
+
+    border-radius:25px;
+
+
+    border-left:8px solid #2e7d32;
+
+
+    box-shadow:
+
+    0 10px 25px rgba(0,0,0,.12);
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.notification-card:hover{
+
+
+    transform:translateY(-8px);
+
+
+    background:#f1f8e9;
+
+
+}
+
+
+
+/* Notification title */
+
+
+.notification-card h5{
+
+
+    color:#1b5e20;
+
+
+    font-size:22px;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+/* Notification message */
+
+
+.notification-card p{
+
+
+    color:#455a64;
+
+
+    font-size:16px;
+
+
+    line-height:1.7;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+/* Date and time */
+
+
+.notification-card small{
+
+
+    display:block;
+
+
+    color:#78909c;
+
+
+    font-style:italic;
+
+
+}
+
+
+
+/* Empty notification alert */
+
+
+.alert{
+
+
+    background:white;
+
+
+    width:400px;
+
+
+    margin:30px auto;
+
+
+    padding:25px;
+
+
+    text-align:center;
+
+
+    border-radius:20px;
+
+
+    color:#546e7a;
+
+
+    font-weight:bold;
+
+
+    box-shadow:
+
+    0 8px 20px rgba(0,0,0,.12);
+
+
+}
+
+
+
+/* Back button position */
+
+
+.notification-container + .back-btn{
+
+
+    display:block;
+
+
+    width:150px;
+
+
+    text-align:center;
+
+
+    margin:20px auto;
+
+
+}
+
+
+
+/* Mobile */
+
+@media(max-width:768px){
+
+
+.notification-container{
+
+
+    width:95%;
+
+    padding:15px;
+
+}
+
+
+
+.notification-card{
+
+
+    padding:20px;
+
+
+}
+
+
+
+.notification-card h5{
+
+
+    font-size:20px;
+
+
+}
 
 
 }
