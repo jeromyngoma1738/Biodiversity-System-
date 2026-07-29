@@ -1,142 +1,474 @@
 {% extends "base.html" %}
 
 {% block title %}
-Record Observation
+Biodiversity Report
 {% endblock %}
-
 
 {% block css %}
-
 <link rel="stylesheet"
-href="{{ url_for('static', filename='adminstyle.css') }}">
-
+      href="{{ url_for('static', filename='reportStyle.css') }}">
 {% endblock %}
-
 
 
 {% block content %}
 
+<div class="report-container">
+    <div class="report-header">
 
-<div class="container">
+        <div>
+            <h1>Biodiversity Monitoring Report</h1>
 
+            <p>
+                Summary of species observations, population changes,
+                trends, and conservation status.
+            </p>
+        </div>
 
-<div class="form-box active">
+        <div class="report-actions">
 
+            <button onclick="window.print()"
+                    class="btn-print">
+                Print Report
+            </button>
 
-<form method="POST" enctype="multipart/form-data">
+        </div>
 
-
-<h2>
-    Record Biodiversity Observation
-</h2>
-
-
-
-<label>
-    Select Species
-</label>
-
-
-<select name="species_id" required>
-
-    <option value="">
-        -- Select Species --
-    </option>
+    </div>
 
 
-    {% for sp in species_list %}
+    <!-- =========================
+         SUMMARY CARDS
+    ========================== -->
 
-    <option value="{{ sp.id }}">
+    <div class="report-summary">
 
-        {{ sp.specie_Common_Name }}
-        ({{ sp.scientificName }})
+        <div class="report-card">
 
-    </option>
+            <div class="report-card-icon">
+                🐾
+            </div>
 
+            <div>
+                <h3>Total Species</h3>
 
-    {% endfor %}
+                <strong>
+                    {{ total_species }}
+                </strong>
+            </div>
 
-
-</select>
-
-
-
-
-
-<label>
-    Population Count
-</label>
-
-
-<input 
-type="number"
-name="population"
-placeholder="Enter population count"
-min="1"
-required>
+        </div>
 
 
+        <div class="report-card">
+
+            <div class="report-card-icon">
+                📊
+            </div>
+
+            <div>
+                <h3>Total Observations</h3>
+
+                <strong>
+                    {{ total_observations }}
+                </strong>
+            </div>
+
+        </div>
 
 
+        <div class="report-card">
 
-<label>
-    Observation Notes
-</label>
+            <div class="report-card-icon">
+                👥
+            </div>
 
+            <div>
+                <h3>Total Population</h3>
 
-<textarea
-name="note"
-rows="5"
-placeholder="Describe the observation..."
-required></textarea>
+                <strong>
+                    {{ total_population }}
+                </strong>
+            </div>
 
-
-
-
-
-<label>
-    Upload Species Photo
-</label>
+        </div>
 
 
-<input 
-type="file"
-name="image"
-accept="image/*">
+        <div class="report-card">
+
+            <div class="report-card-icon">
+                ⚠️
+            </div>
+
+            <div>
+                <h3>Critical Species</h3>
+
+                <strong>
+                    {{ critical_species }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
 
 
+    <!-- =========================
+         TREND SUMMARY
+    ========================== -->
+
+    <div class="trend-summary">
+
+        <div class="trend-box increasing">
+
+            <span>Increasing</span>
+
+            <strong>
+                {{ increasing_species }}
+            </strong>
+
+        </div>
 
 
+        <div class="trend-box decreasing">
 
-<button type="submit">
+            <span>Decreasing</span>
 
-    Save Observation
+            <strong>
+                {{ decreasing_species }}
+            </strong>
 
-</button>
-
-
-
-<p>
-
-    Return to Dashboard?
-
-    <a href="{{ url_for('field_Officer') }}">
-        Back
-    </a>
+        </div>
 
 
-</p>
+        <div class="trend-box stable">
+
+            <span>Stable</span>
+
+            <strong>
+                {{ stable_species }}
+            </strong>
+
+        </div>
+
+    </div>
 
 
+    <!-- =========================
+         SPECIES REPORT
+    ========================== -->
 
-</form>
+    {% if report_data %}
 
+        {% for item in report_data %}
+
+        <div class="species-report-card">
+
+            <!-- Species Header -->
+
+            <div class="species-report-header">
+
+                <div>
+
+                    <h2>
+                        {{ item.name }}
+                    </h2>
+
+                    <p class="scientific-name">
+                        {{ item.scientific }}
+                    </p>
+
+                </div>
+
+
+                <div class="status-container">
+
+                    {% if item.trend == "Increasing" %}
+
+                        <span class="status-badge increasing">
+                            ↑ Increasing
+                        </span>
+
+                    {% elif item.trend == "Decreasing" %}
+
+                        <span class="status-badge decreasing">
+                            ↓ Decreasing
+                        </span>
+
+                    {% elif item.trend == "Stable" %}
+
+                        <span class="status-badge stable">
+                            → Stable
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge">
+                            No Data
+                        </span>
+
+                    {% endif %}
+
+
+                    {% if item.risk_status == "Critical" %}
+
+                        <span class="risk-badge critical">
+                            Critical
+                        </span>
+
+                    {% elif item.risk_status == "Endangered" %}
+
+                        <span class="risk-badge endangered">
+                            Endangered
+                        </span>
+
+                    {% elif item.risk_status == "Vulnerable" %}
+
+                        <span class="risk-badge vulnerable">
+                            Vulnerable
+                        </span>
+
+                    {% elif item.risk_status == "Stable" %}
+
+                        <span class="risk-badge safe">
+                            Stable
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Species Information -->
+
+            <div class="species-info-grid">
+
+                <div class="info-item">
+
+                    <span>Habitat</span>
+
+                    <strong>
+                        {{ item.habitat or "Not recorded" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>Location</span>
+
+                    <strong>
+                        {{ item.location or "Not recorded" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>Observations</span>
+
+                    <strong>
+                        {{ item.observation_count }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>Initial Population</span>
+
+                    <strong>
+                        {{ item.first_population }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>Latest Population</span>
+
+                    <strong>
+                        {{ item.latest_population }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>Population Change</span>
+
+                    <strong>
+
+                        {% if item.population_change > 0 %}
+                            +{{ item.population_change }}
+
+                        {% else %}
+                            {{ item.population_change }}
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Population Change -->
+
+            <div class="population-change">
+
+                <span>
+                    Population Change
+                </span>
+
+                <strong>
+
+                    {% if item.percentage_change > 0 %}
+
+                        +{{ item.percentage_change }}%
+
+                    {% elif item.percentage_change < 0 %}
+
+                        {{ item.percentage_change }}%
+
+                    {% else %}
+
+                        0%
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <!-- Chart -->
+
+            {% if item.chart %}
+
+            <div class="chart-container">
+
+                <h3>
+                    Population Trend
+                </h3>
+
+                <img
+                    src="{{ url_for('static',
+                                    filename=item.chart) }}"
+                    alt="Population trend for {{ item.name }}"
+                >
+
+            </div>
+
+            {% else %}
+
+            <div class="no-chart">
+
+                <p>
+                    No population chart is available
+                    for this species.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Observation Table -->
+
+            {% if item.observations %}
+
+            <div class="observation-section">
+
+                <h3>
+                    Observation History
+                </h3>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Population
+                                </th>
+
+                                <th>
+                                    Notes
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for observation
+                               in item.observations %}
+
+                            <tr>
+
+                                <td>
+                                    {{ observation.observation_date.strftime('%d %b %Y') }}
+                                </td>
+
+                                <td>
+                                    {{ observation.population_count }}
+                                </td>
+
+                                <td>
+                                    {{ observation.notes or "No notes" }}
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-report">
+            <div>
+                📊
+            </div>
+            <h2>
+                No Biodiversity Data Available
+            </h2>
+            <p>
+                There are currently no species or observations
+                available to generate a report.
+            </p>
+        </div>
+
+    {% endif %}
 
 </div>
-
-
-</div>
-
-
 
 {% endblock %}

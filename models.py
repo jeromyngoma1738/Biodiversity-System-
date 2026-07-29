@@ -77,3 +77,19 @@ class Notification(db.Model):
     notification_type = db.Column( db.String(20), default="Info")
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column( db.DateTime, default=lambda: datetime.now(timezone.utc))
+class Analysis(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    species_id = db.Column(db.Integer,db.ForeignKey("species.id"),nullable=False)
+
+    current_population = db.Column(db.Integer, nullable=False)
+    previous_population = db.Column(db.Integer, nullable=False)
+    population_change = db.Column(db.Integer, nullable=False)
+    percentage_change = db.Column(db.Float, nullable=False)
+    trend = db.Column(db.String(50), nullable=False)
+    risk_level = db.Column(db.String(50), nullable=False)
+
+    analysis_date = db.Column(db.DateTime,default=lambda: datetime.now(timezone.utc))
+
+    # Relationship
+    species = db.relationship("Species",backref="analyses")

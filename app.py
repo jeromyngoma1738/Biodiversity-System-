@@ -1,8 +1,8 @@
-import email
+
 from flask import Flask, flash, redirect, url_for, request, render_template, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from extensions import db
-from models import Details, Species, Observation, Notification
+from models import Details, Species, Observation, Notification, Analysis
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -14,9 +14,10 @@ from reportlab.lib.units import inch
 from sqlalchemy import or_
 from mail_config import mail, configure_mail 
 import secrets
+from sqlalchemy import func
 from datetime import datetime, timedelta
 from datetime import datetime, timezone
-from flask_mail import Mail, Message
+
 
 
 
@@ -33,7 +34,114 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
 
+# --- Decorators ---
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
+def role_required(*roles):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'user_id' not in session:
+                return redirect(url_for('login'))
+            if session.get('role') not in roles:
+                return "Access Denied", 403
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator  
+
+#analysing the population of the of species 
+def analysis():
+    species_list = Species.query.all()
+
+    for species in species_list:
+        observations = Observation.query.filter_by( species_id=species.id, status="Approved").order_by(Observation.observation_date.desc()).all()
+
+        if len(observations) < 2:
+            continue
+        
+        current = observations[0]
+        previous = observations[1]
+
+        current_population = current.population_count
+        previous_population = previous.population_count
+
+        # Calculate population change
+        population_change = (current_population - previous_population)
+
+        # Calculate percentage change
+        if previous_population > 0:
+            percentage_change = (
+                population_change / previous_population) * 100
+        else:
+            percentage_change = 0
+
+        # Determine trend
+        if population_change > 0:
+            trend = "Increasing"
+        elif population_change < 0:
+            trend = "Declining"
+        else:
+            trend = "Stable"
+
+        # Determine risk level
+        if percentage_change <= -50:
+            risk_level = "Critical"
+        elif percentage_change <= -25:
+            risk_level = "High"
+        elif percentage_change < 0:
+            risk_level = "Moderate"
+        else:
+            risk_level = "Low"
+
+        print(species.specie_Common_Name,trend,percentage_change, risk_level)
+        
+@app.route("/analysisPage")
+#@login_required
+#@role_required("admin", "field_officer")
+def analysis_page():
+
+    results = Analysis.query.order_by(
+        Analysis.analysis_date.desc()
+    ).all()
+
+    species_list = Species.query.all()
+
+    trend_data = []
+
+    for species in species_list:
+
+        observations = Observation.query.filter_by(
+            species_id=species.id,
+            status="Approved"
+        ).order_by(
+            Observation.observation_date.asc()
+        ).all()
+
+        trend_data.append({
+            "name": species.specie_Common_Name,
+            "dates": [
+                observation.observation_date.strftime("%Y-%m-%d")
+                for observation in observations
+            ],
+            "counts": [
+                observation.population_count
+                for observation in observations
+            ]
+        })
+
+    return render_template(
+        "analysisPage.html",
+        results=results,
+        species_list=species_list,
+        trend_data=trend_data
+    )
+        
 # CREATE NOTIFICATION
 
 def create_notification(role, title, message, notification_type="Info", user_id=None):
@@ -88,27 +196,7 @@ def registration():
             return f"Error: {e}"
 
     return render_template("registration.html")
-
-# --- Decorators ---
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-def role_required(*roles):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if 'user_id' not in session:
-                return redirect(url_for('login'))
-            if session.get('role') not in roles:
-                return "Access Denied", 403
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator    
+  
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -316,28 +404,140 @@ def view_observations():
 def view_species():
     species_list = Species.query.all()
     return render_template("view_species.html", species_list=species_list)     
+from flask import render_template
+from sqlalchemy import func
+import os
+
 
 @app.route("/report")
-@login_required
-@role_required("field_officer","admin","viewer")
+#@login_required
+#@role_required("field_officer", "admin", "viewer")
 def report():
-
-    species_list = Species.query.all()
+    # Get all species
+    species_list = Species.query.order_by(Species.specie_Common_Name.asc()).all()
 
     report_data = []
+    # Overall report statistics
+    total_species = len(species_list)
+    total_observations = Observation.query.count()
+    total_population = db.session.query(func.coalesce(func.sum(Observation.population_count), 0)).scalar()
 
+    # Process each species
     for species in species_list:
 
-        observations = Observation.query.filter_by(species_id=species.id).order_by( Observation.observation_date.asc()).all()
+        # Get observations from oldest to newest
+        observations = (
+            Observation.query
+            .filter_by(species_id=species.id)
+            .order_by(Observation.observation_date.asc())
+            .all()
+        )
 
+        # Default values
+        first_population = 0
+        latest_population = 0
+        population_change = 0
+        percentage_change = 0
+        trend = "No Data"
+        risk_status = "Unknown"
+
+        # Calculate population statistics
+        if observations:
+
+            first_population = observations[0].population_count or 0
+
+            latest_population = observations[-1].population_count or 0
+
+            population_change = latest_population - first_population
+
+            # Calculate percentage change
+            if first_population > 0:
+                percentage_change = (
+                    population_change / first_population
+                ) * 100
+
+            # Determine population trend
+            if population_change > 0:
+                trend = "Increasing"
+
+            elif population_change < 0:
+                trend = "Decreasing"
+
+            else:
+                trend = "Stable"
+
+            # Basic risk classification
+            if latest_population <= 5:
+                risk_status = "Critical"
+
+            elif latest_population <= 10:
+                risk_status = "Endangered"
+
+            elif latest_population <= 20:
+                risk_status = "Vulnerable"
+
+            else:
+                risk_status = "Stable"
+
+        # Chart location
         chart_file = f"charts/chart_{species.id}.png"
-        chart_path = os.path.join("static", chart_file)
 
-        report_data.append({"name": species.specie_Common_Name, "scientific": species.scientificName, "observations": observations,
-            "chart": chart_file if os.path.exists(chart_path) else None})
-        
-    return render_template("report.html", report_data=report_data)
+        chart_path = os.path.join(
+            app.static_folder,
+            chart_file
+        )
 
+        # Add species information to report
+        report_data.append({"id": species.id,
+            "name": species.specie_Common_Name,
+            "scientific": species.scientificName,
+            "habitat": species.specie_Habitat,
+            "location": species.location,
+            "observations": observations,
+            "observation_count": len(observations),
+            "first_population": first_population,
+            "latest_population": latest_population,
+            "population_change": population_change,
+            "percentage_change": round(
+                percentage_change,
+                2
+            ),
+
+            "trend": trend,
+
+            "risk_status": risk_status,
+
+            "chart": chart_file
+            if os.path.exists(chart_path)
+            else None
+        })
+
+    # Summary statistics
+    increasing_species = sum(
+        1 for item in report_data
+        if item["trend"] == "Increasing"
+    )
+
+    decreasing_species = sum(
+        1 for item in report_data
+        if item["trend"] == "Decreasing"
+    )
+
+    stable_species = sum(
+        1 for item in report_data
+        if item["trend"] == "Stable"
+    )
+
+    critical_species = sum(
+        1 for item in report_data
+        if item["risk_status"] == "Critical"
+    )
+
+    return render_template( "report.html", report_data=report_data, total_species=total_species,
+                           total_observations=total_observations, total_population=total_population,
+                           increasing_species=increasing_species, decreasing_species=decreasing_species, 
+                           stable_species=stable_species, critical_species=critical_species)
+    
 @app.route("/trends")
 @login_required
 @role_required("field_officer","admin","viewer")    

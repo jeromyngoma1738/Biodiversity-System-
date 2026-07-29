@@ -1,0 +1,1153 @@
+
+
+/* =====================================================
+   18. REPORT PAGE
+===================================================== */
+
+.report-container {
+    width: 95%;
+
+    max-width: 1400px;
+
+    margin: 35px auto;
+
+    padding: 20px;
+}
+
+
+/* REPORT HEADER */
+
+.report-header {
+    background:
+        linear-gradient(
+            120deg,
+            #14532d,
+            #2e7d32,
+            #00897b
+        );
+
+    padding: 35px;
+
+    border-radius: 25px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 25px;
+
+    color: white;
+
+    margin-bottom: 30px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.20);
+}
+
+.report-header h1 {
+    color: white;
+
+    font-size: 34px;
+}
+
+.report-header p {
+    margin-top: 10px;
+
+    color: #e8f5e9;
+
+    line-height: 1.6;
+}
+
+
+/* REPORT PRINT BUTTON */
+
+.btn-print {
+    padding: 13px 25px;
+
+    border-radius: 30px;
+
+    background: #ffc107;
+
+    color: #263238;
+}
+
+.btn-print:hover {
+    background: #ffb300;
+
+    transform: translateY(-3px);
+}
+
+
+/* REPORT SUMMARY */
+
+.report-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(200px, 1fr)
+        );
+
+    gap: 25px;
+
+    margin-bottom: 30px;
+}
+
+.report-card {
+    background: white;
+
+    padding: 28px;
+
+    border-radius: 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    border-top: 5px solid #2e7d32;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
+
+    transition: 0.3s;
+}
+
+.report-card:hover {
+    transform: translateY(-7px);
+}
+
+.report-card-icon {
+    width: 65px;
+
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e8f5e9;
+
+    font-size: 30px;
+}
+
+.report-card h3 {
+    color: #546e7a;
+
+    font-size: 15px;
+
+    margin-bottom: 8px;
+}
+
+.report-card strong {
+    color: #1b5e20;
+
+    font-size: 28px;
+}
+
+
+/* REPORT TREND SUMMARY */
+
+.trend-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap: 25px;
+
+    margin-bottom: 35px;
+}
+
+.trend-box {
+    padding: 20px 25px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-weight: bold;
+}
+
+.trend-box strong {
+    font-size: 28px;
+}
+
+.trend-box.increasing {
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+    border-left: 6px solid #2e7d32;
+}
+
+.trend-box.decreasing {
+    background: #ffebee;
+
+    color: #c62828;
+
+    border-left: 6px solid #c62828;
+}
+
+.trend-box.stable {
+    background: #fff8e1;
+
+    color: #f57f17;
+
+    border-left: 6px solid #f57f17;
+}
+
+
+/* SPECIES REPORT CARD */
+
+.species-report-card {
+    background: white;
+
+    padding: 30px;
+
+    margin-bottom: 30px;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.species-report-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    padding-bottom: 20px;
+
+    margin-bottom: 25px;
+
+    border-bottom: 2px solid #e8f5e9;
+}
+
+.species-report-header h2 {
+    color: #1b5e20;
+
+    font-size: 27px;
+}
+
+.scientific-name {
+    margin-top: 6px;
+
+    color: #78909c;
+
+    font-style: italic;
+}
+
+
+/* REPORT STATUS */
+
+.status-container {
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.status-badge,
+.risk-badge {
+    padding: 8px 15px;
+
+    border-radius: 25px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+.status-badge.increasing {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.decreasing {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.stable {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.risk-badge.critical {
+    background: #b91c1c;
+    color: white;
+}
+
+.risk-badge.endangered {
+    background: #e53935;
+    color: white;
+}
+
+.risk-badge.vulnerable {
+    background: #ff9800;
+    color: white;
+}
+
+.risk-badge.safe {
+    background: #43a047;
+    color: white;
+}
+
+
+/* REPORT SPECIES INFORMATION */
+
+.species-info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+.info-item {
+    padding: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #f1f8e9
+        );
+
+    border-radius: 12px;
+
+    border-left: 4px solid #43a047;
+}
+
+.info-item span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #78909c;
+
+    font-size: 13px;
+}
+
+.info-item strong {
+    color: #263238;
+
+    font-size: 17px;
+}
+
+
+/* POPULATION CHANGE */
+
+.population-change {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 16px 20px;
+
+    margin-bottom: 25px;
+
+    background: #f5f5f5;
+
+    border-radius: 12px;
+
+    border-left: 5px solid #2e7d32;
+}
+
+.population-change span {
+    color: #546e7a;
+
+    font-weight: 600;
+}
+
+.population-change strong {
+    color: #1b5e20;
+
+    font-size: 20px;
+}
+
+
+/* REPORT CHART */
+
+.report-container .chart-container {
+    width: 100%;
+
+    margin: 25px 0;
+
+    padding: 25px;
+
+    background: #f8fafc;
+
+    border-radius: 18px;
+}
+
+.report-container .chart-container h3 {
+    color: #1b5e20;
+
+    font-size: 21px;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 2px solid #e8f5e9;
+}
+
+.report-container .chart-container img {
+    display: block;
+
+    width: 100%;
+
+    max-width: 900px;
+
+    height: auto;
+
+    margin: auto;
+
+    border-radius: 15px;
+}
+
+
+/* REPORT NO CHART */
+
+.report-container .no-chart {
+    padding: 35px;
+
+    margin: 20px 0;
+
+    text-align: center;
+
+    color: #78909c;
+
+    background: #f8fafc;
+
+    border-radius: 15px;
+
+    border: 1px dashed #b0bec5;
+}
+
+
+/* REPORT OBSERVATION TABLE */
+
+.report-container .table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    border-radius: 15px;
+}
+
+.report-container .observation-section {
+    margin-top: 35px;
+}
+
+.report-container .observation-section h3 {
+    color: #1b5e20;
+
+    font-size: 22px;
+
+    margin-bottom: 18px;
+}
+
+.report-container .observation-section table {
+    width: 100%;
+
+    min-width: 650px;
+
+    border-collapse: collapse;
+
+    background: white;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.report-container .observation-section thead {
+    background:
+        linear-gradient(
+            90deg,
+            #1b5e20,
+            #43a047
+        );
+}
+
+.report-container .observation-section th {
+    padding: 16px 15px;
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+}
+
+.report-container .observation-section td {
+    padding: 15px;
+
+    color: #455a64;
+
+    text-align: center;
+
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.report-container .observation-section tbody tr:hover {
+    background: #f1f8e9;
+}
+
+
+/* EMPTY REPORT */
+
+.empty-report {
+    padding: 70px 25px;
+
+    text-align: center;
+
+    background: white;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.empty-report div {
+    font-size: 55px;
+
+    margin-bottom: 15px;
+}
+
+.empty-report h2 {
+    color: #1b5e20;
+
+    margin-bottom: 12px;
+}
+
+.empty-report p {
+    color: #78909c;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   16. BIODIVERSITY ANALYSIS
+===================================================== */
+
+.analysis-container {
+    width: 95%;
+
+    max-width: 1500px;
+
+    margin: 40px auto;
+
+    padding: 20px;
+}
+
+.analysis-header {
+    background:
+        linear-gradient(
+            120deg,
+            #14532d,
+            #2e7d32,
+            #00897b
+        );
+
+    padding: 40px;
+
+    border-radius: 25px;
+
+    color: white;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.20);
+
+    margin-bottom: 30px;
+}
+
+.analysis-header h1 {
+    color: white;
+
+    font-size: 36px;
+
+    margin-bottom: 15px;
+}
+
+.analysis-header p {
+    color: #e8f5e9;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+}
+
+.analysis-header .btn-download {
+    margin-top: 20px;
+
+    background: #ffc107;
+
+    color: #263238;
+}
+
+.analysis-header .btn-download:hover {
+    background: #ffb300;
+}
+
+
+/* ANALYSIS CARDS */
+
+.analysis-cards {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+
+    gap: 25px;
+
+    margin-bottom: 35px;
+}
+
+.analysis-card {
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 22px;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
+
+    border-top: 6px solid #2e7d32;
+
+    transition: 0.3s;
+}
+
+.analysis-card:hover {
+    transform: translateY(-8px);
+}
+
+.analysis-card h3 {
+    color: #546e7a;
+
+    font-size: 17px;
+
+    margin-bottom: 15px;
+}
+
+.analysis-card p {
+    color: #1b5e20;
+
+    font-size: 36px;
+
+    font-weight: bold;
+}
+
+.analysis-card.increasing {
+    border-top-color: #2e7d32;
+}
+
+.analysis-card.increasing p {
+    color: #2e7d32;
+}
+
+.analysis-card.declining {
+    border-top-color: #f57c00;
+}
+
+.analysis-card.declining p {
+    color: #f57c00;
+}
+
+.analysis-card.critical {
+    border-top-color: #c62828;
+}
+
+.analysis-card.critical p {
+    color: #c62828;
+}
+
+
+/* ANALYSIS FILTER */
+
+.filter-bar {
+    background: white;
+
+    padding: 25px 30px;
+
+    margin-bottom: 30px;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.10);
+}
+
+.filter-bar label {
+    color: #1b5e20;
+
+    font-weight: bold;
+}
+
+.filter-bar select {
+    padding: 12px 20px;
+
+    min-width: 250px;
+
+    border: 1px solid #b0bec5;
+
+    border-radius: 25px;
+
+    background: #f8fafc;
+
+    color: #263238;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+
+/* ANALYSIS TABLE */
+
+.analysis-table-container {
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
+
+    overflow-x: auto;
+
+    margin-bottom: 40px;
+}
+
+.table-header {
+    margin-bottom: 25px;
+}
+
+.table-header h2 {
+    color: #1b5e20;
+
+    font-size: 25px;
+}
+
+.analysis-table {
+    width: 100%;
+
+    min-width: 1100px;
+
+    border-collapse: collapse;
+
+    box-shadow: none;
+}
+
+.analysis-table thead {
+    background:
+        linear-gradient(
+            90deg,
+            #1b5e20,
+            #43a047
+        );
+}
+
+.analysis-table th {
+    padding: 16px 12px;
+
+    color: white;
+
+    font-size: 13px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.analysis-table td {
+    padding: 15px 12px;
+
+    text-align: center;
+
+    border-bottom: 1px solid #e0e0e0;
+
+    color: #455a64;
+}
+
+.analysis-table tbody tr:hover {
+    background: #f1f8e9;
+}
+
+
+/* ANALYSIS CHANGES */
+
+.change-positive {
+    color: #2e7d32;
+
+    background: #e8f5e9;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+}
+
+.change-negative {
+    color: #c62828;
+
+    background: #ffebee;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+}
+
+.change-neutral {
+    color: #546e7a;
+
+    background: #eceff1;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+}
+
+
+/* ANALYSIS STATUS */
+
+.status,
+.risk {
+    display: inline-block;
+
+    padding: 7px 14px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+.increasing-status {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.declining-status {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.stable-status {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.critical-risk {
+    background: #b91c1c;
+    color: white;
+}
+
+.high-risk {
+    background: #fed7aa;
+    color: #9a3412;
+}
+
+.moderate-risk {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.low-risk {
+    background: #dcfce7;
+    color: #166534;
+}
+
+
+/* =====================================================
+   17. POPULATION TRENDS
+===================================================== */
+
+.trends-section {
+    margin-top: 40px;
+}
+
+.trends-section > h2 {
+    color: #1b5e20;
+
+    text-align: center;
+
+    font-size: 30px;
+
+    margin-bottom: 10px;
+}
+
+.trends-section > p {
+    text-align: center;
+
+    color: #607d8b;
+
+    margin-bottom: 30px;
+}
+
+.trends-section .chart-card {
+    width: 100%;
+
+    margin: 25px 0;
+
+    padding: 30px;
+
+    background: white;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
+
+    transition: 0.3s;
+}
+
+.trends-section .chart-card:hover {
+    transform: translateY(-5px);
+}
+
+.trends-section .chart-card h3 {
+    color: #1b5e20;
+
+    font-size: 22px;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 2px solid #e8f5e9;
+}
+
+.trends-section .chart-card canvas {
+    width: 100% !important;
+
+    max-height: 400px;
+}
+
+.no-data,
+.no-results {
+    text-align: center;
+
+    padding: 40px;
+
+    background: #f8fafc;
+
+    border-radius: 15px;
+
+    color: #78909c;
+}
+
+@media(max-width:768px) {
+
+    .top-bar {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .search-form {
+        width: 100%;
+    }
+
+    .search-form input {
+        width: 100%;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .main-card,
+    .dashboard-summary,
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    /* Analysis */
+
+    .analysis-container {
+        width: 95%;
+
+        padding: 10px;
+
+        margin: 20px auto;
+    }
+
+    .analysis-header {
+        padding: 30px 20px;
+    }
+
+    .analysis-header h1 {
+        font-size: 28px;
+    }
+
+    .analysis-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .filter-bar select {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+
+    /* Report */
+
+    .report-container {
+        width: 95%;
+
+        padding: 10px;
+
+        margin: 20px auto;
+    }
+
+    .report-header {
+        padding: 30px 20px;
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .report-header h1 {
+        font-size: 28px;
+    }
+
+    .btn-print {
+        width: 100%;
+    }
+
+    .report-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .species-report-card {
+        padding: 20px;
+    }
+
+    .species-report-header {
+        flex-direction: column;
+    }
+
+    .species-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-container {
+        justify-content: flex-start;
+    }
+
+}
+
+
+@media(max-width:480px) {
+
+    .top-bar {
+        padding: 20px;
+    }
+
+    .logo h1 {
+        font-size: 24px;
+    }
+
+    .analysis-header h1 {
+        font-size: 24px;
+    }
+
+    .analysis-card p {
+        font-size: 30px;
+    }
+
+    .report-header h1 {
+        font-size: 24px;
+    }
+
+    .report-card {
+        padding: 22px;
+    }
+
+    .report-card strong {
+        font-size: 24px;
+    }
+
+    .species-report-header h2 {
+        font-size: 23px;
+    }
+}
+

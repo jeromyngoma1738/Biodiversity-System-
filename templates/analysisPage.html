@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+
+{% block title %}Biodiversity Analysis{% endblock %}
+
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='reportStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="analysis-container">
+
+```
+<!-- PAGE HEADER -->
+<div class="analysis-header">
+    <h1>Biodiversity Analysis</h1>
+
+    <p>
+        Monitor species population changes, population trends,
+        and biodiversity risk levels.
+    </p>
+
+    <div style="margin-top: 15px;">
+        <a href="{{ url_for('download_report') }}" class="btn-download">
+            📄 Download PDF Report
+        </a>
+    </div>
+</div>
+
+
+<!-- SUMMARY CARDS -->
+<div class="analysis-cards">
+
+    <div class="analysis-card">
+        <h3>Total Species Analysed</h3>
+        <p>{{ results|length }}</p>
+    </div>
+
+    <div class="analysis-card increasing">
+        <h3>Increasing</h3>
+        <p>
+            {{ results|selectattr("trend", "equalto", "Increasing")|list|length }}
+        </p>
+    </div>
+
+    <div class="analysis-card declining">
+        <h3>Declining</h3>
+        <p>
+            {{ results|selectattr("trend", "equalto", "Declining")|list|length }}
+        </p>
+    </div>
+
+    <div class="analysis-card critical">
+        <h3>Critical Risk</h3>
+        <p>
+            {{ results|selectattr("risk_level", "equalto", "Critical")|list|length }}
+        </p>
+    </div>
+
+</div>
+
+
+<!-- SPECIES FILTER -->
+<div class="filter-bar">
+
+    <label for="speciesFilter">
+        <strong>Filter by Species:</strong>
+    </label>
+
+    <select id="speciesFilter" onchange="filterAnalysis()">
+
+        <option value="all">
+            All Species
+        </option>
+
+        {% for species in species_list %}
+
+        <option value="{{ species.specie_Common_Name }}">
+            {{ species.specie_Common_Name }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+</div>
+
+
+<!-- ANALYSIS TABLE -->
+<div class="analysis-table-container">
+
+    <div class="table-header">
+        <h2>Species Population Analysis</h2>
+    </div>
+
+    {% if results %}
+
+    <table class="analysis-table">
+
+        <thead>
+
+            <tr>
+                <th>#</th>
+                <th>Species</th>
+                <th>Current Population</th>
+                <th>Previous Population</th>
+                <th>Population Change</th>
+                <th>Percentage Change</th>
+                <th>Trend</th>
+                <th>Risk Level</th>
+                <th>Analysis Date</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for result in results %}
+
+            <tr class="analysis-row"
+                data-species="{{ result.species.specie_Common_Name if result.species else 'Unknown Species' }}">
+
+                <td>
+                    {{ loop.index }}
+                </td>
+
+                <td>
+                    {{ result.species.specie_Common_Name
+                    if result.species else "Unknown Species" }}
+                </td>
+
+                <td>
+                    {{ result.current_population }}
+                </td>
+
+                <td>
+                    {{ result.previous_population }}
+                </td>
+
+                <td>
+
+                    {% if result.population_change > 0 %}
+
+                        <span class="change-positive">
+                            +{{ result.population_change }}
+                        </span>
+
+                    {% elif result.population_change < 0 %}
+
+                        <span class="change-negative">
+                            {{ result.population_change }}
+                        </span>
+
+                    {% else %}
+
+                        <span class="change-neutral">
+                            0
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ "%.2f"|format(result.percentage_change) }}%
+                </td>
+
+                <td>
+
+                    {% if result.trend == "Increasing" %}
+
+                        <span class="status increasing-status">
+                            ↑ Increasing
+                        </span>
+
+                    {% elif result.trend == "Declining" %}
+
+                        <span class="status declining-status">
+                            ↓ Declining
+                        </span>
+
+                    {% else %}
+
+                        <span class="status stable-status">
+                            → Stable
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if result.risk_level == "Critical" %}
+
+                        <span class="risk critical-risk">
+                            Critical
+                        </span>
+
+                    {% elif result.risk_level == "High" %}
+
+                        <span class="risk high-risk">
+                            High
+                        </span>
+
+                    {% elif result.risk_level == "Moderate" %}
+
+                        <span class="risk moderate-risk">
+                            Moderate
+                        </span>
+
+                    {% else %}
+
+                        <span class="risk low-risk">
+                            Low
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ result.analysis_date.strftime("%d %b %Y") }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="no-results">
+
+        <h3>No Analysis Results Available</h3>
+
+        <p>
+            There is currently not enough approved observation data
+            to perform biodiversity analysis.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- POPULATION TREND CHARTS -->
+<div class="trends-section">
+
+    <h2>Population Trends</h2>
+
+    <p>
+        View population changes over time for each species.
+    </p>
+
+
+    {% for item in trend_data %}
+
+    <div class="chart-card"
+         data-chart-species="{{ item.name }}">
+
+        <h3>
+            {{ item.name }}
+        </h3>
+
+        {% if item.dates %}
+
+            <canvas
+                id="chart-{{ loop.index }}"
+                height="100">
+            </canvas>
+
+        {% else %}
+
+            <p class="no-data">
+                No observations recorded yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- BACK BUTTON -->
+<div style="margin-top: 20px;">
+
+    <button
+        onclick="window.location.href='{{ url_for('back') }}'"
+        class="back-btn">
+
+        ← Back
+
+    </button>
+
+</div>
+```
+
+</div>
+
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const trendData = {{ trend_data | tojson }};
+
+
+// CREATE CHARTS
+trendData.forEach((item, index) => {
+
+    if (!item.dates || item.dates.length === 0) {
+        return;
+    }
+
+    const canvas = document.getElementById(
+        `chart-${index + 1}`
+    );
+
+    if (!canvas) {
+        return;
+    }
+
+
+    new Chart(canvas, {
+
+        type: 'line',
+
+        data: {
+
+            labels: item.dates,
+
+            datasets: [{
+
+                label: 'Population Count',
+
+                data: item.counts,
+
+                borderColor: '#4CAF50',
+
+                backgroundColor:
+                    'rgba(76, 175, 80, 0.1)',
+
+                borderWidth: 2,
+
+                pointRadius: 4,
+
+                fill: true,
+
+                tension: 0.3
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+
+                    mode: 'index',
+
+                    intersect: false
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    title: {
+
+                        display: true,
+
+                        text: 'Date'
+
+                    }
+
+                },
+
+                y: {
+
+                    beginAtZero: true,
+
+                    title: {
+
+                        display: true,
+
+                        text: 'Population Count'
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+});
+
+
+// FILTER TABLE AND CHARTS
+function filterAnalysis() {
+
+    const selected =
+        document.getElementById(
+            'speciesFilter'
+        ).value;
+
+
+    // Filter analysis table rows
+
+    const rows =
+        document.querySelectorAll(
+            '.analysis-row'
+        );
+
+
+    rows.forEach(row => {
+
+        const species =
+            row.dataset.species;
+
+
+        if (
+            selected === 'all' ||
+            species === selected
+        ) {
+
+            row.style.display = '';
+
+        } else {
+
+            row.style.display = 'none';
+
+        }
+
+    });
+
+
+    // Filter trend charts
+
+    const charts =
+        document.querySelectorAll(
+            '.chart-card'
+        );
+
+
+    charts.forEach(chart => {
+
+        const species =
+            chart.dataset.chartSpecies;
+
+
+        if (
+            selected === 'all' ||
+            species === selected
+        ) {
+
+            chart.style.display = 'block';
+
+        } else {
+
+            chart.style.display = 'none';
+
+        }
+
+    });
+
+}
+
+</script>
+
+<script src="{{ url_for('static', filename='js.js') }}"></script>
+
+{% endblock %}

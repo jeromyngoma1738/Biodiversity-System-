@@ -1,52 +1,78 @@
 
 {% extends "base.html" %}
 
-{% block title %}
-SPECIES DATABASE
-{% endblock %}
-{% block css %}
+{% block title %}VIEW SPECIES {% endblock %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+
 {% endblock %}
 
 {% block content %}
 
 
-<h1>SPECIES DATABASE</h1>
-<header>
-    <nav class="navbar">
-        <a href="{{ url_for('admin') }}">DashBoard</a>
-        <a href="{{ url_for('login') }}">log Out</a>
-    </nav>
-    
-</header>
+<div class="admin-container">
+    <!-- HEADER -->
+    <header class="top-bar">
+        <div class="logo">
+            <h1>🌿 Biodiversity Monitoring System</h1>
+        </div>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Scientific Name</th>
-        <th>Common Name</th>
-        <th>Habitat</th>
-        <th>Location</th>
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
 
-    </tr>
+            <input type="text" name="search" placeholder="Search users, species or observations..." value="{{ search if search else '' }}">
 
-    {% for species in species_list %}
-    <tr>
-        <td>{{ species.id }}</td>
-        <td>{{ species.scientificName }}</td>
-        <td>{{ species.specie_Common_Name}}</td>
-        <td>{{ species.specie_Habitat}}</td>
-        <td>{{ species.location }}</td>
-     
-    </tr>
-    {% endfor %}
+            <button type="submit">
+                 <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
 
-</table>
+        <div class="nav-buttons">
+            <a href="{{ url_for('admin') }}" class="nav-btn">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
 
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </div>
+    </header>
+
+
+
+    <!-- TITLE -->
+
+    <h2 class="section-title"> VIEW SPECIES</h2>
+    <!-- USERS TABLE -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>SPECIES ID</th>
+                    <th>SPECIES SCIENTIFIC NAME </th>
+                    <th>SPECIES COMMON NAME </th>
+                    <th>HABITAT</th>
+                    <th>LOCATION</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for species in species_list %}
+                    <tr>
+                        <td>{{ species.id }}</td>
+                        <td>{{ species.scientificName }}</td>
+                        <td>{{ species.specie_Common_Name}}</td>
+                        <td>{{ species.specie_Habitat}}</td>
+                        <td>{{ species.location }}</td>
+                    </tr>
+                     {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <button onclick="window.location.href='{{ url_for('back') }}'" class="back-btn">
     ← Back
 </button>
 {% endblock %}
-

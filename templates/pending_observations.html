@@ -1,87 +1,58 @@
 {% extends "base.html" %}
 
-{% block title %}
-Manage Users
-{% endblock %}
-{% block css %}
+{% block title %} PENDING OBSERVATIONS  {% endblock %}
 
+{% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
 {% endblock %}
 
 {% block content %}
 
-
 <div class="admin-container">
-
-
     <!-- HEADER -->
-
     <header class="top-bar">
-
-
         <div class="logo">
-
             <h1>🌿 Biodiversity Monitoring System</h1>
-
-            <p>Administrator Dashboard</p>
-
         </div>
-
-
 
         <form action="{{ url_for('search') }}" method="GET" class="search-form">
 
-
-            <input 
-                type="text"
-                name="search"
-                placeholder="Search users, species or observations..."
-                value="{{ search if search else '' }}"
-            >
-
+            <input type="text" name="search" placeholder="Search users, species or observations..." value="{{ search if search else '' }}">
 
             <button type="submit">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
+                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-
         </form>
 
         <div class="nav-buttons">
-
-
             <a href="{{ url_for('admin') }}" class="nav-btn">
-
                 <i class="fa-solid fa-house"></i>
-
                 Dashboard
-
             </a>
 
             <a href="{{ url_for('logout') }}" class="logout-btn">
-
                 <i class="fa-solid fa-right-from-bracket"></i>
-
                 Logout
-
             </a>
-
-
         </div>
-
-
     </header>
+    <!-- TITLE -->
 
-<table>
-    <tr>
-        <th>Species</th>
-        <th>Date</th>
-        <th>Population</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-
+    <h2 class="section-title"> SPECIE'S OBSERVATION</h2>
+    <!-- USERS TABLE -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Species</th>
+                    <th>Population</th>
+                    <th>Notes</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            
+            <tbody> 
     {% for obs in observations %}
     <tr>
         <td>{{ obs.species.specie_Common_Name }}</td>
@@ -91,24 +62,12 @@ Manage Users
 
         <td>
 
-            <form action="{{ url_for('approve_observation', id=obs.id) }}"
-                  method="POST"
-                  style="display:inline;">
-
-                <button type="submit">
-                    Approve
-                </button>
-
+            <form action="{{ url_for('approve_observation', id=obs.id) }}"method="POST"style="display:inline;">
+                <button type="submit">Approve</button>
             </form>
 
-            <form action="{{ url_for('reject_observation', id=obs.id) }}"
-                  method="POST"
-                  style="display:inline;">
-
-                <button type="submit">
-                    Reject
-                </button>
-
+            <form action="{{ url_for('reject_observation', id=obs.id) }}"method="POST"style="display:inline;">
+                <button type="submit"> Reject</button>
             </form>
 
         </td>
@@ -116,7 +75,13 @@ Manage Users
     </tr>
     {% endfor %}
 
-</table>
+ </tbody>
+        </table>
+    </div>
+</div>
 
-
+<button onclick="window.location.href='{{ url_for('back') }}'" class="back-btn">
+    ← Back
+</button>
 {% endblock %}
+

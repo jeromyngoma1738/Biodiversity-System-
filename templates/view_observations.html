@@ -1,54 +1,90 @@
+
 {% extends "base.html" %}
 
-{% block title %}
-SPECIES DATABASE
-{% endblock %}
+{% block title %}VIEW SPECIES {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+
 {% endblock %}
 
 {% block content %}
 
-<h1>Observations</h1>
 
-<table border="1">
-    <tr>
-        <th>Species</th>
-        <th>Population</th>
-        <th>Notes</th>
-        <th>Date</th>
-        <th>Status</th>
-    </tr>
+<div class="admin-container">
+    <!-- HEADER -->
+    <header class="top-bar">
+        <div class="logo">
+            <h1>🌿 Biodiversity Monitoring System</h1>
+        </div>
 
-    {% for obs in observations %}
-    <tr>
-        <td>{{ obs.species.specie_Common_Name }}</td>
-        <td>{{ obs.population_count }}</td>
-        <td>{{ obs.notes }}</td>
-        <td>{{ obs.observation_date }}</td>
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
 
-        <td>
-            {% if obs.status == "Pending" %}
-                <span class="badge bg-warning">Pending</span>
+            <input type="text" name="search" placeholder="Search users, species or observations..." value="{{ search if search else '' }}">
 
-            {% elif obs.status == "Approved" %}
-                <span class="badge bg-success">Approved</span>
+            <button type="submit">
+                 <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
 
-            {% elif obs.status == "Rejected" %}
-                <span class="badge bg-danger">Rejected</span>
+        <div class="nav-buttons">
+            <a href="{{ url_for('admin') }}" class="nav-btn">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
 
-            {% else %}
-                <span class="badge bg-secondary">Unknown</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </div>
+    </header>
 
-            {% endif %}
-        </td>
-    </tr>
 
-    {% endfor %}
 
-</table>
+    <!-- TITLE -->
+
+    <h2 class="section-title"> SPECIE'S OBSERVATION</h2>
+    <!-- USERS TABLE -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Species</th>
+                    <th>Population</th>
+                    <th>Notes</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            
+            <tbody>    
+                {% for obs in observations %}
+                <tr>
+                    <td>{{ obs.species.specie_Common_Name }}</td>
+                    <td>{{ obs.population_count }}</td>
+                    <td>{{ obs.notes }}</td>
+                    <td>{{ obs.observation_date }}</td>
+                    <td>
+                        {% if obs.status == "Pending" %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% elif obs.status == "Approved" %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif obs.status == "Rejected" %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Unknown</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <button onclick="window.location.href='{{ url_for('back') }}'" class="back-btn">
     ← Back
 </button>
 {% endblock %}
+

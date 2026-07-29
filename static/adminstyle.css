@@ -1,1097 +1,893 @@
+
 /* =====================================================
    BIODIVERSITY MONITORING SYSTEM
-   ADMIN DASHBOARD STYLE
-   Admin | User | Field Officer | Reports | Species
+   UNIFIED ADMINSTYLE.CSS
+
+   Covers:
+   - Admin Dashboard
+   - User Dashboard
+   - Field Officer
+   - Species
+   - Observations
+   - Analysis
+   - Gallery
+   - Notifications
 ===================================================== */
 
 
-/* ================= GLOBAL ================= */
+/* =====================================================
+   1. GLOBAL RESET
+===================================================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-
-body{
-
-    font-family:'Segoe UI',Tahoma,sans-serif;
-
+body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
     background:
-    linear-gradient(
-        135deg,
-        #e8f5e9,
-        #f1f8e9,
-        #e0f2f1
-    );
+        linear-gradient(
+            135deg,
+            #e8f5e9,
+            #f1f8e9,
+            #e0f2f1
+        );
+    color: #263238;
+    min-height: 100vh;
+}
 
-    color:#263238;
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
+button {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+img {
+    max-width: 100%;
 }
 
 
-a{
-    text-decoration:none;
-    color:inherit;
-}
-
-
-
-/* ================= MAIN CONTAINER ================= */
-
+/* =====================================================
+   2. MAIN CONTAINERS
+===================================================== */
 
 .admin-container,
 .user-container,
-.gallery-container{
-
-    width:95%;
-    margin:auto;
-    padding:35px;
-
+.gallery-container {
+    width: 95%;
+    max-width: 1500px;
+    margin: auto;
+    padding: 35px;
 }
 
 
+/* =====================================================
+   3. TOP HEADER / NAVIGATION
+===================================================== */
 
-/* ================= HEADER ================= */
-
-
-.top-bar{
-
+.top-bar {
     background:
-    linear-gradient(
-        120deg,
-        #14532d,
-        #2e7d32,
-        #00897b
-    );
+        linear-gradient(
+            120deg,
+            #14532d,
+            #2e7d32,
+            #00897b
+        );
 
-    padding:25px;
+    padding: 25px;
 
-    border-radius:25px;
+    border-radius: 25px;
 
-    display:flex;
+    display: flex;
 
-    justify-content:space-between;
+    justify-content: space-between;
 
-    align-items:center;
+    align-items: center;
 
-    flex-wrap:wrap;
+    flex-wrap: wrap;
 
-    gap:20px;
-
+    gap: 20px;
 
     box-shadow:
-    0 10px 30px rgba(0,0,0,.25);
+        0 10px 30px rgba(0, 0, 0, 0.25);
+}
 
+.logo h1 {
+    color: white;
+    font-size: 30px;
+}
+
+.logo p {
+    color: #dcedc8;
 }
 
 
+/* =====================================================
+   4. SEARCH
+===================================================== */
 
-.logo h1{
+.search-form {
+    display: flex;
+    gap: 10px;
+}
 
-    color:white;
+.search-form input {
+    width: 330px;
+    padding: 14px 20px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+}
 
-    font-size:30px;
+.search-form button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ffc107;
+    color: white;
+}
 
+.search-form button:hover {
+    transform: scale(1.1);
 }
 
 
+/* =====================================================
+   5. NAVIGATION BUTTONS
+===================================================== */
 
-.logo p{
-
-    color:#dcedc8;
-
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
-
-
-
-/* ================= SEARCH ================= */
-
-
-.search-form{
-
-    display:flex;
-
-    gap:10px;
-
-}
-
-
-
-.search-form input{
-
-    width:330px;
-
-    padding:14px 20px;
-
-    border-radius:30px;
-
-    border:none;
-
-    outline:none;
-
-}
-
-
-
-.search-form button{
-
-    width:50px;
-
-    height:50px;
-
-    border-radius:50%;
-
-    background:#ffc107;
-
-    color:white;
-
-    border:none;
-
-    cursor:pointer;
-
-}
-
-
-
-.search-form button:hover{
-
-    transform:scale(1.1);
-
-}
-
-
-
-/* ================= NAVIGATION ================= */
-
-
-.nav-buttons{
-
-    display:flex;
-
-    gap:15px;
-
-}
-
-
 
 .nav-btn,
-.logout-btn{
+.logout-btn {
+    padding: 12px 25px;
+    border-radius: 30px;
+    color: white;
+    font-weight: bold;
+}
 
+.nav-btn {
+    background: #0288d1;
+}
 
-    padding:12px 25px;
+.nav-btn:hover {
+    background: #01579b;
+}
 
-    border-radius:30px;
+.logout-btn {
+    background: #c62828;
+}
 
-    color:white;
-
-    font-weight:bold;
-
+.logout-btn:hover {
+    background: #8e0000;
 }
 
 
+/* =====================================================
+   6. TITLES
+===================================================== */
 
-.nav-btn{
+.section-title {
+    margin: 35px 0 15px;
+    color: #1b5e20;
+    font-size: 28px;
+}
 
-    background:#0288d1;
-
+h1 {
+    color: #1b5e20;
 }
 
 
-.nav-btn:hover{
-
-    background:#01579b;
-
-}
-
-
-
-.logout-btn{
-
-    background:#c62828;
-
-}
-
-
-.logout-btn:hover{
-
-    background:#8e0000;
-
-}
-
-
-
-/* ================= TITLES ================= */
-
-
-.section-title{
-
-    margin:35px 0 15px;
-
-    color:#1b5e20;
-
-    font-size:28px;
-
-}
-
-
-
-h1{
-
-    color:#1b5e20;
-
-}
-
-
-
-/* ================= DASHBOARD CARDS ================= */
-
+/* =====================================================
+   7. DASHBOARD CARDS
+===================================================== */
 
 .main-card,
 .dashboard-summary,
-.menu-grid{
-
-
-    display:grid;
+.menu-grid {
+    display: grid;
 
     grid-template-columns:
-    repeat(auto-fit,minmax(250px,1fr));
+        repeat(
+            auto-fit,
+            minmax(250px, 1fr)
+        );
 
-    gap:30px;
+    gap: 30px;
 
-    margin-top:30px;
-
+    margin-top: 30px;
 }
-
-
-
 
 .card,
 .menu-card,
-.summary-card{
+.summary-card {
+    background: white;
 
+    padding: 35px;
 
-    background:white;
+    border-radius: 25px;
 
-    padding:35px;
-
-    border-radius:25px;
-
-    text-align:center;
-
+    text-align: center;
 
     box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
 
-    0 10px 25px rgba(0,0,0,.12);
-
-
-    transition:.3s;
-
+    transition: 0.3s;
 }
-
-
 
 .card:hover,
 .menu-card:hover,
-.summary-card:hover{
-
-
-    transform:translateY(-10px);
-
-    background:#f1f8e9;
-
+.summary-card:hover {
+    transform: translateY(-10px);
+    background: #f1f8e9;
 }
-
-
-
-/* ICONS */
-
 
 .card-icon,
-.icon-circle{
+.icon-circle {
+    width: 90px;
+    height: 90px;
 
+    display: flex;
 
-    width:90px;
+    align-items: center;
+    justify-content: center;
 
-    height:90px;
+    margin: auto;
 
+    border-radius: 50%;
 
-    display:flex;
+    background: #e8f5e9;
 
-    align-items:center;
+    font-size: 40px;
 
-    justify-content:center;
-
-
-    margin:auto;
-
-
-    border-radius:50%;
-
-
-    background:#e8f5e9;
-
-
-    font-size:40px;
-
-
-    color:#2e7d32;
-
+    color: #2e7d32;
 }
-
-
 
 .card h3,
-.menu-card h3{
+.menu-card h3 {
+    margin-top: 20px;
+    color: #1b5e20;
+}
 
-
-    margin-top:20px;
-
-    color:#1b5e20;
-
+.card p {
+    margin-top: 10px;
+    color: #546e7a;
 }
 
 
+/* =====================================================
+   8. GLOBAL TABLE
+===================================================== */
 
-.card p{
-
-    margin-top:10px;
-
-    color:#546e7a;
-
+.table-container {
+    margin-top: 35px;
+    overflow-x: auto;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
 
+    border-radius: 20px;
 
-/* ================= TABLE ================= */
-
-
-.table-container{
-
-    margin-top:35px;
-
-    overflow-x:auto;
-
-}
-
-
-
-table{
-
-
-    width:100%;
-
-    border-collapse:collapse;
-
-    background:white;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
+    overflow: hidden;
 
     box-shadow:
-    0 10px 25px rgba(0,0,0,.15);
-
+        0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-
-
-thead{
-
-
+thead {
     background:
+        linear-gradient(
+            90deg,
+            #1b5e20,
+            #43a047
+        );
+}
 
-    linear-gradient(
-        90deg,
-        #1b5e20,
-        #43a047
-    );
+th {
+    padding: 18px;
+    color: white;
+    text-transform: uppercase;
+}
 
+td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background: #dcfce7;
 }
 
 
+/* =====================================================
+   9. ROLE BADGE
+===================================================== */
 
-th{
+.role-badge {
+    background: #d1fae5;
+    color: #065f46;
 
+    padding: 8px 18px;
 
-    padding:18px;
+    border-radius: 20px;
 
-    color:white;
-
-    text-transform:uppercase;
-
+    font-weight: bold;
 }
 
 
+/* =====================================================
+   10. GENERAL BUTTONS
+===================================================== */
 
-td{
+button {
+    padding: 10px 18px;
+    border-radius: 25px;
+}
 
+button:hover {
+    transform: scale(1.05);
+}
 
-    padding:15px;
+.update-btn {
+    background: #2e7d32;
+    color: white;
+}
 
-    text-align:center;
-
-    border-bottom:1px solid #ddd;
-
+.delete-btn {
+    background: #c62828;
+    color: white;
 }
 
 
+/* =====================================================
+   11. DOWNLOAD BUTTON
+===================================================== */
 
-tbody tr:hover{
+.btn-download {
+    display: inline-block;
 
+    padding: 14px 25px;
 
-    background:#dcfce7;
+    background: #1565c0;
 
+    color: white;
+
+    border-radius: 30px;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.btn-download:hover {
+    background: #0d47a1;
+    transform: translateY(-3px);
 }
 
 
+/* =====================================================
+   12. SPECIES ACTION BUTTONS
+===================================================== */
 
-/* ================= ROLE ================= */
+.action-buttons {
+    display: flex;
 
+    justify-content: center;
 
-.role-badge{
+    gap: 20px;
 
+    flex-wrap: wrap;
 
-    background:#d1fae5;
+    margin: 30px;
+}
 
-    color:#065f46;
+.action-buttons .btn {
+    padding: 15px 25px;
 
-    padding:8px 18px;
+    border-radius: 30px;
 
-    border-radius:20px;
+    color: white;
 
-    font-weight:bold;
+    font-weight: bold;
+}
 
+.add-species {
+    background: #43a047;
+}
+
+.view-species {
+    background: #00897b;
+}
+
+.record-observation {
+    background: #1565c0;
 }
 
 
+/* =====================================================
+   13. OBSERVATION FORM
+===================================================== */
 
-/* ================= BUTTONS ================= */
+.observation-container {
+    min-height: 75vh;
 
+    display: flex;
 
-button{
+    justify-content: center;
 
+    align-items: center;
 
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:25px;
-
-    cursor:pointer;
-
-    font-weight:bold;
-
+    padding: 40px;
 }
 
+.observation-form {
+    width: 450px;
 
+    background: white;
 
-.update-btn{
+    padding: 40px;
 
-    background:#2e7d32;
-
-    color:white;
-
-}
-
-
-
-.delete-btn{
-
-    background:#c62828;
-
-    color:white;
-
-}
-
-
-
-button:hover{
-
-    transform:scale(1.05);
-
-}
-
-
-
-/* ================= REPORT ================= */
-
-
-.chart-card{
-
-
-    background:white;
-
-    padding:30px;
-
-    margin:30px auto;
-
-    width:90%;
-
-    border-radius:25px;
-
+    border-radius: 25px;
 
     box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.15);
 
-    0 10px 25px rgba(0,0,0,.15);
-
+    transition: 0.3s;
 }
 
-
-
-.chart-card img{
-
-
-    max-width:100%;
-
-    border-radius:15px;
-
+.observation-form:hover {
+    transform: translateY(-5px);
 }
 
+.observation-form h2 {
+    text-align: center;
 
+    color: #1b5e20;
 
-/* DOWNLOAD */
-
-
-.btn-download{
-
-
-    display:inline-block;
-
-    padding:14px 25px;
-
-    background:#1565c0;
-
-    color:white;
-
-    border-radius:30px;
-
-    font-weight:bold;
-
+    margin-bottom: 25px;
 }
 
+.observation-form label {
+    display: block;
 
+    margin-top: 15px;
 
-.btn-download:hover{
+    color: #2e7d32;
 
-    background:#0d47a1;
-
+    font-weight: bold;
 }
-
-
-
-/* ================= SPECIES ACTION BUTTONS ================= */
-
-
-.action-buttons{
-
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:20px;
-
-    flex-wrap:wrap;
-
-    margin:30px;
-
-}
-
-
-
-.action-buttons .btn{
-
-
-    padding:15px 25px;
-
-    border-radius:30px;
-
-    color:white;
-
-    font-weight:bold;
-
-}
-
-
-
-.add-species{
-
-    background:#43a047;
-
-}
-
-
-
-.view-species{
-
-    background:#00897b;
-
-}
-
-
-
-.record-observation{
-
-    background:#1565c0;
-
-}
-
-
-
-/* ================= GALLERY ================= */
-
-
-.slider{
-
-
-    width:100%;
-
-    height:650px;
-
-    border-radius:25px;
-
-    overflow:hidden;
-
-    box-shadow:
-
-    0 10px 30px rgba(0,0,0,.25);
-
-}
-
-
-
-.slide img{
-
-
-    width:100%;
-
-    height:100%;
-
-    object-fit:cover;
-
-}
-
-
-
-/* ================= MOBILE ================= */
-
-
-@media(max-width:768px){
-
-
-.admin-container,
-.user-container,
-.gallery-container{
-
-    padding:15px;
-
-}
-
-
-
-.top-bar{
-
-    flex-direction:column;
-
-}
-
-
-
-.search-form input{
-
-    width:100%;
-
-}
-
-
-
-.nav-buttons{
-
-    flex-direction:column;
-
-    width:100%;
-
-}
-
-
-
-.main-card,
-.dashboard-summary,
-.menu-grid{
-
-    grid-template-columns:1fr;
-
-}
-
-}
-/* ==========================================
-   OBSERVATION FORM CENTERING
-========================================== */
-
-
-.observation-container{
-
-    min-height:75vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:40px;
-
-}
-
-
-
-.observation-form{
-
-
-    width:450px;
-
-    background:white;
-
-    padding:40px;
-
-
-    border-radius:25px;
-
-
-    box-shadow:
-
-    0 12px 30px rgba(0,0,0,.15);
-
-
-    transition:.3s;
-
-}
-
-
-
-.observation-form:hover{
-
-    transform:translateY(-5px);
-
-}
-
-
-
-.observation-form h2{
-
-
-    text-align:center;
-
-    color:#1b5e20;
-
-    margin-bottom:25px;
-
-
-}
-
-
-
-.observation-form label{
-
-
-    display:block;
-
-    margin-top:15px;
-
-    color:#2e7d32;
-
-    font-weight:bold;
-
-
-}
-
-
 
 .observation-form input,
 .observation-form select,
-.observation-form textarea{
+.observation-form textarea {
+    width: 100%;
 
+    padding: 13px;
 
-    width:100%;
+    margin-top: 8px;
 
-    padding:13px;
+    border-radius: 10px;
 
-    margin-top:8px;
+    border: 1px solid #ccc;
 
-    border-radius:10px;
+    font-size: 15px;
 
-    border:1px solid #ccc;
+    outline: none;
+}
 
-    font-size:15px;
+.observation-form input:focus,
+.observation-form select:focus,
+.observation-form textarea:focus {
+    border-color: #2e7d32;
 
+    box-shadow:
+        0 0 0 3px rgba(46, 125, 50, 0.12);
+}
 
+.observation-form textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.observation-form button {
+    width: 100%;
+
+    margin-top: 25px;
+
+    padding: 14px;
+
+    background: #2e7d32;
+
+    color: white;
+
+    border-radius: 30px;
+}
+
+.observation-form button:hover {
+    background: #14532d;
 }
 
 
-
-.observation-form textarea{
-
-
-    height:120px;
-
-    resize:none;
-
-
-}
-
-
-
-.observation-form button{
-    width:100%;
-    margin-top:25px;
-    padding:14px;
-    background:#2e7d32;
-    color:white;
-    border:none;
-    border-radius:30px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.observation-form button:hover{
-    background:#14532d;
-}
 /* =====================================================
-   NOTIFICATIONS PAGE
+   14. GALLERY
 ===================================================== */
 
+.slider {
+    width: 100%;
 
-/* Main notification wrapper */
+    height: 650px;
 
-.notification-container{
+    border-radius: 25px;
 
-    width:90%;
-
-    margin:40px auto;
-
-    padding:30px;
-
-}
-
-
-
-/* Page title */
-
-.notification-container h2{
-
-    text-align:center;
-
-    color:#1b5e20;
-
-    font-size:30px;
-
-    margin-bottom:35px;
-
-}
-
-
-
-/* Notification card */
-
-.notification-card{
-
-
-    background:white;
-
-    padding:25px;
-
-
-    margin-bottom:25px;
-
-
-    border-radius:25px;
-
-
-    border-left:8px solid #2e7d32;
-
+    overflow: hidden;
 
     box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+}
 
-    0 10px 25px rgba(0,0,0,.12);
+.slide {
+    width: 100%;
+    height: 100%;
+}
 
-
-    transition:.3s;
-
-
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 
+/* =====================================================
+   15. NOTIFICATIONS
+===================================================== */
 
-.notification-card:hover{
+.notification-container {
+    width: 90%;
 
+    max-width: 1200px;
 
-    transform:translateY(-8px);
+    margin: 40px auto;
 
-
-    background:#f1f8e9;
-
-
+    padding: 30px;
 }
 
+.notification-container h2 {
+    text-align: center;
 
+    color: #1b5e20;
 
-/* Notification title */
+    font-size: 30px;
 
-
-.notification-card h5{
-
-
-    color:#1b5e20;
-
-
-    font-size:22px;
-
-
-    margin-bottom:15px;
-
-
+    margin-bottom: 35px;
 }
 
+.notification-card {
+    background: white;
 
+    padding: 25px;
 
-/* Notification message */
+    margin-bottom: 25px;
 
+    border-radius: 25px;
 
-.notification-card p{
-
-
-    color:#455a64;
-
-
-    font-size:16px;
-
-
-    line-height:1.7;
-
-
-    margin-bottom:15px;
-
-
-}
-
-
-
-/* Date and time */
-
-
-.notification-card small{
-
-
-    display:block;
-
-
-    color:#78909c;
-
-
-    font-style:italic;
-
-
-}
-
-
-
-/* Empty notification alert */
-
-
-.alert{
-
-
-    background:white;
-
-
-    width:400px;
-
-
-    margin:30px auto;
-
-
-    padding:25px;
-
-
-    text-align:center;
-
-
-    border-radius:20px;
-
-
-    color:#546e7a;
-
-
-    font-weight:bold;
-
+    border-left: 8px solid #2e7d32;
 
     box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.12);
 
-    0 8px 20px rgba(0,0,0,.12);
+    transition: 0.3s;
+}
 
+.notification-card:hover {
+    transform: translateY(-8px);
+
+    background: #f1f8e9;
+}
+
+.notification-card h5 {
+    color: #1b5e20;
+
+    font-size: 22px;
+
+    margin-bottom: 15px;
+}
+
+.notification-card p {
+    color: #455a64;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+    margin-bottom: 15px;
+}
+
+.notification-card small {
+    display: block;
+
+    color: #78909c;
+
+    font-style: italic;
+}
+
+.alert {
+    background: white;
+
+    width: 400px;
+
+    max-width: 90%;
+
+    margin: 30px auto;
+
+    padding: 25px;
+
+    text-align: center;
+
+    border-radius: 20px;
+
+    color: #546e7a;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =====================================================
+   19. BACK BUTTON
+===================================================== */
+
+.back-btn {
+    display: block;
+
+    margin: 30px auto;
+
+    padding: 13px 30px;
+
+    background: #546e7a;
+
+    color: white;
+
+    border-radius: 30px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: #37474f;
+
+    transform: translateY(-3px);
+}
+
+
+/* =====================================================
+   20. RESPONSIVE DESIGN
+===================================================== */
+
+@media(max-width:1100px) {
+
+    .report-summary {
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+    }
+
+    .species-info-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+    }
 
 }
 
 
+@media(max-width:768px) {
 
-/* Back button position */
+    .admin-container,
+    .user-container,
+    .gallery-container {
+        width: 95%;
+
+        padding: 15px;
+    }
+
+    .top-bar {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .search-form {
+        width: 100%;
+    }
+
+    .search-form input {
+        width: 100%;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .main-card,
+    .dashboard-summary,
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
 
 
-.notification-container + .back-btn{
+    /* Analysis */
+
+    .analysis-container {
+        width: 95%;
+
+        padding: 10px;
+
+        margin: 20px auto;
+    }
+
+    .analysis-header {
+        padding: 30px 20px;
+    }
+
+    .analysis-header h1 {
+        font-size: 28px;
+    }
+
+    .analysis-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .filter-bar select {
+        width: 100%;
+
+        min-width: 0;
+    }
 
 
-    display:block;
+    /* Gallery */
+
+    .slider {
+        height: 400px;
+    }
 
 
-    width:150px;
+    /* Observation */
+
+    .observation-container {
+        padding: 20px;
+    }
+
+    .observation-form {
+        width: 100%;
+    }
 
 
-    text-align:center;
+    /* Notifications */
 
+    .notification-container {
+        width: 95%;
 
-    margin:20px auto;
-
+        padding: 15px;
+    }
 
 }
 
 
+@media(max-width:480px) {
 
-/* Mobile */
+    .top-bar {
+        padding: 20px;
+    }
 
-@media(max-width:768px){
+    .logo h1 {
+        font-size: 24px;
+    }
 
+    .gallery-container {
+        padding: 10px;
+    }
 
-.notification-container{
-
-
-    width:95%;
-
-    padding:15px;
-
-}
-
-
-
-.notification-card{
-
-
-    padding:20px;
-
+    .slider {
+        height: 300px;
+    }
 
 }
 
 
+/* =====================================================
+   21. PRINT REPORT
+===================================================== */
 
-.notification-card h5{
+@media print {
 
+    body {
+        background: white;
+    }
 
-    font-size:20px;
+    .report-container {
+        width: 100%;
 
+        max-width: none;
 
-}
+        margin: 0;
 
+        padding: 0;
+    }
+
+    .report-header {
+        background: white;
+
+        color: black;
+
+        box-shadow: none;
+
+        border-bottom: 3px solid #1b5e20;
+
+        border-radius: 0;
+    }
+
+    .report-header h1 {
+        color: #1b5e20;
+    }
+
+    .report-header p {
+        color: #455a64;
+    }
+
+    .btn-print,
+    nav,
+    .sidebar,
+    header,
+    footer {
+        display: none !important;
+    }
+
+    .report-card,
+    .species-report-card {
+        box-shadow: none;
+
+        border: 1px solid #ddd;
+
+        break-inside: avoid;
+    }
+
+    .report-container .observation-section table {
+        box-shadow: none;
+    }
 
 }

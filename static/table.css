@@ -1,0 +1,101 @@
+
+.top-bar {
+    background:
+        linear-gradient(
+            120deg,
+            #14532d,
+            #2e7d32,
+            #00897b
+        );
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.logo h1 {
+    color: white;
+    font-size: 30px;
+}
+
+.logo p {
+    color: #dcedc8;
+}
+
+
+/* =====================================================
+   4. SEARCH
+===================================================== */
+
+.search-form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-form input {
+    width: 330px;
+    padding: 14px 20px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+}
+
+.search-form button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ffc107;
+    color: white;
+}
+
+.search-form button:hover {
+    transform: scale(1.1);
+}
+
+
+/* =====================================================
+   5. NAVIGATION BUTTONS
+===================================================== */
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.nav-btn,
+.logout-btn {
+    padding: 12px 25px;
+    border-radius: 30px;
+    color: white;
+    font-weight: bold;
+}
+
+.nav-btn {
+    background: #0288d1;
+}
+
+.nav-btn:hover {
+    background: #01579b;
+}
+
+.logout-btn {
+    background: #c62828;
+}
+
+.logout-btn:hover {
+    background: #8e0000;
+}

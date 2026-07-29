@@ -5,7 +5,7 @@ Admin Dashboard
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
 <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 {% endblock %}
 
@@ -156,11 +156,10 @@ Admin Dashboard
 
             </a>
 
-            <a href="{{ url_for('trends') }}" class="menu-card">
-
+            <a href="{{ url_for('analysis_page') }}" class="menu-card">
                 <i class="fa-solid fa-chart-line menu-icon"></i>
-
-                <h3>Population Trends</h3>
+                <h3>Review Trends</h3>
+            <p>Analyze biodiversity patterns and changes over time.</p>
 
             </a>
                 <a href="{{url_for('gallery')}}">
@@ -170,7 +169,6 @@ Admin Dashboard
                         <p> photos of different type of Species Found in CBU nature Park </p>
                     </div>
     </a>
-
 
         </div>
 
