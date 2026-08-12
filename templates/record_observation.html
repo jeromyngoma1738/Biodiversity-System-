@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}
+RECORD OBSERVATION
+{% endblock %}
+
+{% block css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-container">
+    <!-- HEADER -->
+    <header class="top-bar">
+        <div class="logo">
+            <h1>🌿 Biodiversity Monitoring System</h1>
+        </div>
+
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+
+            <input type="text" name="search" placeholder="Search users, species or observations..." value="{{ search if search else '' }}">
+
+            <button type="submit">
+                 <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+
+        <div class="nav-buttons">
+            <a href="{{ url_for('field_Officer') }}" class="nav-btn">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </div>
+    </header>
+
+
+<div class="container">
+    <div class="form-box active">
+        <form method="POST" enctype="multipart/form-data">
+            <label>Species</label>
+            <select name="species_id" required>
+                {% for sp in species_list %}
+                    <option value="{{ sp.id }}">
+                        {{ sp.specie_Common_Name }} ({{ sp.scientificName }})
+                    </option>
+                {% endfor %}
+            </select>
+
+            <br><br>
+
+            <label>Population Count</label>
+            <input type="number" name="population" required>
+
+            <br><br>
+
+            <label>Notes</label>
+            <br><br>
+            <textarea name="note" cols="40" rows="5">notes</textarea>
+
+            <br><br>
+
+            <label>Photo</label>
+            <input type="file" name="image">
+
+            <br><br>
+
+            <button type="submit">Save Observation</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

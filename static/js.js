@@ -40,7 +40,6 @@ document.querySelector(".prev").onclick = function(){
     if(index < 0){
         index = slides.length - 1;
     }
-
     showSlide(index);
 };
 

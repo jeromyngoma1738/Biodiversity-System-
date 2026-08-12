@@ -1151,3 +1151,528 @@
     }
 }
 
+.analysis-container {
+    width: 95%;
+    max-width: 1500px;
+    margin: 30px auto;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.analysis-header {
+    background: linear-gradient(135deg, #1b5e20, #388e3c);
+    color: white;
+    padding: 30px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+}
+
+.analysis-header h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+}
+
+.analysis-header p {
+    margin: 0;
+    opacity: 0.92;
+    line-height: 1.6;
+}
+
+.analysis-header-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-download,
+.back-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 7px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-download {
+    background: white;
+    color: #1b5e20;
+}
+
+.btn-download:hover {
+    background: #e8f5e9;
+}
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.analysis-section {
+    margin-top: 35px;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+}
+
+.section-heading h2 {
+    margin-bottom: 6px;
+    color: #1b5e20;
+}
+
+.section-heading p {
+    color: #666;
+    margin: 0;
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.analysis-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.analysis-card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    border-left: 5px solid #388e3c;
+}
+
+.analysis-card h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: #555;
+}
+
+.analysis-card p {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #1b5e20;
+}
+
+.analysis-card.increasing {
+    border-left-color: #2e7d32;
+}
+
+.analysis-card.increasing p {
+    color: #2e7d32;
+}
+
+.analysis-card.declining {
+    border-left-color: #d32f2f;
+}
+
+.analysis-card.declining p {
+    color: #d32f2f;
+}
+
+.analysis-card.critical {
+    border-left-color: #8e0000;
+}
+
+.analysis-card.critical p {
+    color: #8e0000;
+}
+
+/* =========================================================
+   FILTER BAR
+   ========================================================= */
+
+.filter-bar {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-bar select,
+.filter-bar input {
+    padding: 10px 13px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 220px;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.analysis-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.table-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.table-header h2 {
+    margin: 0;
+    color: #1b5e20;
+}
+
+.analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+
+.analysis-table th {
+    background: #1b5e20;
+    color: white;
+    padding: 13px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.analysis-table td {
+    padding: 13px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.analysis-table tbody tr:hover {
+    background: #f5faf5;
+}
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status,
+.risk,
+.role-badge,
+.impact-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.increasing-status {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.declining-status {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.stable-status {
+    background: #f5f5f5;
+    color: #616161;
+}
+
+.critical-risk {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+.high-risk {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.moderate-risk {
+    background: #fffde7;
+    color: #827717;
+}
+
+.low-risk {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* =========================================================
+   AI ANALYSIS
+   ========================================================= */
+
+.ai-section {
+    margin-top: 40px;
+}
+
+.ai-banner {
+    background: linear-gradient(135deg, #263238, #37474f);
+    color: white;
+    padding: 25px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+}
+
+.ai-banner h2 {
+    margin: 0 0 8px;
+}
+
+.ai-banner p {
+    margin: 0;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* =========================================================
+   AI SUMMARY
+   ========================================================= */
+
+.ai-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.ai-summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.ai-summary-card h4 {
+    margin: 0 0 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.ai-summary-card strong {
+    font-size: 25px;
+    color: #263238;
+}
+
+/* =========================================================
+   AI TABLE
+   ========================================================= */
+
+.ai-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.ai-table {
+    width: 100%;
+    min-width: 1250px;
+    border-collapse: collapse;
+}
+
+.ai-table th {
+    background: #263238;
+    color: white;
+    padding: 13px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.ai-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    font-size: 13px;
+}
+
+.ai-table tbody tr:hover {
+    background: #f7f9f9;
+}
+
+/* =========================================================
+   TROPHIC ROLE
+   ========================================================= */
+
+.role-producer {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.role-herbivore {
+    background: #fff8e1;
+    color: #795548;
+}
+
+.role-predator {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+.role-decomposer {
+    background: #efebe9;
+    color: #4e342e;
+}
+
+.role-unknown {
+    background: #eeeeee;
+    color: #616161;
+}
+
+/* =========================================================
+   IMPACT LEVEL
+   ========================================================= */
+
+.impact-0 {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.impact-1 {
+    background: #fffde7;
+    color: #827717;
+}
+
+.impact-2 {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.impact-3 {
+    background: #ffebee;
+    color: #d84315;
+}
+
+.impact-4 {
+    background: #b71c1c;
+    color: white;
+}
+
+/* =========================================================
+   AI INSIGHT BOX
+   ========================================================= */
+
+.ai-insight {
+    max-width: 350px;
+    line-height: 1.5;
+}
+
+.ai-effect {
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+.affected-list {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.affected-list li {
+    margin-bottom: 4px;
+}
+
+/* =========================================================
+   AI STATISTICAL EFFECT
+   ========================================================= */
+
+.stat-positive {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.stat-negative {
+    color: #c62828;
+    font-weight: bold;
+}
+
+.stat-neutral {
+    color: #757575;
+    font-weight: bold;
+}
+
+/* =========================================================
+   CHARTS
+   ========================================================= */
+
+.trends-section {
+    margin-top: 35px;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.chart-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.chart-card h3 {
+    color: #1b5e20;
+    margin-top: 0;
+}
+
+.no-data {
+    color: #888;
+    font-style: italic;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.no-results {
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border-radius: 12px;
+    color: #666;
+}
+
+/* =========================================================
+   AI EXPLANATION
+   ========================================================= */
+
+.ai-methodology {
+    background: #f5f7f8;
+    border-left: 5px solid #37474f;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 25px;
+    line-height: 1.7;
+}
+
+.ai-methodology h3 {
+    margin-top: 0;
+    color: #263238;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .analysis-cards,
+    .ai-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+

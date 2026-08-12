@@ -37,11 +37,7 @@ Field Officer Dashboard
 
     <form action="{{ url_for('search') }}" method="GET" class="search-form">
 
-        <input 
-        type="text" 
-        name="search" 
-        placeholder="Search species, observations..."
-        value="{{ search }}">
+        <input type="text" name="search"  placeholder="Search species, observations..."value="{{ search }}">
 
         <button type="submit">
             <i class="fa-solid fa-search"></i>
@@ -145,11 +141,7 @@ Field Officer Dashboard
     <a href="{{ url_for('view_observations') }}">
 
         <div class="card">
-
-
             <i class="fa-solid fa-eye card-icon"></i>
-
-
             <h3>
                 View Observations
             </h3>
@@ -207,35 +199,24 @@ Field Officer Dashboard
 
 <div class="main-card">
 
-
-
     <a href="{{ url_for('trends') }}">
-
-
         <div class="card">
-
-
             <i class="fa-solid fa-chart-line card-icon"></i>
-
-
-            <h3>
-                View Trends
-            </h3>
-
-
-            <p>
-                Analyze biodiversity changes over time.
-            </p>
-
-
+            <h3>View Trends</h3>
+            <p> Analyze biodiversity changes over time.</p>
         </div>
+    </a>
 
+     <a href="{{ url_for('analysis_page') }}"> 
+        <div class="card">
+            <i class="fa-solid fa-chart-line card-icon"></i>
+            <h3>Review Trends</h3>
+            <p>Analyze biodiversity patterns and changes over time.</p>
+        </div>
 
     </a>
 
     <a href="{{ url_for('notifications') }}">
-
-
         <div class="card">
             <i class="fa-solid fa-bell card-icon"></i>
             <h3>

@@ -18,6 +18,7 @@ from sqlalchemy import func
 from datetime import datetime, timedelta
 from datetime import datetime, timezone
 
+from routes.AI_Analysis_Model import generate_species_effect_report
 
 
 
@@ -55,60 +56,117 @@ def role_required(*roles):
         return decorated_function
     return decorator  
 
-#analysing the population of the of species 
+# ============================================================
+# SPECIES POPULATION ANALYSIS
+# ============================================================
+
 def analysis():
+
     species_list = Species.query.all()
+    results = []
 
     for species in species_list:
-        observations = Observation.query.filter_by( species_id=species.id, status="Approved").order_by(Observation.observation_date.desc()).all()
 
+        # Get approved observations, newest first
+        observations = (
+            Observation.query
+            .filter_by(species_id=species.id, status="Approved" )
+            .order_by( Observation.observation_date.desc())
+            .all()
+        )
+
+        # At least two observations are required
         if len(observations) < 2:
             continue
-        
+
+        # Most recent and previous observation
         current = observations[0]
         previous = observations[1]
 
         current_population = current.population_count
         previous_population = previous.population_count
 
-        # Calculate population change
-        population_change = (current_population - previous_population)
+        # Population change
+      
+        population_change = ( current_population - previous_population)
+        # Percentage change
 
-        # Calculate percentage change
         if previous_population > 0:
             percentage_change = (
-                population_change / previous_population) * 100
+                population_change / previous_population
+            ) * 100
         else:
             percentage_change = 0
+        # Determine population trend
 
-        # Determine trend
+
         if population_change > 0:
             trend = "Increasing"
+
         elif population_change < 0:
             trend = "Declining"
+
         else:
             trend = "Stable"
 
+        # ----------------------------------------------------
         # Determine risk level
+        # ----------------------------------------------------
+
         if percentage_change <= -50:
             risk_level = "Critical"
+
         elif percentage_change <= -25:
             risk_level = "High"
+
         elif percentage_change < 0:
             risk_level = "Moderate"
+
         else:
             risk_level = "Low"
 
-        print(species.specie_Common_Name,trend,percentage_change, risk_level)
-        
+        # ----------------------------------------------------
+        # Store result
+        # ----------------------------------------------------
+
+        results.append({ "species_id": species.id, "species": species.specie_Common_Name,
+            "scientific_name": getattr(species,"scientificName","N/A"
+            ),
+            "habitat": species.specie_Habitat,
+            "location": species.location,
+
+            "current_population": current_population,
+            "previous_population": previous_population,
+
+            "population_change": population_change,
+
+            "percentage_change": round( percentage_change,
+                2
+            ),
+            "trend": trend, "risk_level": risk_level,
+            "current_date": current.observation_date,
+            "previous_date": previous.observation_date
+        })
+
+    return results
+    
+
+# ============================================================
+# ANALYSIS PAGE
+# ============================================================
 @app.route("/analysisPage")
-#@login_required
-#@role_required("admin", "field_officer")
 def analysis_page():
 
-    results = Analysis.query.order_by(
-        Analysis.analysis_date.desc()
-    ).all()
+    population_results = analysis()
+
+    ai_results = generate_species_effect_report()
+
+    if not ai_results.empty:
+        ai_results = ai_results.to_dict(
+            orient="records"
+        )
+    else:
+        ai_results = []
 
     species_list = Species.query.all()
 
@@ -116,17 +174,24 @@ def analysis_page():
 
     for species in species_list:
 
-        observations = Observation.query.filter_by(
-            species_id=species.id,
-            status="Approved"
-        ).order_by(
-            Observation.observation_date.asc()
-        ).all()
+        observations = (
+            Observation.query
+            .filter_by(
+                species_id=species.id,
+                status="Approved"
+            )
+            .order_by(
+                Observation.observation_date.asc()
+            )
+            .all()
+        )
 
         trend_data.append({
+            "id": species.id,
             "name": species.specie_Common_Name,
-            "dates": [
-                observation.observation_date.strftime("%Y-%m-%d")
+            "dates": [ observation.observation_date.strftime(
+                    "%Y-%m-%d"
+                )
                 for observation in observations
             ],
             "counts": [
@@ -135,13 +200,9 @@ def analysis_page():
             ]
         })
 
-    return render_template(
-        "analysisPage.html",
-        results=results,
-        species_list=species_list,
-        trend_data=trend_data
-    )
-        
+    return render_template( "analysisPage.html", results=population_results, ai_results=ai_results, 
+                           species_list=species_list, trend_data=trend_data)
+    
 # CREATE NOTIFICATION
 
 def create_notification(role, title, message, notification_type="Info", user_id=None):
