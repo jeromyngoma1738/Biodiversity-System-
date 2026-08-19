@@ -1,6 +1,3 @@
-# ============================================================
-# AI / ECOLOGICAL BIODIVERSITY ANALYSIS
-# ============================================================
 
 import pandas as pd
 import numpy as np
@@ -9,41 +6,31 @@ import joblib
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, r2_score
-
 from models import Observation
 
-
-# ============================================================
 # CBU NATURE PARK ECOSYSTEM DEFINITION
-# ============================================================
 
 # Trophic roles:
-# producer
-# herbivore
-# predator
-# decomposer
-
-
 TROPHIC_ROLE = {
-
-    # ========================================================
     # PRODUCERS
-    # ========================================================
-
     "Tree": "producer",
     "Grass": "producer",
-    "Shrub": "producer",
     "Flowering Plant": "producer",
     "Acacia": "producer",
     "Miombo Tree": "producer",
     "Mopane": "producer",
     "Grass Species": "producer",
     "Plant": "producer",
+    "Miombo Tree": "producer",
+    "Brachystegia": "producer",
+    "Julbernardia": "producer",
+    "Isoberlinia": "producer",
+    "Faidherbia Albid": "producer",
+    "khasi pine": "producer",
+    "apple-ring acacia": "producer",
+    "Ana Tree": "producer",
 
-    # ========================================================
     # HERBIVORES
-    # ========================================================
-
     # Small herbivores
     "Grasshopper": "herbivore",
     "Caterpillar": "herbivore",
@@ -63,18 +50,13 @@ TROPHIC_ROLE = {
     "Warthog": "herbivore",
     "Zebra": "herbivore",
     "Buffalo": "herbivore",
-    "Elephant": "herbivore",
-    "Giraffe": "herbivore",
-    "Hare": "herbivore",
     "Rabbit": "herbivore",
 
-    # ========================================================
     # PREDATORS / INSECTIVORES
-    # ========================================================
-
     "Spider": "predator",
+    "Snakes":"predator",
     "Praying Mantis": "predator",
-    "Frog": "predator",
+    "Frogs": "predator",
     "Lizard": "predator",
     "Snake": "predator",
     "Bird": "predator",
@@ -82,33 +64,19 @@ TROPHIC_ROLE = {
     "Mongoose": "predator",
     "Genet": "predator",
     "Civet": "predator",
-
-    # ========================================================
+    
     # DECOMPOSERS
-    # ========================================================
-
     "Fungi": "decomposer",
     "Bacteria": "decomposer",
     "Termite": "decomposer",
     "Earthworm": "decomposer",
 }
 
-
-# ============================================================
 # FOOD WEB
-# ============================================================
-
 FOOD_WEB = {
 
-    "producer": {
-        "feeds": ["herbivore"],
-        "fed_by": ["decomposer"]
-    },
-
-    "herbivore": {
-        "feeds": ["predator"],
-        "fed_by": ["producer"]
-    },
+    "producer": { "feeds": ["herbivore"], "fed_by": ["decomposer"]},
+    "herbivore": {"feeds": ["predator"],"fed_by": ["producer"] },
 
     "predator": {
         "feeds": [],
@@ -125,194 +93,82 @@ FOOD_WEB = {
     }
 }
 
-
-# ============================================================
 # IMPACT LEVELS
-# ============================================================
-
 IMPACT_LABELS = {
-
     0: "Stable Ecosystem",
     1: "Slight Disturbance",
     2: "Moderate Risk",
     3: "High Risk",
     4: "Critical"
-
 }
-
-
-# ============================================================
 # GET TROPHIC ROLE
-# ============================================================
-
 def get_role(species_name):
 
     if not species_name:
         return "unknown"
+    species_name = species_name.strip().lower()
+    for species, role in TROPHIC_ROLE.items():
+        if species.lower() == species_name:
+            return role
+    return "unknown"
 
-    species_name = species_name.strip()
-
-    return TROPHIC_ROLE.get(
-        species_name,
-        "unknown"
-    )
-
-
-# ============================================================
 # DATA EXTRACTION
-# ============================================================
 
 def get_observation_data():
-
-    observations = (
-        Observation.query
-        .filter_by(status="Approved")
-        .all()
-    )
-
+    observations = (Observation.query.filter_by(status="Approved").all())
     data = []
-
     for obs in observations:
-
         if not obs.species:
             continue
-
-        data.append({
-
-            "species":
-                obs.species.specie_Common_Name,
-
-            "habitat":
-                obs.species.specie_Habitat,
-
-            "location":
-                obs.species.location,
-
-            "population":
-                obs.population_count,
-
-            "date":
-                obs.observation_date
-
-        })
-
+        data.append({ "species": obs.species.specie_Common_Name,
+            "habitat":obs.species.specie_Habitat,
+            "location":obs.species.location,
+            "population":obs.population_count,
+            "date":obs.observation_date})
     return pd.DataFrame(data)
 
-
-# ============================================================
 # PREPARE DATA
-# ============================================================
-
 def prepare_features(df):
-
     df = df.copy()
-
     if df.empty:
         return df
-
-    df["date"] = pd.to_datetime(
-        df["date"],
-        errors="coerce"
-    )
-
-    df = df.dropna(
-        subset=[
-            "population",
-            "habitat",
-            "location",
-            "species",
-            "date"
-        ]
-    )
-
-    df["role"] = df["species"].apply(
-        get_role
-    )
-
+    df["date"] = pd.to_datetime(  df["date"], errors="coerce")
+    df = df.dropna( subset=[ "population", "habitat", "location", "species","date"])
+    df["role"] = df["species"].apply( get_role)
     return df
 
-
-# ============================================================
 # SHANNON BIODIVERSITY INDEX
-# ============================================================
-
 def compute_biodiversity_index(df):
-
     if df.empty:
-
-        return pd.DataFrame(
-            columns=[
-                "location",
-                "date",
-                "biodiversity_index"
-            ]
-        )
-
+        return pd.DataFrame(columns=["location","date","biodiversity_index"] )
     results = []
-
-    grouped = df.groupby(
-        ["location", "date"]
-    )
+    grouped = df.groupby( ["location", "date"])
 
     for (location, date), group in grouped:
-
-        total_population = (
-            group["population"].sum()
-        )
+        total_population = (group["population"].sum())
 
         if total_population <= 0:
-
             biodiversity_index = 0
 
         else:
+            proportions = (group["population"] / total_population )
+            proportions = proportions[ proportions > 0 ]
 
-            proportions = (
-                group["population"]
-                / total_population
-            )
+            biodiversity_index = -( proportions *np.log(proportions)).sum()
 
-            proportions = proportions[
-                proportions > 0
-            ]
-
-            biodiversity_index = -(
-                proportions *
-                np.log(proportions)
-            ).sum()
-
-        results.append({
-
-            "location": location,
-
-            "date": date,
-
-            "biodiversity_index":
-                biodiversity_index
-
-        })
+        results.append({"location": location,"date": date, 
+                        "biodiversity_index": biodiversity_index })
 
     return pd.DataFrame(results)
 
-
-# ============================================================
 # MACHINE LEARNING MODEL
-# ============================================================
-
 def train_species_impact_model():
-
-    df = prepare_features(
-        get_observation_data()
-    )
+    df = prepare_features(get_observation_data())
 
     if df.empty:
+        raise ValueError("No approved observations available." )
 
-        raise ValueError(
-            "No approved observations available."
-        )
-
-    biodiversity = (
-        compute_biodiversity_index(df)
-    )
+    biodiversity = ( compute_biodiversity_index(df))
 
     pivot = (
         df.pivot_table(
@@ -738,9 +594,7 @@ def propagate_effects(
     )
 
 
-# ============================================================
 # MAIN AI SPECIES EFFECT REPORT
-# ============================================================
 
 def generate_species_effect_report():
 
@@ -887,94 +741,27 @@ def generate_species_effect_report():
             )
         )
 
-        # ----------------------------------------------------
         # Add result
-        # ----------------------------------------------------
-
         report.append({
-
-            "species":
-                species,
-
-            "role":
-                role,
-
-            "current_population":
-                current,
-
-            "baseline_population":
-                round(
-                    baseline,
-                    1
-                ),
-
-            "percent_change":
-                round(
-                    pct_change,
-                    1
-                ),
-
-            "impact_level":
-                impact_level,
-
-            "impact_label":
-                IMPACT_LABELS[
-                    impact_level
-                ],
-
-            "reason":
-                reason,
-
-            "downstream_effect":
-                downstream,
-
-            "affected_species":
-                affected_species,
-
-            "statistical_effect_on_biodiversity":
-                round(
-                    statistical_effect,
-                    4
-                )
+            "species":species,
+            "role": role,
+            "current_population": current,
+            "baseline_population": round( baseline, 1 ),
+            "percent_change": round( pct_change, 1),
+            "impact_level": impact_level,
+            "impact_label": IMPACT_LABELS[ impact_level ],
+            "reason":reason,
+            "downstream_effect": downstream,
+            "affected_species":affected_species,
+            "statistical_effect_on_biodiversity": round( statistical_effect,  4 )
         })
-
-    # ========================================================
     # SORT BY RISK
-    # ========================================================
+    return (pd.DataFrame(report).sort_values( "impact_level", ascending=False).reset_index(drop=True))
 
-    return (
-        pd.DataFrame(report)
-        .sort_values(
-            "impact_level",
-            ascending=False
-        )
-        .reset_index(
-            drop=True
-        )
-    )
-
-
-# ============================================================
 # TEST AI MODEL
-# ============================================================
-
 if __name__ == "__main__":
-
-    report = (
-        generate_species_effect_report()
-    )
-
+    report = (generate_species_effect_report())
     if report.empty:
-
-        print(
-            "No approved observations "
-            "available for analysis."
-        )
-
+        print("No approved observations " "available for analysis." )
     else:
-
-        print(
-            report.to_string(
-                index=False
-            )
-        )
+        print(report.to_string( index=False ))
