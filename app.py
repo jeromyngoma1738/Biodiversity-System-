@@ -622,12 +622,9 @@ def trends():
 @login_required
 @role_required("field_officer","admin","viewer")
 def download_report():
-
     species_list = Species.query.all()
     story = []
-
     styles = getSampleStyleSheet()
-
     story.append(Paragraph("BIODIVERSITY MONITORING REPORT", styles["Title"]))
     story.append(Spacer(1, 20))
 
@@ -636,92 +633,66 @@ def download_report():
     os.makedirs(chart_folder, exist_ok=True)
 
     for species in species_list:
-
         story.append(Paragraph(f"Species: {species.specie_Common_Name}",styles["Heading2"]))
-
         story.append(Paragraph(f"Scientific Name: {species.scientificName}", styles["Normal"]))
-
         story.append(Spacer(1, 10))
-
         observations = Observation.query.filter_by(species_id=species.id).order_by(Observation.observation_date.asc()).all()
-
-        # ---------------------------
         # collect data for GRAPH
-        # ---------------------------
         dates = []
         counts = []
 
         for obs in observations:
-
             dates.append(obs.observation_date.strftime('%Y-%m-%d'))
             counts.append(obs.population_count)
-
             story.append(Paragraph(f"Date: {obs.observation_date.strftime('%Y-%m-%d %H:%M')}",styles["Normal"]))
-
             story.append(Paragraph(f"Population: {obs.population_count}",styles["Normal"]))
-
             story.append(Paragraph(f"Notes: {obs.notes}", styles["Normal"]))
-
             story.append(Spacer(1, 8))
 
             # IMAGE
             if obs.photo:
                 image_path = os.path.join("static", "uploads", obs.photo)
-
                 if os.path.exists(image_path):
                     img = Image(image_path)
                     img.drawHeight = 2 * inch
                     img.drawWidth = 3 * inch
                     story.append(img)
-
             story.append(Spacer(1, 15))
 
         # ---------------------------
         # CREATE GRAPH PER SPECIES
         # ---------------------------
         if len(dates) > 0:
-
             chart_path = os.path.join(chart_folder, f"chart_{species.id}.png")
             plt.figure(figsize=(7,4))
-
             plt.plot(dates, counts, marker='o', linewidth=2 )
-
             plt.title(f"{species.specie_Common_Name} Population Trend", fontsize=14)
             plt.xlabel("Date", fontsize=12)
             plt.ylabel("Population Count", fontsize=12)
-
             plt.xticks(rotation=45)
             plt.grid(True, linestyle='--', alpha=0.6)
-
             plt.tight_layout()
-
             plt.savefig(chart_path, dpi=300)
             plt.close()
-
             # add chart to PDF
             if os.path.exists(chart_path):
                 chart_img = Image(chart_path)
                 chart_img.drawHeight = 2.5 * inch
                 chart_img.drawWidth = 4 * inch
-
                 story.append(Paragraph("Population Trend", styles["Heading3"]))
                 story.append(chart_img)
-
                 story.append(Spacer(1, 25))
 
 
     # BUILD PDF
-
     filename = "CBU_NATURE PARK_Biodiversity_Report.pdf"
     doc = SimpleDocTemplate(filename)
     doc.build(story)
-
     return send_file(filename, as_attachment=True)
 
 @app.route("/notifications")
 @login_required
 def notifications():
-
     notifications = Notification.query.filter((Notification.role == session["role"]) |(Notification.user_id == session["user_id"]) ).order_by(Notification.created_at.desc()).all()
     return render_template("notifications.html", notifications=notifications)
 
@@ -736,14 +707,10 @@ def manageSpecies():
 @login_required
 @role_required("admin", "field_officer")
 def delete_species(id):
-
     species = Species.query.get_or_404(id)
-
     db.session.delete(species)
     db.session.commit()
-
     create_notification( role="admin", title="Species Deleted", message=f"{session['user_name']} removed {species.specie_Common_Name}.", notification_type="Warning")
-
     return redirect(url_for("view_species"))
 
 @app.route("/add_species", methods=["GET", "POST"])
@@ -770,21 +737,13 @@ def add_species():
 @login_required
 @role_required("admin", "field_officer", "viewer")
 def search():
-
     search = request.args.get("search", "").strip()
     role = session.get("role")
-
-    results = {
-        "users": [],
-        "species": [],
-        "observations": []
-    }
+    results = { "users": [], "species": [],"observations": []}
 
     if search:
-
         # Admin can search everything
         if role == "admin":
-
             results["users"] = Details.query.filter((Details.First_name.contains(search)) |(Details.surname.contains(search)) |
                 (Details.email.contains(search)) | (Details.role.contains(search))).all()
 
@@ -817,29 +776,17 @@ def search():
 def forgot_password():
 
     if request.method == "POST":
-
         email = request.form["email"]
-
         user = Details.query.filter_by(email=email).first()
-
         if not user:
             return "Email not found"
-
-
         # Generate token
         token = secrets.token_urlsafe(32)
-
         user.reset_token = token
         user.reset_token_expiry = datetime.now(timezone.utc) + timedelta(minutes=30)
-
         db.session.commit()
 
-
-        reset_link = url_for(
-            "resetPassword",
-            token=token,
-            _external=True
-        )
+        reset_link = url_for("resetPassword", token=token, _external=True)
 
         # Instead of sending email, display link
         return f"""Password reset link created:<br><br><a href="{reset_link}">
@@ -858,33 +805,24 @@ def gallery():
 
 @app.route("/resetPassword", methods=["GET", "POST"])
 def resetPassword():
-
     token = request.args.get("token")
-
     user = Details.query.filter_by(reset_token=token).first()
-
-
+    
     if not user:
         return "Invalid reset link"
 
-
     if request.method == "POST":
-
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
-
+        
         if password != confirm_password:
             return "Passwords do not match"
 
         user.password = generate_password_hash(password)
-
         user.reset_token = None
         user.reset_token_expiry = None
-
         db.session.commit()
         return redirect(url_for("login"))
-
-
     return render_template( "resetPassword.html")
 
 @app.route ("/back")
@@ -900,8 +838,6 @@ def back ():
     else: 
         flash("Unexpected Error as occurred ")
         return redirect(url_for ("login"))
-    
-      
     
 @app.route("/logout")
 def logout():

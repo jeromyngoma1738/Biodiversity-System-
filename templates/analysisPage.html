@@ -13,9 +13,7 @@
 
 <div class="analysis-container">
 
-    <!-- =====================================================
-         PAGE HEADER
-         ===================================================== -->
+    <!-- PAGE HEADER -->
 
     <div class="analysis-header">
 
@@ -32,7 +30,7 @@
 
             <a href="{{ url_for('download_report') }}"
                class="btn-download">
-                📄 Download PDF Report
+               Download PDF Report
             </a>
 
         </div>
@@ -427,25 +425,13 @@
                     <tr>
 
                         <th>Species</th>
-
                         <th>Trophic Role</th>
-
                         <th>Current Population</th>
-
-                        <th>Baseline</th>
-
                         <th>Population Change</th>
-
                         <th>Impact</th>
-
                         <th>Ecological Interpretation</th>
-
                         <th>Food-Web Effect</th>
-
                         <th>Potentially Affected Species</th>
-
-                        <th>AI Statistical Effect</th>
-
                     </tr>
 
                 </thead>
@@ -455,53 +441,26 @@
 
                     {% for item in ai_results %}
 
-                    <tr
-                        class="ai-row"
-                        data-species="{{ item.species }}"
-                    >
-
+                    <tr class="ai-row"  data-species="{{ item.species }}">
                         <!-- SPECIES -->
-
                         <td>
-
                             <strong>
                                 {{ item.species }}
                             </strong>
-
                         </td>
-
-
                         <!-- TROPHIC ROLE -->
-
                         <td>
-
-                            <span
-                                class="role-badge role-{{ item.role }}"
-                            >
+                            <span class="role-badge role-{{ item.role }}" >
                                 {{ item.role|capitalize }}
                             </span>
-
                         </td>
-
-
                         <!-- CURRENT -->
-
                         <td>
                             {{ item.current_population }}
                         </td>
-
-
-                        <!-- BASELINE -->
-
-                        <td>
-                            {{ item.baseline_population }}
-                        </td>
-
-
                         <!-- CHANGE -->
 
                         <td>
-
                             {% if item.percent_change > 0 %}
 
                             <span class="status increasing-status">
@@ -523,100 +482,42 @@
                             {% endif %}
 
                         </td>
-
-
                         <!-- IMPACT -->
-
                         <td>
-
-                            <span
-                                class="impact-badge impact-{{ item.impact_level }}"
-                            >
+                            <spanclass="impact-badge impact-{{ item.impact_level }}">
                                 {{ item.impact_label }}
                             </span>
 
                         </td>
-
-
                         <!-- REASON -->
-
                         <td>
-
                             <div class="ai-insight">
-
                                 {{ item.reason }}
-
                             </div>
-
                         </td>
-
-
                         <!-- DOWNSTREAM -->
-
                         <td>
-
                             <div class="ai-effect">
-
                                 {{ item.downstream_effect }}
-
                             </div>
-
                         </td>
-
 
                         <!-- AFFECTED SPECIES -->
-
                         <td>
-
                             {% if item.affected_species %}
 
                             <ul class="affected-list">
-
                                 {% for affected in item.affected_species %}
-
                                 <li>
                                     {{ affected }}
                                 </li>
-
                                 {% endfor %}
-
                             </ul>
-
                             {% else %}
 
                             <span>
-                                No mapped species
-                            </span>
-
+                                No mapped species</span>
                             {% endif %}
-
-                        </td>
-
-
-                        <!-- STATISTICAL EFFECT -->
-
-                        <td>
-
-                            {% if item.statistical_effect_on_biodiversity > 0 %}
-
-                            <span class="stat-positive">
-                                +{{ item.statistical_effect_on_biodiversity }}
-                            </span>
-
-                            {% elif item.statistical_effect_on_biodiversity < 0 %}
-
-                            <span class="stat-negative">
-                                {{ item.statistical_effect_on_biodiversity }}
-                            </span>
-
-                            {% else %}
-
-                            <span class="stat-neutral">
-                                0.0000
-                            </span>
-
-                            {% endif %}
-
                         </td>
 
                     </tr>
