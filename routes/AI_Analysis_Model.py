@@ -7,9 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, r2_score
 from models import Observation
-
 # CBU NATURE PARK ECOSYSTEM DEFINITION
-
 # Trophic roles:
 TROPHIC_ROLE = {
     # PRODUCERS
@@ -55,9 +53,9 @@ TROPHIC_ROLE = {
 
     # PREDATORS / INSECTIVORES
     "Spider": "small_predator",
-    "Snakes":"predator",
+    "snakes":"predator",
     "Praying Mantis": "small_predator",
-    "Frogs": "small_predator",
+    "Frogs": "predator",
     "Lizard": "small_predator",
     "Snake": "predator",
     "Bird": "predator",
@@ -69,7 +67,7 @@ TROPHIC_ROLE = {
     "Monitor Lizard":"large_predator",
     "Eagle":"large_predator",
     "Crocodile":"large_predator",
-    "Snake":"large_predator",
+    #"Snake":"large_predator",
     
     # DECOMPOSERS
     "Fungi": "decomposer",
@@ -81,10 +79,10 @@ TROPHIC_ROLE = {
 # FOOD WEB
 FOOD_WEB = {
     "producer": { "feeds": ["herbivore"], "fed_by": ["decomposer"]},
-    "herbivore": {"feeds": ["predator","large_predator"],"fed_by": ["producer"] },
+    "herbivore": {"feeds": ["predator"],"fed_by": ["producer"] },
 
     "predator": {
-        "feeds": ["large_predator","predator"],
+        "feeds": ["predator"],
         "fed_by": ["herbivore"]
     },
 
@@ -215,7 +213,7 @@ def classify_impact(role, pct_change):
     # PRODUCER
     if role == "producer":
         if pct_change <= -50:
-            return (4, "Severe vegetation loss. ""This may reduce food and shelter " "for herbivores and insects and cause cascading biodiversity effects.")
+            return (4, "Severe vegetation loss. ""This may reduce food and shelter " "for herbivores and insects and might have a bad effect on the ecosystem .")
         elif pct_change <= -20:
             return (3, "Vegetation decline detected. " "Reduced plant availability may ""affect herbivore populations.")
         elif abs_change < 20:
@@ -226,16 +224,13 @@ def classify_impact(role, pct_change):
         elif pct_change >= 100:
             return (1, "Large increase in vegetation detected. This may " "indicate strong plant regeneration or favorable "
             "environmental conditions.")
-        
         else:
             return ( 1, "Plant population is increasing. " "This is generally beneficial, " "although unusual increases " "should be monitored.")
 
     # HERBIVORE
     elif role == "herbivore":
         if pct_change >= 150:
-            return (4, "Sharp herbivore population increase. This may cause "
-                    "excessive grazing pressure, reduce vegetation, and "
-                    "increase competition for food.")
+            return (4, "Sharp herbivore population increase. This may cause "  "excessive grazing pressure, reduce vegetation, and "  "increase competition for food.")
         elif pct_change <= -80:
             return (4, "Severe herbivore population decline. This may sharply ""reduce food availability for predators and signal a "
                     "serious ecosystem disruption.")
@@ -250,7 +245,7 @@ def classify_impact(role, pct_change):
             return (1,"Moderate herbivore population change ""detected. Continued monitoring " "is recommended.")
         
     # PREDATOR
-    elif role == "large_predator":
+    elif role == "predator":
         if pct_change <= -50:
             return (4,"Sharp predator decline. Reduced " "predator numbers may allow prey " "populations to increase.")
         elif pct_change <= -20:
@@ -264,23 +259,6 @@ def classify_impact(role, pct_change):
         else:
             return (1,"Predator population is increasing. " "This may support ecosystem balance.")
         
-    if role == "small_predator":
-        if pct_change <= -50:
-            return (4, "Severe decline in small predator population. "
-                    "This may cause an increase in prey species such as "
-                    "insects, frogs, rodents, or lizards and may disrupt "
-                    "the food web.")
-        elif pct_change <= -20:
-            return (3, "Small predator population is declining. " "Reduced predation may allow prey populations to increase "
-                    "and may affect ecosystem balance.")
-        elif abs_change < 20:
-            return (0, "Small predator population is relatively stable. ""Predation pressure appears balanced and the ecosystem "
-                    "food web appears relatively stable.")
-        elif pct_change >= 200:
-            return (2, "Very large increase in small predator population detected. " "This may increase predation pressure on prey species "
-                    "and potentially reduce their populations. Continued " "monitoring is recommended.")
-        elif pct_change >= 100:
-            return (1, "Large increase in small predator population detected. " "This may increase predation on prey species and change " "the balance of the food web.")
 
     # DECOMPOSER
     elif role == "decomposer":

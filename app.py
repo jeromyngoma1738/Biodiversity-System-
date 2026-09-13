@@ -194,10 +194,7 @@ def analysis_page():
                 )
                 for observation in observations
             ],
-            "counts": [
-                observation.population_count
-                for observation in observations
-            ]
+            "counts": [observation.population_count for observation in observations]
         })
 
     return render_template( "analysisPage.html", results=population_results, ai_results=ai_results, 
@@ -233,23 +230,21 @@ def registration():
         user_DOB = request.form['dob']
         user_confirm_password = request.form['confirm_password']
         
-        if user_password == user_confirm_password:
-            if len(user_password) >= 8:
-                user_password = generate_password_hash(request.form['password'])  
-                new_user = Details( First_name = user_first_name, surname=user_surname,email=user_email, phone=user_phone, DOB=user_DOB, gender=user_gender,
-                password=user_password)
-                flash ("Password must be at least 8 characters long.")  
-        else:
-            return "Passwords do not match."
-
+        if user_password != user_confirm_password:
+            flash("Passwords does not match", "danger")
+            return role_required(url_for("registration"))
+        if len(user_password) < 8:
+            flash("Password password must be 8 at least 8 characters long", "danger")
+            return redirect(url_for("registration"))
+        
+        user_password = generate_password_hash(request.form['password'])
+        new_user = Details(First_name=user_first_name, surname=user_surname, email=user_email, phone=user_phone, DOB=user_DOB, gender=user_gender, password=user_password)   
+     
         try:
             db.session.add(new_user)
             db.session.commit()
-            create_notification(role="admin", title="New User Registration",message=f"{user_first_name} {user_surname} has registered.",
-                                notification_type="Info")
+            create_notification(role="admin", title="New User Registration",message=f"{user_first_name} {user_surname} has registered.", notification_type="Info")
             flash("User registered successfully.", "success")
-        
-
             return redirect(url_for('login'))
 
         except Exception as e:
@@ -335,7 +330,6 @@ def managerUser():
 @role_required("admin")
 def change_role(id):
     user = Details.query.get_or_404(id)
-
     new_role = request.form['role']
     user.role = new_role
 
@@ -354,13 +348,11 @@ def delete_user(id):
         create_notification(role="admin", user_id=user.id, title="User Deleted", message=f"User {user.First_name} has been deleted.", notification_type="Info")
         db.session.delete(user)
         db.session.commit()
-        
         return redirect(url_for('managerUser'))
     
     except Exception as e:
         db.session.rollback()
         return f"Error: {e}"
-
 
 @app.route("/field_Officer")
 @login_required
@@ -378,29 +370,26 @@ def record_observation():
         species_id = request.form['species_id']
         population = request.form['population']
         notes = request.form['note']
-
         image = request.files.get('image')
         filename = None
-
-        if image and image.filename:
-            filename = image.filename
-            image.save(os.path.join("static/uploads", filename))
-
+        population = int(population)
         try:
-            new_observation = Observation(species_id=int(species_id), population_count=int(population),notes=notes,photo=filename,
-                     observation_date=datetime.now(timezone.utc),status="Pending")
+            if population < 0 : 
+                flash ("The population shouldnt be a negative numbers ")
+            
+            if image and image.filename:
+                filename = image.filename
+                image.save(os.path.join("static/uploads", filename))
+                new_observation = Observation(species_id=int(species_id), population_count=int(population),notes=notes,photo=filename, observation_date=datetime.now(timezone.utc),status="Pending")
 
-            db.session.add(new_observation)
-            db.session.commit()
-            # Notify the field officer
-            create_notification(role="field_officer", user_id=session["user_id"], title="Observation Recorded", message="Your observation has been successfully recorded.",
-                notification_type="Success")
-            # Notify all admins
-            create_notification(role="admin",title="New Observation Submitted",
-                    message=f"{session['user_name']} submitted a new observation.",notification_type="Info")
-
-            return redirect(url_for('view_observations'))
-
+                db.session.add(new_observation)
+                db.session.commit()
+                # Notify the field officer
+                create_notification(role="field_officer", user_id=session["user_id"], title="Observation Recorded", message="Your observation has been successfully recorded.",
+                    notification_type="Success")
+                # Notify all admins
+                create_notification(role="admin",title="New Observation Submitted", message=f"{session['user_name']} submitted a new observation.",notification_type="Info")
+                return redirect(url_for('view_observations'))
         except Exception as e:
             db.session.rollback()
             return f"Error: {e}"
@@ -411,7 +400,6 @@ def record_observation():
 @login_required
 @role_required("admin")
 def pending_observations():
-
     observations = Observation.query.filter_by(status="Pending").order_by(Observation.observation_date.desc()).all()
     return render_template("pending_observations.html", observations=observations)
 
@@ -419,13 +407,10 @@ def pending_observations():
 @login_required
 @role_required("admin")
 def approve_observation(id):
-
     observation = Observation.query.get_or_404(id)
-
     observation.status = "Approved"
     observation.reviewed_by = session["user_id"]
     observation.reviewed_at = datetime.now(timezone.utc)
-
     db.session.commit()
 
     create_notification(role="field_officer", title="Observation Approved", message="One of your observations has been approved.",
@@ -465,14 +450,11 @@ def view_observations():
 def view_species():
     species_list = Species.query.all()
     return render_template("view_species.html", species_list=species_list)     
-from flask import render_template
-from sqlalchemy import func
-import os
 
 
 @app.route("/report")
-#@login_required
-#@role_required("field_officer", "admin", "viewer")
+@login_required
+@role_required("field_officer", "admin", "viewer")
 def report():
     # Get all species
     species_list = Species.query.order_by(Species.specie_Common_Name.asc()).all()
@@ -485,15 +467,8 @@ def report():
 
     # Process each species
     for species in species_list:
-
         # Get observations from oldest to newest
-        observations = (
-            Observation.query
-            .filter_by(species_id=species.id)
-            .order_by(Observation.observation_date.asc())
-            .all()
-        )
-
+        observations = (Observation.query.filter_by(species_id=species.id).order_by(Observation.observation_date.asc()).all())
         # Default values
         first_population = 0
         latest_population = 0
@@ -504,13 +479,9 @@ def report():
 
         # Calculate population statistics
         if observations:
-
             first_population = observations[0].population_count or 0
-
             latest_population = observations[-1].population_count or 0
-
             population_change = latest_population - first_population
-
             # Calculate percentage change
             if first_population > 0:
                 percentage_change = (
@@ -543,10 +514,7 @@ def report():
         # Chart location
         chart_file = f"charts/chart_{species.id}.png"
 
-        chart_path = os.path.join(
-            app.static_folder,
-            chart_file
-        )
+        chart_path = os.path.join(app.static_folder, chart_file)
 
         # Add species information to report
         report_data.append({"id": species.id,
@@ -559,45 +527,23 @@ def report():
             "first_population": first_population,
             "latest_population": latest_population,
             "population_change": population_change,
-            "percentage_change": round(
-                percentage_change,
-                2
-            ),
-
+            "percentage_change": round(percentage_change, 2),
             "trend": trend,
-
             "risk_status": risk_status,
-
             "chart": chart_file
             if os.path.exists(chart_path)
             else None
         })
 
     # Summary statistics
-    increasing_species = sum(
-        1 for item in report_data
-        if item["trend"] == "Increasing"
-    )
+    increasing_species = sum(1 for item in report_data
+        if item["trend"] == "Increasing")
+    decreasing_species = sum(1 for item in report_data if item["trend"] == "Decreasing")
 
-    decreasing_species = sum(
-        1 for item in report_data
-        if item["trend"] == "Decreasing"
-    )
-
-    stable_species = sum(
-        1 for item in report_data
-        if item["trend"] == "Stable"
-    )
-
-    critical_species = sum(
-        1 for item in report_data
-        if item["risk_status"] == "Critical"
-    )
-
-    return render_template( "report.html", report_data=report_data, total_species=total_species,
-                           total_observations=total_observations, total_population=total_population,
-                           increasing_species=increasing_species, decreasing_species=decreasing_species, 
-                           stable_species=stable_species, critical_species=critical_species)
+    stable_species = sum( 1 for item in report_data if item["trend"] == "Stable" )
+    critical_species = sum(1 for item in report_data if item["risk_status"] == "Critical" )
+    return render_template( "report.html", report_data=report_data, total_species=total_species,total_observations=total_observations, total_population=total_population,
+                           increasing_species=increasing_species, decreasing_species=decreasing_species, stable_species=stable_species, critical_species=critical_species)
     
 @app.route("/trends")
 @login_required
@@ -758,7 +704,6 @@ def search():
 
         # Field officers cannot search users
         elif role == "field_officer":
-
             results["species"] = Species.query.filter((Species.scientificName.contains(search)) |(Species.specie_Common_Name.contains(search)) |(Species.location.contains(search))
             ).all()
 

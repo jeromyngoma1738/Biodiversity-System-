@@ -8,7 +8,6 @@ RECORD OBSERVATION
 
 <link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
 {% endblock %}
-
 {% block content %}
 
 <div class="admin-container">
@@ -56,14 +55,12 @@ RECORD OBSERVATION
             <br><br>
 
             <label>Population Count</label>
-            <input type="number" name="population" required>
+            <input type="number" name="population" min="0" required>
 
             <br><br>
-
             <label>Notes</label>
             <br><br>
-            <textarea name="note" cols="40" rows="5">notes</textarea>
-
+            <textarea name="note" cols="40" rows="5"></textarea>
             <br><br>
 
             <label>Photo</label>

@@ -5,6 +5,7 @@ Wildlife Gallery
 {% endblock %}
 
 {% block css %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
 {% endblock %}
 
@@ -12,60 +13,45 @@ Wildlife Gallery
 
 <div class="gallery-container">
 
-    <h1>🌿 Wildlife Photo Gallery</h1>
-    <p class="subtitle">
-        Biodiversity Monitoring, Data Collection and Ecological Analysis System
-    </p>
+<h1> Biodiversity Photo Gallery</h1>
 
-    <div class="slider">
+<p class="subtitle">
+    Biodiversity Monitoring, Data Collection and Ecological Analysis System
+</p>
 
-        {% for obs in observations %}
+<div class="slider">
 
-        <div class="slide">
+    {% for obs in observations %}
 
-            <img src="{{ url_for('static', filename='uploads/' + obs.photo) }}" alt="{{ obs.species.specie_Common_Name }}">
+    <div class="slide">
+        {% if obs.photo %}
+        <img src="{{ url_for('static', filename='uploads/' + obs.photo) }}"  alt="{{ obs.species.specie_Common_Name }}">
 
-            <div class="overlay">
+        {% endif %}
 
-                <h2>{{ obs.species.specie_Common_Name }}</h2>
-
-                <p>
-                    <strong>Scientific Name:</strong>
-                    {{ obs.species.scientificName }}
-                </p>
-
-                <p>
-                    <strong>Habitat:</strong>
-                    {{ obs.species.specie_Habitat }}
-                </p>
-
-                <p> <strong>Location:</strong>
-                    {{ obs.species.location }}
-                </p>
-
-                <p>
-                    <strong>Population:</strong>
-                    {{ obs.population_count }}
-                </p>
-
-                <p>
-                    <strong>Observation Date:</strong>
-                    {{ obs.observation_date.strftime('%d %B %Y') }}
-                </p>
-
-            </div>
-
+        <div class="overlay">
+            <h2> {{ obs.species.specie_Common_Name }} </h2>
+            <p> <strong>Scientific Name:</strong>{{ obs.species.scientificName }}</p>
+            <p> <strong>Habitat:</strong>{{ obs.species.specie_Habitat }}</p>
+            <p><strong>Location:</strong>{{ obs.species.location }}</p>
+            <p> <strong>Population:</strong> {{ obs.population_count }}</p>
+            <p><strong>Observation Date:</strong>{{ obs.observation_date.strftime('%d %B %Y') }}</p>
         </div>
-
-        {% endfor %}
-
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
 
     </div>
 
+     {% endfor %}
+        <!-- Previous button -->
+        <button class="prev" type="button" aria-label="Previous image"> &#10094;</button>
+
+        <!-- Next button -->
+        <button class="next" type="button" aria-label="Next image"> &#10095; </button>
+    </div>
 </div>
 
+<!-- Back button -->
+<button type="button" onclick="window.location.href='{{ url_for('back') }}'"class="back-btn"> ← Back </button>
+<!-- JavaScript -->
 <script src="{{ url_for('static', filename='js.js') }}"></script>
-<button onclick="window.location.href='{{ url_for('back') }}'" class="back-btn"> ← Back</button>
+
 {% endblock %}
