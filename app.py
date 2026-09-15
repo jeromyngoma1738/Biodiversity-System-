@@ -12,11 +12,13 @@ from reportlab.lib.styles import getSampleStyleSheet
 import matplotlib.pyplot as plt
 from reportlab.lib.units import inch
 from sqlalchemy import or_
+from werkzeug.utils import secure_filename
 from mail_config import mail, configure_mail 
 import secrets
 from sqlalchemy import func
 from datetime import datetime, timedelta
 from datetime import datetime, timezone
+import uuid
 
 from routes.AI_Analysis_Model import generate_species_effect_report
 
@@ -150,15 +152,10 @@ def analysis():
 
     return results
     
-
-# ============================================================
 # ANALYSIS PAGE
-# ============================================================
 @app.route("/analysisPage")
 def analysis_page():
-
     population_results = analysis()
-
     ai_results = generate_species_effect_report()
 
     if not ai_results.empty:
@@ -169,22 +166,10 @@ def analysis_page():
         ai_results = []
 
     species_list = Species.query.all()
-
     trend_data = []
 
     for species in species_list:
-
-        observations = (
-            Observation.query
-            .filter_by(
-                species_id=species.id,
-                status="Approved"
-            )
-            .order_by(
-                Observation.observation_date.asc()
-            )
-            .all()
-        )
+        observations = (Observation.query.filter_by(species_id=species.id, status="Approved").order_by( Observation.observation_date.asc() ).all())
 
         trend_data.append({
             "id": species.id,
@@ -196,9 +181,9 @@ def analysis_page():
             ],
             "counts": [observation.population_count for observation in observations]
         })
+         #
 
-    return render_template( "analysisPage.html", results=population_results, ai_results=ai_results, 
-                           species_list=species_list, trend_data=trend_data)
+    return render_template( "analysisPage.html", ai_results=ai_results, results=population_results,species_list=species_list, trend_data=trend_data)
     
 # CREATE NOTIFICATION
 
@@ -360,6 +345,7 @@ def delete_user(id):
 def field_Officer():
     return render_template("field_Officer.html")
 
+
 @app.route("/record_observation", methods=["GET", "POST"])
 @login_required
 @role_required("field_officer")
@@ -367,34 +353,104 @@ def record_observation():
     species_list = Species.query.all()
 
     if request.method == "POST":
-        species_id = request.form['species_id']
-        population = request.form['population']
-        notes = request.form['note']
-        image = request.files.get('image')
-        filename = None
-        population = int(population)
         try:
-            if population < 0 : 
-                flash ("The population shouldnt be a negative numbers ")
+            # Get form values safely
+            species_id = request.form.get("species_id")
+            population_raw = request.form.get("population")
+            notes = request.form.get("note", "").strip()
+            image = request.files.get("image")
             
-            if image and image.filename:
-                filename = image.filename
-                image.save(os.path.join("static/uploads", filename))
-                new_observation = Observation(species_id=int(species_id), population_count=int(population),notes=notes,photo=filename, observation_date=datetime.now(timezone.utc),status="Pending")
+            # Validate species
+            if not species_id:
+                flash("Please select a species.", "danger")
+                return redirect(url_for("record_observation"))
 
-                db.session.add(new_observation)
-                db.session.commit()
-                # Notify the field officer
-                create_notification(role="field_officer", user_id=session["user_id"], title="Observation Recorded", message="Your observation has been successfully recorded.",
-                    notification_type="Success")
-                # Notify all admins
-                create_notification(role="admin",title="New Observation Submitted", message=f"{session['user_name']} submitted a new observation.",notification_type="Info")
-                return redirect(url_for('view_observations'))
+            try:
+                species_id = int(species_id)
+            except ValueError:
+                flash("Invalid species selected.", "danger")
+                return redirect(url_for("record_observation"))
+
+            species = db.session.get(Species, species_id)
+
+            if not species:
+                flash("Selected species does not exist.", "danger")
+                return redirect(url_for("record_observation"))
+
+            # -----------------------------
+            # Validate population
+            # -----------------------------
+            if not population_raw:
+                flash("Please enter the population count.", "danger")
+                return redirect(url_for("record_observation"))
+
+            try:
+                population = int(population_raw)
+            except (ValueError, TypeError):
+                flash("Population must be a valid whole number.", "danger")
+                return redirect(url_for("record_observation"))
+
+            if population < 0:
+                flash("Population cannot be a negative number.", "danger")
+                return redirect(url_for("record_observation"))
+
+            # Handle optional image
+            
+            filename = None
+
+            if image and image.filename:
+                original_filename = image.filename
+                # Secure the filename
+                filename = secure_filename(original_filename)
+
+                if not filename:
+                    flash("Invalid image filename.", "danger")
+                    return redirect(url_for("record_observation"))
+
+                # Optional: restrict extensions
+                allowed_extensions = { "jpg", "jpeg","png","gif", "webp"}
+
+                extension = filename.rsplit(".", 1)[-1].lower()
+
+                if extension not in allowed_extensions:
+                    flash( "Invalid image type. Please upload JPG, JPEG, PNG, GIF or WEBP.", "danger")
+                    return redirect(url_for("record_observation"))
+
+                # Make filename unique to prevent overwriting files
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                upload_folder = os.path.join(app.root_path,"static","uploads")
+                os.makedirs(upload_folder, exist_ok=True)
+                image_path = os.path.join(upload_folder,unique_filename)
+                image.save(image_path)
+                filename = unique_filename
+
+            # -----------------------------
+            # Create observation
+   
+            new_observation = Observation(species_id=species_id, population_count=population,notes=notes, photo=filename, observation_date=datetime.now(timezone.utc),status="Pending")
+
+            db.session.add(new_observation)
+            db.session.commit()
+
+            # Notify field officer
+            create_notification( role="field_officer",  user_id=session["user_id"],  title="Observation Recorded",
+                message="Your observation has been successfully recorded.", notification_type="Success" )
+            
+            # Notify administrators
+            create_notification( role="admin", title="New Observation Submitted", message=f"{session['user_name']} submitted a new observation.", notification_type="Info")
+            flash("Observation successfully recorded.", "success")
+            return redirect(url_for("record_observations"))
+
         except Exception as e:
             db.session.rollback()
-            return f"Error: {e}"
+            
+            # If you're developing, log the actual exception
+            app.logger.exception("Error recording observation")
+            flash("An error occurred while recording the observation. Please try again.", "danger" )
+            return redirect(url_for("record_observation"))
 
-    return render_template("record_observation.html", species_list=species_list)
+    return render_template( "record_observation.html", species_list=species_list)
+
 
 @app.route("/pending_observations")
 @login_required
@@ -568,6 +624,7 @@ def trends():
 @login_required
 @role_required("field_officer","admin","viewer")
 def download_report():
+    
     species_list = Species.query.all()
     story = []
     styles = getSampleStyleSheet()
@@ -635,12 +692,16 @@ def download_report():
     doc = SimpleDocTemplate(filename)
     doc.build(story)
     return send_file(filename, as_attachment=True)
-
 @app.route("/notifications")
 @login_required
 def notifications():
-    notifications = Notification.query.filter((Notification.role == session["role"]) |(Notification.user_id == session["user_id"]) ).order_by(Notification.created_at.desc()).all()
-    return render_template("notifications.html", notifications=notifications)
+    notifications = Notification.query.filter(
+        (Notification.role == session["role"]) | (Notification.user_id == session["user_id"])
+    ).order_by(Notification.created_at.desc()).all()
+
+    unread_count = sum(1 for n in notifications if not n.is_read)
+
+    return render_template("notifications.html", notifications=notifications,unread_count=unread_count)
 
 @app.route("/manageSpecies", methods=["GET", "POST"])
 @login_required
@@ -743,9 +804,7 @@ def forgot_password():
 @app.route("/gallery")
 @role_required("admin", "field_officer", "viewer")
 def gallery():
-
     observations = Observation.query.filter(Observation.photo.isnot(None)).order_by(Observation.observation_date.desc()).all()
-    
     return render_template("gallery.html",observations=observations)
 
 @app.route("/resetPassword", methods=["GET", "POST"])
@@ -792,4 +851,18 @@ def logout():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+        # Create a default admin account if one doesn't exist yet
+        if not Details.query.filter_by(email="admin@cbunaturepark.com").first():
+            default_admin = Details(
+                First_name="Admin",
+                surname="User",
+                email="admin@cbunaturepark.com",
+                phone="0000000000",
+                DOB="2000-01-01",
+                gender="N/A",
+                password=generate_password_hash("admin1234"),
+                role="admin"
+            )
+            db.session.add(default_admin)
+            db.session.commit()
     app.run(debug=True) 

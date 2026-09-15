@@ -39,6 +39,26 @@
             </a>
         </div>
     </header>
+    
+<nav class="action-buttons">
+
+    <a href="{{ url_for('add_species') }}" class="btn add-species">
+        <i class="fa-solid fa-plus"></i>
+        Add New Species
+    </a>
+
+
+    <a href="{{ url_for('view_species') }}" class="btn view-species">
+        <i class="fa-solid fa-leaf"></i>
+        View Species
+    </a>
+
+
+    <a href="{{ url_for('record_observation') }}" class="btn record-observation">
+        Record Observation
+    </a>
+
+</nav>
 
 
 
