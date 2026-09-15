@@ -782,22 +782,49 @@ def propagate_effects(role, direction):
     return ("Likely to affect: "+ ", ".join(affected)+ ".")
 
 
-def generate_food_web_effect(species,pct_change,df):
-    affected_species = get_affected_species( species, df)
+def generate_food_web_effect(species, pct_change, df):
+    affected_species = get_affected_species(species, df)
 
     if not affected_species:
-        return ( "No direct food-web dependency recorded.")
+        return "No direct food-web dependency recorded."
 
     names = ", ".join(affected_species)
+    role = get_role(species)
 
-    if pct_change < 0:
-        return ( f"The decline in {species} may reduce " f" predation pressure on: {names}.")
+    if pct_change == 0:
+        return (f"{species} is relatively stable, so no "
+                f"major direct food-web change is expected.")
 
-    elif pct_change > 0:
-        return ( f"The increase in {species} "f"raise predation pressure on: {names}.")
+    direction = "decline" if pct_change < 0 else "increase"
 
-    else:
-        return ( f"{species} is relatively stable, so no " f"major direct food-web change is expected.")
+    if role == "producer":
+        if pct_change < 0:
+            return (f"The decline in {species} may reduce food and habitat "
+                    f"availability for species that depend on it, "
+                    f"including: {names}.")
+        else:
+            return (f"The increase in {species} may improve food and "
+                    f"habitat availability for species that depend on "
+                    f"it, including: {names}.")
+
+    elif role == "decomposer":
+        if pct_change < 0:
+            return (f"The decline in {species} may slow nutrient "
+                    f"recycling, potentially reducing soil fertility "
+                    f"that supports: {names}.")
+        else:
+            return (f"The increase in {species} may speed up nutrient "
+                    f"recycling, benefiting: {names}.")
+
+    else:  # herbivore, omnivore, predator, small_predator, large_predator
+        if pct_change < 0:
+            return (f"The decline in {species} may reduce food "
+                    f"availability for, and ease predation pressure "
+                    f"on: {names}.")
+        else:
+            return (f"The increase in {species} may raise food "
+                    f"availability for, and increase predation "
+                    f"pressure on: {names}.")
 
 # MAIN MODEL SPECIES EFFECT REPORT
 
