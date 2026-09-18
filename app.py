@@ -2,7 +2,7 @@
 from flask import Flask, flash, redirect, url_for, request, render_template, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from extensions import db
-from models import Details, Species, Observation, Notification, Analysis
+from models import Details, Species, Observation, Notification, Analysis,EnvironmentalObservation
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -19,7 +19,7 @@ from sqlalchemy import func
 from datetime import datetime, timedelta
 from datetime import datetime, timezone
 import uuid
-
+import numpy as np
 from routes.AI_Analysis_Model import generate_species_effect_report
 
 
@@ -58,10 +58,7 @@ def role_required(*roles):
         return decorated_function
     return decorator  
 
-# ============================================================
 # SPECIES POPULATION ANALYSIS
-# ============================================================
-
 def analysis():
 
     species_list = Species.query.all()
@@ -151,40 +148,122 @@ def analysis():
         })
 
     return results
-    
+
+def species_abundance():
+    observations = ( Observation.query.filter_by(status="Approved").all())
+    abundance = {}
+
+    for observation in observations:
+        if not observation.species:
+            continue
+        species_name = (observation.species.specie_Common_Name)
+        abundance[species_name] = (abundance.get(species_name, 0)+ observation.population_count)
+    return abundance  
+ 
+def species_richness():
+    observations = ( Observation.query.filter_by(status="Approved").all())
+    species = set()
+
+    for observation in observations:
+        if observation.species:
+            species.add( observation.species.specie_Common_Name)
+    return len(species)  
+
+def calculate_ecological_statistics():
+
+    observations = (Observation.query.filter_by(status="Approved").all())
+
+    if not observations:
+        return {
+            "species_richness": 0,
+            "shannon": 0,
+            "simpson": 0,
+            "evenness": 0
+        }
+
+    populations = {}
+
+    for obs in observations:
+        if not obs.species:
+            continue
+        name = ( obs.species.specie_Common_Name)
+        populations[name] = ( populations.get(name, 0)+ obs.population_count)
+    total = sum(populations.values())
+
+    if total <= 0:
+        return {
+            "species_richness": len(populations),
+            "shannon": 0,
+            "simpson": 0,
+            "evenness": 0
+        }
+
+    proportions = np.array( list(populations.values())) / total
+
+    proportions = proportions[ proportions > 0]
+    shannon = -np.sum( proportions * np.log(proportions))
+    simpson = 1 - np.sum(proportions ** 2)
+
+    richness = len(populations)
+
+    if richness > 1:
+        evenness = (shannon /np.log(richness))
+
+    else:
+        evenness = 0
+
+    return {
+        "species_richness":
+            richness,
+
+        "shannon":
+            round(shannon, 3),
+
+        "simpson":
+            round(simpson, 3),
+
+        "evenness":
+            round(evenness, 3)
+    }
+
+
 # ANALYSIS PAGE
 @app.route("/analysisPage")
+@login_required
+@role_required("admin", "field_officer", "viewer")
 def analysis_page():
     population_results = analysis()
     ai_results = generate_species_effect_report()
-
+    environmental_data = ( EnvironmentalObservation.query.order_by(EnvironmentalObservation.observation_date.desc()).all())
     if not ai_results.empty:
-        ai_results = ai_results.to_dict(
-            orient="records"
-        )
+        ai_results = ai_results.to_dict( orient="records")
+
     else:
         ai_results = []
 
     species_list = Species.query.all()
+
     trend_data = []
 
     for species in species_list:
-        observations = (Observation.query.filter_by(species_id=species.id, status="Approved").order_by( Observation.observation_date.asc() ).all())
+        observations = (
+            Observation.query.filter_by(species_id=species.id,status="Approved") .order_by(
+                Observation.observation_date.asc()) .all())
 
         trend_data.append({
             "id": species.id,
             "name": species.specie_Common_Name,
-            "dates": [ observation.observation_date.strftime(
-                    "%Y-%m-%d"
-                )
+
+            "dates": [observation.observation_date.strftime(
+                    "%Y-%m-%d")
                 for observation in observations
             ],
-            "counts": [observation.population_count for observation in observations]
-        })
-         #
 
-    return render_template( "analysisPage.html", ai_results=ai_results, results=population_results,species_list=species_list, trend_data=trend_data)
-    
+            "counts": [observation.population_count for observation in observations ]
+        })
+
+    return render_template("analysisPage.html", ai_results=ai_results,  results=population_results, species_list=species_list,
+        trend_data=trend_data, environmental_data=environmental_data)
 # CREATE NOTIFICATION
 
 def create_notification(role, title, message, notification_type="Info", user_id=None):
@@ -281,11 +360,12 @@ def admin():
     total_users = Details.query.filter_by(role="viewer").count()
     total_field_officers = Details.query.filter_by(role="field_officer").count()
     total_species = Species.query.count()
-    total_notifications = Notification.query.filter_by(role="admin",  is_read=True).count()
-    total_pending_observation=Observation.query.filter_by(status="Pending").count()
+    total_pending_observation = Observation.query.filter_by(status="Pending").count()
 
-    return render_template("admin.html", total_users=total_users, total_field_officers=total_field_officers, total_species=total_species,
-     total_notifications=total_notifications, total_pending_observation=total_pending_observation)
+    # Count unread notifications for admin
+    total_isRead_notifications = Notification.query.filter_by(role="admin",is_read=False).count()
+    return render_template("admin.html",total_users=total_users, total_field_officers=total_field_officers, total_species=total_species,
+        total_pending_observation=total_pending_observation,total_isRead_notifications=total_isRead_notifications)
 
 @app.route("/view_user")
 @login_required
@@ -807,6 +887,70 @@ def gallery():
     observations = Observation.query.filter(Observation.photo.isnot(None)).order_by(Observation.observation_date.desc()).all()
     return render_template("gallery.html",observations=observations)
 
+@app.route("/record_environment",methods=["GET", "POST"])
+@login_required
+@role_required("field_officer")
+def record_environment():
+    if request.method == "POST":
+        try:
+            location = request.form.get("location", "").strip()
+            if not location:
+                flash( "Please enter the location.", "danger")
+                return redirect(url_for("record_environment"))
+
+            temperature = request.form.get( "temperature")
+            rainfall = request.form.get("rainfall")
+            soil_ph = request.form.get( "soil_ph")
+            soil_moisture = request.form.get("soil_moisture" )
+            water_ph = request.form.get("water_ph" )
+            water_turbidity = request.form.get("water_turbidity")
+            vegetation_cover = request.form.get("vegetation_cover")
+            vegetation_density = request.form.get( "vegetation_density")
+            grass_availability = request.form.get( "grass_availability" )
+            tree_density = request.form.get("tree_density")
+            notes = request.form.get( "notes", "").strip()
+
+            environment = EnvironmentalObservation(
+                location=location,
+                observation_date=datetime.now( timezone.utc),
+                temperature=float(temperature) if temperature else None,
+                rainfall=float(rainfall) if rainfall else None,
+                soil_ph=float( soil_ph) if soil_ph else None,
+                soil_moisture=float(soil_moisture) if soil_moisture else None,
+                water_ph=float( water_ph) if water_ph else None,
+                water_turbidity=float(water_turbidity) if water_turbidity else None,
+                vegetation_cover=float(vegetation_cover) if vegetation_cover else None,
+                vegetation_density=float( vegetation_density) if vegetation_density else None,
+                grass_availability=float(grass_availability ) if grass_availability else None,
+                tree_density=float( tree_density ) if tree_density else None,
+                notes=notes,
+                recorded_by=session[ "user_id"]
+            )
+
+            db.session.add(environment)
+            db.session.commit()
+
+            create_notification(role="field_officer",user_id=session["user_id"],title="Environmental Data Recorded",
+                message=( "Environmental observation ""was successfully recorded."),
+                notification_type="Success")
+
+            create_notification(role="admin", title="New Environmental Data",
+                message=( f"{session['user_name']} recorded " f"environmental data at {location}." ), notification_type="Info" )
+
+            flash("Environmental data recorded successfully.", "success")
+            return redirect(url_for("field_Officer"))
+
+        except ValueError:
+            db.session.rollback()
+            flash( "Environmental measurements must " "contain valid numbers.","danger")
+
+        except Exception as e:
+            db.session.rollback()
+            app.logger.exception( "Error recording environmental data")
+
+            flash("An error occurred while saving ""environmental data.","danger")
+
+    return render_template( "record_environment.html")
 @app.route("/resetPassword", methods=["GET", "POST"])
 def resetPassword():
     token = request.args.get("token")

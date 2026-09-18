@@ -93,3 +93,40 @@ class Analysis(db.Model):
 
     # Relationship
     species = db.relationship("Species",backref="analyses")
+class EnvironmentalObservation(db.Model):
+    __tablename__ = "environmental_observations"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    location = db.Column(db.String(150), nullable=False)
+    observation_date = db.Column(db.DateTime, nullable=False)
+
+    # AREA
+    area_hectares = db.Column(db.Float)
+
+    # CLIMATE
+    temperature = db.Column(db.Float)
+    rainfall = db.Column(db.Float)
+
+    # SOIL
+    soil_ph = db.Column(db.Float)
+    soil_moisture = db.Column(db.Float)
+    soil_quality = db.Column(db.Float)
+
+    # WATER
+    water_ph = db.Column(db.Float)
+    water_turbidity = db.Column(db.Float)
+    water_quality = db.Column(db.Float)
+
+    # VEGETATION / RESOURCES
+    vegetation_cover = db.Column(db.Float)
+    vegetation_density = db.Column(db.Float)
+    grass_availability = db.Column(db.Float)
+    tree_density = db.Column(db.Float)
+
+    notes = db.Column(db.Text)
+
+    recorded_by = db.Column(
+        db.Integer,
+        db.ForeignKey("details.id")
+    )

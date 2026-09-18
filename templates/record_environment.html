@@ -1,0 +1,529 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Record Environmental Data
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='form.css') }}">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="environment-page">
+
+    <!-- Page Header -->
+    <div class="environment-header">
+
+        <div class="header-title">
+            <div class="header-icon">
+                <i class="fa-solid fa-leaf"></i>
+            </div>
+
+            <div>
+                <h1>Environmental Observation</h1>
+                <p>
+                    Record environmental conditions observed within
+                    CBU Nature Park.
+                </p>
+            </div>
+        </div>
+
+        <div class="header-badge">
+            <i class="fa-solid fa-cloud-sun"></i>
+            Environmental Monitoring
+        </div>
+
+    </div>
+
+
+    <!-- Main Form Card -->
+    <div class="environment-card">
+
+        <div class="form-introduction">
+            <div class="intro-icon">
+                <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+
+            <div>
+                <h2>Environmental Data</h2>
+                <p>
+                    Enter the latest environmental measurements.
+                    Fields can be left blank when data is unavailable.
+                </p>
+            </div>
+        </div>
+
+
+        <form method="POST">
+
+
+            <!-- Location -->
+            <section class="form-section">
+
+                <div class="section-heading">
+                    <div class="section-icon location-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+
+                    <div>
+                        <h3>Observation Location</h3>
+                        <p>Specify where the environmental measurements were taken.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group full-width">
+
+                        <label for="location">
+                            Location
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            <input
+                                type="text"
+                                id="location"
+                                name="location"
+                                placeholder="e.g. CBU Nature Park — Northern Section"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Climate -->
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon climate-icon">
+                        <i class="fa-solid fa-temperature-half"></i>
+                    </div>
+
+                    <div>
+                        <h3>Climate Conditions</h3>
+                        <p>Record temperature and rainfall measurements.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="temperature">
+                            Temperature
+                            <span class="unit">(°C)</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-temperature-half"></i>
+
+                            <input
+                                type="number"
+                                id="temperature"
+                                name="temperature"
+                                step="0.01"
+                                placeholder="e.g. 24.50"
+                            >
+
+                            <span class="input-unit">°C</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="rainfall">
+                            Rainfall
+                            <span class="unit">(mm)</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-cloud-rain"></i>
+
+                            <input
+                                type="number"
+                                id="rainfall"
+                                name="rainfall"
+                                step="0.01"
+                                placeholder="e.g. 12.50"
+                            >
+
+                            <span class="input-unit">mm</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Soil -->
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon soil-icon">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <div>
+                        <h3>Soil Conditions</h3>
+                        <p>Capture soil acidity and moisture measurements.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="soil_ph">
+                            Soil pH
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-flask"></i>
+
+                            <input
+                                type="number"
+                                id="soil_ph"
+                                name="soil_ph"
+                                step="0.01"
+                                min="0"
+                                max="14"
+                                placeholder="e.g. 6.50"
+                            >
+
+                            <span class="input-unit">pH</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="soil_moisture">
+                            Soil Moisture
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-droplet"></i>
+
+                            <input
+                                type="number"
+                                id="soil_moisture"
+                                name="soil_moisture"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 45.00"
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Water -->
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon water-icon">
+                        <i class="fa-solid fa-water"></i>
+                    </div>
+
+                    <div>
+                        <h3>Water Conditions</h3>
+                        <p>Record available water quality measurements.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="water_ph">
+                            Water pH
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-flask"></i>
+
+                            <input
+                                type="number"
+                                id="water_ph"
+                                name="water_ph"
+                                step="0.01"
+                                min="0"
+                                max="14"
+                                placeholder="e.g. 7.00"
+                            >
+
+                            <span class="input-unit">pH</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="water_turbidity">
+                            Water Turbidity
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-water"></i>
+
+                            <input
+                                type="number"
+                                id="water_turbidity"
+                                name="water_turbidity"
+                                step="0.01"
+                                min="0"
+                                placeholder="Enter turbidity"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Vegetation -->
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon vegetation-icon">
+                        <i class="fa-solid fa-tree"></i>
+                    </div>
+
+                    <div>
+                        <h3>Vegetation Conditions</h3>
+                        <p>Estimate vegetation and food-resource availability.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="vegetation_cover">
+                            Vegetation Cover
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-leaf"></i>
+
+                            <input
+                                type="number"
+                                id="vegetation_cover"
+                                name="vegetation_cover"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 75.00"
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="vegetation_density">
+                            Vegetation Density
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-tree"></i>
+
+                            <input
+                                type="number"
+                                id="vegetation_density"
+                                name="vegetation_density"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 60.00"
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="grass_availability">
+                            Grass Availability
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-wheat-awn"></i>
+
+                            <input
+                                type="number"
+                                id="grass_availability"
+                                name="grass_availability"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 80.00"
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="tree_density">
+                            Tree Density
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-tree"></i>
+
+                            <input
+                                type="number"
+                                id="tree_density"
+                                name="tree_density"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 55.00"
+                            >
+
+                            <span class="input-unit">%</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Notes -->
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon notes-icon">
+                        <i class="fa-solid fa-note-sticky"></i>
+                    </div>
+
+                    <div>
+                        <h3>Additional Notes</h3>
+                        <p>Add observations or important environmental information.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="notes">
+                        Notes
+                    </label>
+
+                    <textarea
+                        id="notes"
+                        name="notes"
+                        rows="5"
+                        placeholder="Describe any unusual environmental conditions, visible changes, weather conditions, or other relevant observations..."
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('view_field_Officer') }}"
+                    class="cancel-button"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Environmental Data
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

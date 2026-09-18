@@ -1,0 +1,679 @@
+
+/* =========================================
+   ENVIRONMENTAL DATA PAGE
+   CBU NATURE PARK
+========================================= */
+
+:root {
+    --env-primary: #176b3a;
+    --env-primary-dark: #0d4f2a;
+    --env-primary-light: #eaf6ef;
+
+    --env-background: #f5f7f6;
+    --env-surface: #ffffff;
+
+    --env-text: #17251d;
+    --env-muted: #6b7280;
+    --env-border: #e2e8e4;
+
+    --env-blue: #2563eb;
+    --env-blue-light: #eff6ff;
+
+    --env-orange: #ea580c;
+    --env-orange-light: #fff7ed;
+
+    --env-purple: #7c3aed;
+    --env-purple-light: #f5f3ff;
+
+    --env-cyan: #0891b2;
+    --env-cyan-light: #ecfeff;
+
+    --env-shadow: 0 10px 30px rgba(16, 24, 40, 0.07);
+}
+
+
+/* =========================================
+   PAGE
+========================================= */
+
+.environment-page {
+    min-height: 100vh;
+    padding: 32px;
+    background: var(--env-background);
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.environment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    margin-bottom: 25px;
+    padding: 26px 30px;
+
+    background: linear-gradient(
+        135deg,
+        var(--env-primary),
+        var(--env-primary-dark)
+    );
+
+    border-radius: 18px;
+
+    color: white;
+
+    box-shadow: 0 12px 30px rgba(23, 107, 58, 0.18);
+}
+
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+
+.header-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 15px;
+
+    font-size: 25px;
+}
+
+
+.header-title h1 {
+    margin: 0 0 5px;
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
+
+.header-title p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.78);
+
+    font-size: 14px;
+}
+
+
+.header-badge {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 15px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    border-radius: 30px;
+
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   MAIN CARD
+========================================= */
+
+.environment-card {
+    max-width: 1150px;
+    margin: 0 auto;
+
+    padding: 30px;
+
+    background: var(--env-surface);
+
+    border: 1px solid var(--env-border);
+
+    border-radius: 18px;
+
+    box-shadow: var(--env-shadow);
+}
+
+
+/* =========================================
+   INTRODUCTION
+========================================= */
+
+.form-introduction {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    margin-bottom: 10px;
+    padding-bottom: 25px;
+
+    border-bottom: 1px solid var(--env-border);
+}
+
+
+.intro-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--env-primary-light);
+
+    color: var(--env-primary);
+
+    border-radius: 12px;
+
+    font-size: 20px;
+}
+
+
+.form-introduction h2 {
+    margin: 0 0 4px;
+
+    color: var(--env-text);
+
+    font-size: 19px;
+}
+
+
+.form-introduction p {
+    margin: 0;
+
+    color: var(--env-muted);
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   FORM SECTIONS
+========================================= */
+
+.form-section {
+    padding: 28px 0;
+
+    border-bottom: 1px solid var(--env-border);
+}
+
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    margin-bottom: 22px;
+}
+
+
+.section-icon {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    font-size: 18px;
+}
+
+
+.section-heading h3 {
+    margin: 0 0 4px;
+
+    color: var(--env-text);
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
+.section-heading p {
+    margin: 0;
+
+    color: var(--env-muted);
+
+    font-size: 12px;
+}
+
+
+/* Section icon colours */
+
+.location-icon {
+    background: var(--env-primary-light);
+    color: var(--env-primary);
+}
+
+
+.climate-icon {
+    background: var(--env-orange-light);
+    color: var(--env-orange);
+}
+
+
+.soil-icon {
+    background: var(--env-primary-light);
+    color: var(--env-primary);
+}
+
+
+.water-icon {
+    background: var(--env-cyan-light);
+    color: var(--env-cyan);
+}
+
+
+.vegetation-icon {
+    background: var(--env-primary-light);
+    color: var(--env-primary);
+}
+
+
+.notes-icon {
+    background: var(--env-purple-light);
+    color: var(--env-purple);
+}
+
+
+/* =========================================
+   FORM GRID
+========================================= */
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================
+   FORM GROUP
+========================================= */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.form-group label {
+    color: var(--env-text);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.required {
+    color: #dc2626;
+}
+
+
+.unit {
+    color: var(--env-muted);
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================================
+   INPUT WRAPPER
+========================================= */
+
+.input-wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.input-wrapper > i {
+    position: absolute;
+    left: 14px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+
+    pointer-events: none;
+}
+
+
+.input-wrapper input {
+    width: 100%;
+
+    height: 46px;
+
+    padding: 0 65px 0 42px;
+
+    background: #fbfcfb;
+
+    border: 1px solid var(--env-border);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    color: var(--env-text);
+
+    font-size: 13px;
+
+    transition: all 0.2s ease;
+
+    box-sizing: border-box;
+}
+
+
+.input-wrapper input::placeholder {
+    color: #a1a8b0;
+}
+
+
+.input-wrapper input:hover {
+    border-color: #cbd5cf;
+}
+
+
+.input-wrapper input:focus {
+    background: white;
+
+    border-color: var(--env-primary);
+
+    box-shadow: 0 0 0 3px rgba(23, 107, 58, 0.10);
+}
+
+
+.input-wrapper:focus-within > i {
+    color: var(--env-primary);
+}
+
+
+.input-unit {
+    position: absolute;
+    right: 13px;
+
+    color: var(--env-muted);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   TEXTAREA
+========================================= */
+
+textarea {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    background: #fbfcfb;
+
+    border: 1px solid var(--env-border);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    color: var(--env-text);
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    resize: vertical;
+
+    box-sizing: border-box;
+
+    transition: all 0.2s ease;
+}
+
+
+textarea::placeholder {
+    color: #a1a8b0;
+}
+
+
+textarea:hover {
+    border-color: #cbd5cf;
+}
+
+
+textarea:focus {
+    background: white;
+
+    border-color: var(--env-primary);
+
+    box-shadow: 0 0 0 3px rgba(23, 107, 58, 0.10);
+}
+
+
+/* =========================================
+   FORM ACTIONS
+========================================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+
+    padding-top: 28px;
+}
+
+
+.cancel-button,
+.save-button {
+    min-height: 45px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    padding: 0 20px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.cancel-button {
+    color: #475569;
+
+    background: #f8faf9;
+
+    border: 1px solid var(--env-border);
+}
+
+
+.cancel-button:hover {
+    color: var(--env-text);
+
+    background: #eef2ef;
+
+    border-color: #cbd5cf;
+}
+
+
+.save-button {
+    color: white;
+
+    background: var(--env-primary);
+
+    border: 1px solid var(--env-primary);
+
+    box-shadow: 0 5px 14px rgba(23, 107, 58, 0.18);
+}
+
+
+.save-button:hover {
+    background: var(--env-primary-dark);
+
+    border-color: var(--env-primary-dark);
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 7px 18px rgba(23, 107, 58, 0.24);
+}
+
+
+.save-button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .environment-page {
+        padding: 22px;
+    }
+
+    .environment-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .header-badge {
+        align-self: flex-start;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .environment-page {
+        padding: 15px;
+    }
+
+    .environment-card {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .environment-header {
+        padding: 22px;
+    }
+
+    .header-title {
+        align-items: flex-start;
+    }
+
+    .header-title h1 {
+        font-size: 21px;
+    }
+
+    .header-title p {
+        line-height: 1.5;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .cancel-button,
+    .save-button {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .environment-page {
+        padding: 10px;
+    }
+
+    .environment-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .environment-header {
+        border-radius: 14px;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .header-title h1 {
+        font-size: 19px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+}
+

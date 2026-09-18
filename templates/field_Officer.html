@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}
@@ -6,229 +7,1036 @@ Field Officer Dashboard
 
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
-{% endblock %}
 
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='layout.css') }}">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+{% endblock %}
 
 
 {% block content %}
 
-
-<div class="admin-container">
-
-
-<!-- ================= HEADER ================= -->
-
-<header class="top-bar">
-
-    <div class="logo">
-
-        <h1>
-            Field Officer Dashboard
-        </h1>
-
-        <p>
-            Biodiversity Monitoring System
-        </p>
-
-    </div>
+<div class="dashboard-layout">
 
 
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
-    <form action="{{ url_for('search') }}" method="GET" class="search-form">
-
-        <input type="text" name="search"  placeholder="Search species, observations..."value="{{ search }}">
-
-        <button type="submit">
-            <i class="fa-solid fa-search"></i>
-        </button>
-
-    </form>
+    <aside class="sidebar" id="sidebar">
 
 
+        <!-- BRAND -->
 
-    <div class="nav-buttons">
-        <a href="{{ url_for('notifications') }}" class="nav-btn">
-            <i class="fa-solid fa-bell"></i>
-            Notifications
-        </a>
+        <div class="sidebar-brand">
 
-        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <div class="brand-icon">
+                <i class="fa-solid fa-leaf"></i>
+            </div>
 
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-
-        </a>
-
-
-    </div>
-
-
-</header>
-
-
-
-
-<!-- ================= WELCOME SECTION ================= -->
-
-
-<h2 class="section-title">
-    Welcome Field Officer
-</h2>
-
-
-<p>
-    Manage species records, collect observations, analyze biodiversity data and monitor ecological trends.
-</p>
-
-
-
-
-
-<!-- ================= DASHBOARD CARDS ================= -->
-
-
-<div class="main-card">
-
-
-
-    <a href="{{ url_for('manageSpecies') }}">
-
-        <div class="card">
-
-            <i class="fa-solid fa-paw card-icon"></i>
-
-            <h3>
-                Manage Species
-            </h3>
-
-            <p>
-                Add, update and manage species information.
-            </p>
+            <div>
+                <h2>CBU Nature Park</h2>
+                <span>Biodiversity Monitoring</span>
+            </div>
 
         </div>
 
-    </a>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <div class="nav-heading">
+                Field Operations
+            </div>
+
+
+            <!-- DASHBOARD -->
+
+            <a href="{{ url_for('view_field_Officer') }}"
+               class="sidebar-link active">
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+                <span>Dashboard</span>
+
+            </a>
 
 
 
+            <!-- SPECIES -->
+
+            <a href="{{ url_for('manageSpecies') }}"
+               class="sidebar-link">
+
+                <i class="fa-solid fa-paw"></i>
+
+                <span>Manage Species</span>
+
+            </a>
 
 
-    <a href="{{ url_for('record_observation') }}">
 
-        <div class="card">
+            <!-- RECORD OBSERVATION -->
 
-            <i class="fa-solid fa-clipboard-check card-icon"></i>
+            <a href="{{ url_for('record_observation') }}"
+               class="sidebar-link">
 
-            <h3>
-                Record Observation
-            </h3>
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>Record Observation</span>
+
+            </a>
 
 
-            <p>
-                Capture field observations and biodiversity data.
-            </p>
+
+            <!-- VIEW OBSERVATIONS -->
+
+            <a href="{{ url_for('view_observations') }}"
+               class="sidebar-link">
+
+                <i class="fa-solid fa-eye"></i>
+
+                <span>View Observations</span>
+
+            </a>
+
+
+
+            <!-- ENVIRONMENT -->
+
+            <a href="{{ url_for('record_environment') }}"
+               class="sidebar-link">
+
+                <i class="fa-solid fa-cloud-sun"></i>
+
+                <span>Environmental Data</span>
+
+            </a>
+
+
+
+            <!-- ANALYSIS -->
+
+            <div class="nav-heading">
+                Analysis &amp; Reports
+            </div>
+
+
+
+            <!-- TRENDS -->
+
+            <a href="{{ url_for('analysis_page') }}"
+               class="sidebar-link">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                <span>Biodiversity Trends</span>
+
+            </a>
+
+
+
+            <!-- REPORTS -->
+
+            <a href="{{ url_for('report') }}"
+               class="sidebar-link">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>Reports</span>
+
+            </a>
+
+
+
+            <!-- NOTIFICATIONS -->
+
+            <a href="{{ url_for('notifications') }}"
+               class="sidebar-link">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>Notifications</span>
+
+            </a>
+
+
+        </nav>
+
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <span>Monitoring System Online</span>
+
+            </div>
+
+
+
+            <!-- LOGOUT -->
+
+            <a href="{{ url_for('logout') }}"
+               class="logout-link">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
 
         </div>
 
-    </a>
+
+    </aside>
 
 
 
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="dashboard-header">
+
+
+            <div class="header-left">
+
+                <span class="welcome-text">
+                    Field Operations
+                </span>
+
+                <h1>
+                    Field Officer Dashboard
+                </h1>
+
+            </div>
 
 
 
-    <a href="{{ url_for('view_observations') }}">
+            <div class="header-right">
 
-        <div class="card">
-            <i class="fa-solid fa-eye card-icon"></i>
-            <h3>
-                View Observations
-            </h3>
+
+                <!-- MOBILE MENU -->
+
+                <button class="mobile-menu"
+                        type="button"
+                        onclick="toggleSidebar()">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+
+
+                <!-- SEARCH -->
+
+                <form action="{{ url_for('search') }}"
+                      method="GET"
+                      class="search-box">
+
+                    <i class="fa-solid fa-search"></i>
+
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Search species, observations..."
+                        value="{{ search|default('') }}"
+                    >
+
+                </form>
+
+
+
+                <!-- NOTIFICATIONS -->
+
+                <a href="{{ url_for('notifications') }}"
+                   class="header-icon"
+                   title="Notifications">
+
+                    <i class="fa-solid fa-bell"></i>
+
+
+                    {% if total_isRead_notifications|default(0) > 0 %}
+
+                        <span class="notification-badge">
+                            {{ total_isRead_notifications }}
+                        </span>
+
+                    {% endif %}
+
+                </a>
+
+
+
+                <!-- PROFILE -->
+
+                <div class="admin-profile">
+
+                    <div class="profile-avatar">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <strong>
+                            Field Officer
+                        </strong>
+
+                        <span>
+                            CBU Nature Park
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             WELCOME BANNER
+        ================================================== -->
+
+        <section class="welcome-banner">
+
+
+            <div class="welcome-content">
+
+
+                <div class="welcome-icon">
+
+                    <i class="fa-solid fa-binoculars"></i>
+
+                </div>
+
+
+                <span class="banner-label">
+                    Field Monitoring
+                </span>
+
+
+                <h2>
+                    Welcome, Field Officer
+                </h2>
+
+
+                <p>
+                    Record biodiversity observations, manage species
+                    information, monitor environmental conditions and
+                    review ecological trends within CBU Nature Park.
+                </p>
+
+
+            </div>
+
+
+            <div class="banner-decoration"></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             MONITORING OVERVIEW
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-label">
+                        Monitoring Overview
+                    </h2>
+
+                    <p class="section-description">
+                        Current biodiversity monitoring activity
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stats-grid">
+
+
+                <!-- SPECIES -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon users">
+
+                            <i class="fa-solid fa-paw"></i>
+
+                        </div>
+
+                        <span class="stat-arrow">
+
+                            <i class="fa-solid fa-leaf"></i>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-number">
+                        {{ total_species|default(0) }}
+                    </div>
+
+
+                    <div class="stat-label">
+                        Species Recorded
+                    </div>
+
+
+                    <div class="stat-footer">
+                        Registered in the biodiversity system
+                    </div>
+
+                </div>
+
+
+
+                <!-- OBSERVATIONS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon officers">
+
+                            <i class="fa-solid fa-clipboard-list"></i>
+
+                        </div>
+
+                        <span class="stat-arrow">
+
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-number">
+                        {{ total_observations|default(0) }}
+                    </div>
+
+
+                    <div class="stat-label">
+                        Observations Recorded
+                    </div>
+
+
+                    <div class="stat-footer">
+                        Biodiversity field records
+                    </div>
+
+                </div>
+
+
+
+                <!-- PENDING -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon pending">
+
+                            <i class="fa-solid fa-clock"></i>
+
+                        </div>
+
+                        <span class="stat-arrow">
+
+                            <i class="fa-solid fa-hourglass-half"></i>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-number">
+                        {{ pending_observations|default(0) }}
+                    </div>
+
+
+                    <div class="stat-label">
+                        Pending Observations
+                    </div>
+
+
+                    <div class="stat-footer">
+                        Awaiting administrative review
+                    </div>
+
+                </div>
+
+
+
+                <!-- NOTIFICATIONS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon notifications">
+
+                            <i class="fa-solid fa-bell"></i>
+
+                        </div>
+
+                        <span class="stat-arrow">
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-number">
+                        {{ total_isRead_notifications|default(0) }}
+                    </div>
+
+
+                    <div class="stat-label">
+                        Notifications
+                    </div>
+
+
+                    <div class="stat-footer">
+                        System alerts and updates
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FIELD OPERATIONS
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-label">
+                        Field Operations
+                    </h2>
+
+                    <p class="section-description">
+                        Tools for collecting and managing biodiversity data
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="management-grid">
+
+
+                <!-- MANAGE SPECIES -->
+
+                <a href="{{ url_for('manageSpecies') }}"
+                   class="management-card">
+
+
+                    <div class="management-icon">
+
+                        <i class="fa-solid fa-paw"></i>
+
+                    </div>
+
+
+                    <div class="management-content">
+
+                        <h3>
+                            Manage Species
+                        </h3>
+
+                        <p>
+                            Add, update and manage species information
+                            found within CBU Nature Park.
+                        </p>
+
+
+                        <span class="card-link">
+
+                            Manage Species
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </span>
+
+                    </div>
+
+
+                </a>
+
+
+
+                <!-- RECORD OBSERVATION -->
+
+                <a href="{{ url_for('record_observation') }}"
+                   class="management-card">
+
+
+                    <div class="management-icon">
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                    </div>
+
+
+                    <div class="management-content">
+
+                        <h3>
+                            Record Observation
+                        </h3>
+
+                        <p>
+                            Capture species sightings, population counts,
+                            notes and field photographs.
+                        </p>
+
+
+                        <span class="card-link">
+
+                            Record Data
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </span>
+
+                    </div>
+
+
+                </a>
+
+
+
+                <!-- VIEW OBSERVATIONS -->
+
+                <a href="{{ url_for('view_observations') }}"
+                   class="management-card">
+
+
+                    <div class="management-icon">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                    </div>
+
+
+                    <div class="management-content">
+
+                        <h3>
+                            View Observations
+                        </h3>
+
+                        <p>
+                            Review previously submitted biodiversity
+                            observations and field records.
+                        </p>
+
+
+                        <span class="card-link">
+
+                            View Records
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </span>
+
+                    </div>
+
+
+                </a>
+
+
+
+                <!-- ENVIRONMENTAL DATA -->
+
+                <a href="{{ url_for('record_environment') }}"
+                   class="management-card">
+
+
+                    <div class="management-icon">
+
+                        <i class="fa-solid fa-cloud-sun"></i>
+
+                    </div>
+
+
+                    <div class="management-content">
+
+                        <h3>
+                            Environmental Data
+                        </h3>
+
+                        <p>
+                            Record environmental conditions observed
+                            during field monitoring activities.
+                        </p>
+
+
+                        <span class="card-link">
+
+                            Record Data
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </span>
+
+                    </div>
+
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ANALYSIS & MONITORING
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-label">
+                        Analysis &amp; Monitoring
+                    </h2>
+
+                    <p class="section-description">
+                        Understand biodiversity patterns and system activity
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="analytics-grid">
+
+
+                <!-- BIODIVERSITY TRENDS -->
+
+                <a href="{{ url_for('analysis_page') }}"
+                   class="analytics-card">
+
+
+                    <div class="analytics-icon">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Biodiversity Trends
+                        </h3>
+
+                        <p>
+                            Analyze population changes and ecological
+                            trends over time.
+                        </p>
+
+                    </div>
+
+
+                </a>
+
+
+
+                <!-- REPORTS -->
+
+                <a href="{{ url_for('report') }}"
+                   class="analytics-card">
+
+
+                    <div class="analytics-icon">
+
+                        <i class="fa-solid fa-chart-pie"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Biodiversity Reports
+                        </h3>
+
+                        <p>
+                            Generate and review biodiversity monitoring
+                            reports.
+                        </p>
+
+                    </div>
+
+
+                </a>
+
+
+
+                <!-- NOTIFICATIONS -->
+
+                <a href="{{ url_for('notifications') }}"
+                   class="analytics-card">
+
+
+                    <div class="analytics-icon">
+
+                        <i class="fa-solid fa-bell"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Notifications
+                        </h3>
+
+                        <p>
+                            View system alerts, approvals and monitoring
+                            updates.
+                        </p>
+
+                    </div>
+
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             QUICK RESOURCES
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-label">
+                        Quick Resources
+                    </h2>
+
+                    <p class="section-description">
+                        Frequently used monitoring resources
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="resource-grid">
+
+
+                <!-- FIELD OBSERVATION -->
+
+                <a href="{{ url_for('record_observation') }}"
+                   class="resource-card environment-resource">
+
+
+                    <div class="resource-icon">
+
+                        <i class="fa-solid fa-binoculars"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Start Field Observation
+                        </h3>
+
+                        <p>
+                            Quickly record a new species observation
+                            from your field monitoring activity.
+                        </p>
+
+                    </div>
+
+
+                    <div class="resource-arrow">
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </div>
+
+
+                    <div class="resource-overlay"></div>
+
+
+                </a>
+
+
+
+                <!-- ECOSYSTEM TRENDS -->
+
+                <a href="{{ url_for('analysis_page') }}"
+                   class="resource-card sites-resource">
+
+
+                    <div class="resource-icon">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Review Ecosystem Trends
+                        </h3>
+
+                        <p>
+                            Examine biodiversity patterns, population
+                            changes and ecological analysis.
+                        </p>
+
+                    </div>
+
+
+                    <div class="resource-arrow">
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </div>
+
+
+                    <div class="resource-overlay"></div>
+
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="dashboard-footer">
 
 
             <p>
-                Review previously recorded observations.
+
+                © 2026
+
+                <strong>
+                    CBU Nature Park
+                </strong>
+
+                Biodiversity Monitoring System
+
             </p>
-
-
-        </div>
-
-
-    </a>
-
-
-
-
-
-
-    <a href="{{ url_for('report') }}">
-
-        <div class="card">
-
-
-            <i class="fa-solid fa-chart-pie card-icon"></i>
-
-
-            <h3>
-                View Reports
-            </h3>
 
 
             <p>
-                Generate biodiversity monitoring reports.
+                Field Officer Portal
             </p>
 
 
-        </div>
+        </footer>
 
 
-    </a>
-
-
-
+    </main>
 
 </div>
 
 
 
+<!-- =====================================================
+     MOBILE SIDEBAR SCRIPT
+====================================================== -->
 
+<script>
 
-<!-- ================= SECOND ROW ================= -->
+function toggleSidebar() {
 
+    const sidebar = document.getElementById("sidebar");
 
-<div class="main-card">
+    sidebar.classList.toggle("open");
 
-    <a href="{{ url_for('trends') }}">
-        <div class="card">
-            <i class="fa-solid fa-chart-line card-icon"></i>
-            <h3>View Trends</h3>
-            <p> Analyze biodiversity changes over time.</p>
-        </div>
-    </a>
+}
 
-     <a href="{{ url_for('analysis_page') }}"> 
-        <div class="card">
-            <i class="fa-solid fa-chart-line card-icon"></i>
-            <h3>Review Trends</h3>
-            <p>Analyze biodiversity patterns and changes over time.</p>
-        </div>
-
-    </a>
-
-    <a href="{{ url_for('notifications') }}">
-        <div class="card">
-            <i class="fa-solid fa-bell card-icon"></i>
-            <h3>
-                Notifications
-            </h3>
-            <p> View system alerts and updates.</p>
-        </div>
-    </a>
-</div>
-
-
-</div>
+</script>
 
 
 {% endblock %}
+
