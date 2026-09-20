@@ -1,87 +1,265 @@
+
 {% extends "base.html" %}
 
-{% block title %} PENDING OBSERVATIONS  {% endblock %}
+{% block title %}
+Pending Observations
+{% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='adminstyle.css') }}">
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='table.css') }}">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 {% endblock %}
+
 
 {% block content %}
 
 <div class="admin-container">
+
+
     <!-- HEADER -->
+
     <header class="top-bar">
+
         <div class="logo">
+
             <h1>🌿 Biodiversity Monitoring System</h1>
+
+            <p>Observation Approval Centre</p>
+
         </div>
 
-        <form action="{{ url_for('search') }}" method="GET" class="search-form">
 
-            <input type="text" name="search" placeholder="Search users, species or observations..." value="{{ search if search else '' }}">
+        <form action="{{ url_for('search') }}"
+              method="GET"
+              class="search-form">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search users, species or observations..."
+                value="{{ search if search else '' }}">
 
             <button type="submit">
-                 <i class="fa-solid fa-magnifying-glass"></i>
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
             </button>
+
         </form>
 
+
         <div class="nav-buttons">
-            <a href="{{ url_for('admin') }}" class="nav-btn">
+
+            <a href="{{ url_for('admin') }}"
+               class="nav-btn">
+
                 <i class="fa-solid fa-house"></i>
+
                 Dashboard
+
             </a>
 
-            <a href="{{ url_for('logout') }}" class="logout-btn">
+
+            <a href="{{ url_for('logout') }}"
+               class="logout-btn">
+
                 <i class="fa-solid fa-right-from-bracket"></i>
+
                 Logout
+
             </a>
+
         </div>
+
     </header>
+
+
     <!-- TITLE -->
 
-    <h2 class="section-title"> SPECIE'S OBSERVATION</h2>
-    <!-- USERS TABLE -->
+    <h2 class="section-title">
+        Pending Observations
+    </h2>
+
+    <p class="description">
+        Review biodiversity observations submitted by field officers before they are added to the approved dataset.
+    </p>
+
+
+    <!-- OBSERVATIONS TABLE -->
+
     <div class="table-container">
+
         <table>
+
             <thead>
+
                 <tr>
+
                     <th>Species</th>
+
                     <th>Population</th>
+
                     <th>Notes</th>
+
                     <th>Date</th>
+
                     <th>Status</th>
+
+                    <th>Actions</th>
+
                 </tr>
+
             </thead>
-            
-            <tbody> 
-    {% for obs in observations %}
-    <tr>
-        <td>{{ obs.species.specie_Common_Name }}</td>
-        <td>{{ obs.population_count }}</td>
-        <td>{{ obs.observation_date }}</td>
-        <td>{{ obs.status }}</td>
 
-        <td>
 
-            <form action="{{ url_for('approve_observation', id=obs.id) }}"method="POST"style="display:inline;">
-                <button type="submit">Approve</button>
-            </form>
+            <tbody>
 
-            <form action="{{ url_for('reject_observation', id=obs.id) }}"method="POST"style="display:inline;">
-                <button type="submit"> Reject</button>
-            </form>
+            {% for obs in observations %}
 
-        </td>
+                <tr>
 
-    </tr>
-    {% endfor %}
+                    <!-- SPECIES -->
 
- </tbody>
+                    <td>
+
+                        <strong>
+                            {{ obs.species.specie_Common_Name }}
+                        </strong>
+
+                    </td>
+
+
+                    <!-- POPULATION -->
+
+                    <td>
+
+                        {{ obs.population_count }}
+
+                    </td>
+
+
+                    <!-- NOTES -->
+
+                    <td>
+
+                        {{ obs.notes if obs.notes else "No notes provided" }}
+
+                    </td>
+
+
+                    <!-- DATE -->
+
+                    <td>
+
+                        {{ obs.observation_date.strftime('%d %b %Y') if obs.observation_date else '—' }}
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        <span class="status-badge pending">
+
+                            <i class="fa-solid fa-clock"></i>
+
+                            {{ obs.status }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACTIONS -->
+
+                    <td class="actions">
+
+
+                        <!-- APPROVE -->
+
+                        <form
+                            action="{{ url_for('approve_observation', id=obs.id) }}"
+                            method="POST">
+
+                            <button
+                                type="submit"
+                                class="approve-btn">
+
+                                <i class="fa-solid fa-check"></i>
+
+                                Approve
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- REJECT -->
+
+                        <form
+                            action="{{ url_for('reject_observation', id=obs.id) }}"
+                            method="POST">
+
+                            <button
+                                type="submit"
+                                class="reject-btn">
+
+                                <i class="fa-solid fa-xmark"></i>
+
+                                Reject
+
+                            </button>
+
+                        </form>
+
+
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="6"
+                        class="table-empty">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        No pending observations.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
         </table>
+
     </div>
+
+
+    <!-- BACK -->
+
+    <button
+        onclick="window.location.href='{{ url_for('back') }}'"
+        class="back-btn">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Back
+
+    </button>
+
 </div>
 
-<button onclick="window.location.href='{{ url_for('back') }}'" class="back-btn">
-    ← Back
-</button>
 {% endblock %}
-
+```

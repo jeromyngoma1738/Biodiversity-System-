@@ -1,101 +1,950 @@
 
+/* =========================================================
+   BIODIVERSITY MONITORING SYSTEM
+   SHARED TABLE / ADMIN PAGE STYLES
+   Used by:
+   - Species Database
+   - Manage Users
+   - Pending Observations
+   ========================================================= */
+
+
+/* =========================
+   ROOT VARIABLES
+   ========================= */
+
+:root {
+    --primary: #176b45;
+    --primary-dark: #0f5133;
+    --primary-light: #eaf7f0;
+
+    --secondary: #22965e;
+
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+
+    --orange: #d97706;
+    --orange-light: #fff7ed;
+
+    --red: #dc2626;
+    --red-light: #fef2f2;
+
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+
+    --text-dark: #17251f;
+    --text-medium: #52645b;
+    --text-light: #78877f;
+
+    --border: #e2e8e5;
+    --background: #f5f8f6;
+    --white: #ffffff;
+
+    --shadow-sm: 0 2px 8px rgba(23, 107, 69, 0.07);
+    --shadow-md: 0 8px 25px rgba(23, 107, 69, 0.10);
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+}
+
+
+/* =========================
+   PAGE
+   ========================= */
+
+body {
+    background: var(--background);
+}
+
+
+/* =========================
+   MAIN CONTAINER
+   ========================= */
+
+.admin-container {
+    width: min(1450px, calc(100% - 40px));
+    margin: 30px auto 50px;
+}
+
+
+/* =========================
+   TOP NAVIGATION
+   ========================= */
+
 .top-bar {
-    background:
-        linear-gradient(
-            120deg,
-            #14532d,
-            #2e7d32,
-            #00897b
-        );
-
-    padding: 25px;
-
-    border-radius: 25px;
-
     display: flex;
-
-    justify-content: space-between;
-
     align-items: center;
+    gap: 25px;
 
-    flex-wrap: wrap;
+    background: var(--white);
 
-    gap: 20px;
+    padding: 20px 24px;
 
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================
+   LOGO
+   ========================= */
+
+.logo {
+    flex: 1;
+    min-width: 260px;
 }
 
 .logo h1 {
-    color: white;
-    font-size: 30px;
+    margin: 0;
+
+    color: var(--primary);
+
+    font-size: 22px;
+    font-weight: 750;
+
+    letter-spacing: -0.3px;
 }
 
 .logo p {
-    color: #dcedc8;
+    margin: 5px 0 0;
+
+    color: var(--text-light);
+
+    font-size: 13px;
 }
 
 
-/* =====================================================
-   4. SEARCH
-===================================================== */
+/* =========================
+   SEARCH
+   ========================= */
 
 .search-form {
     display: flex;
-    gap: 10px;
+    align-items: center;
+
+    width: min(420px, 100%);
+
+    background: #f8faf9;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    transition: 0.2s ease;
+}
+
+.search-form:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.10);
 }
 
 .search-form input {
-    width: 330px;
-    padding: 14px 20px;
-    border-radius: 30px;
+    flex: 1;
+
+    min-width: 0;
+
     border: none;
     outline: none;
+
+    background: transparent;
+
+    padding: 12px 14px;
+
+    color: var(--text-dark);
+
+    font-size: 14px;
+}
+
+.search-form input::placeholder {
+    color: #98a59e;
 }
 
 .search-form button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #ffc107;
+    width: 46px;
+    height: 44px;
+
+    border: none;
+
+    background: var(--primary);
+
     color: white;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
 }
 
 .search-form button:hover {
-    transform: scale(1.1);
+    background: var(--primary-dark);
 }
 
 
-/* =====================================================
-   5. NAVIGATION BUTTONS
-===================================================== */
+/* =========================
+   NAV BUTTONS
+   ========================= */
 
 .nav-buttons {
     display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
 }
 
 .nav-btn,
 .logout-btn {
-    padding: 12px 25px;
-    border-radius: 30px;
-    color: white;
-    font-weight: bold;
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 15px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 650;
+
+    transition: all 0.2s ease;
 }
 
 .nav-btn {
-    background: #0288d1;
+    color: var(--primary);
+    background: var(--primary-light);
+
+    border: 1px solid #d5ecdf;
 }
 
 .nav-btn:hover {
-    background: #01579b;
+    background: #dff1e8;
+    transform: translateY(-1px);
 }
 
 .logout-btn {
-    background: #c62828;
+    color: var(--red);
+    background: var(--red-light);
+
+    border: 1px solid #fee2e2;
 }
 
 .logout-btn:hover {
-    background: #8e0000;
+    background: #fee2e2;
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   PAGE TITLE
+   ========================= */
+
+.section-title {
+    margin: 0 0 8px;
+
+    color: var(--text-dark);
+
+    font-size: 28px;
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+.description {
+    margin: 0 0 24px;
+
+    color: var(--text-medium);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   SPECIES DATABASE ACTIONS
+   ========================= */
+
+.action-buttons {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin: 25px 0;
+}
+
+.btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    min-height: 44px;
+
+    padding: 0 18px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 650;
+
+    border: 1px solid transparent;
+
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.add-species {
+    background: var(--primary);
+    color: white;
+}
+
+.add-species:hover {
+    background: var(--primary-dark);
+}
+
+.view-species {
+    background: var(--blue-light);
+    color: var(--blue);
+
+    border-color: #dbeafe;
+}
+
+.view-species:hover {
+    background: #dbeafe;
+}
+
+.record-observation {
+    background: var(--orange-light);
+    color: var(--orange);
+
+    border-color: #fed7aa;
+}
+
+.record-observation:hover {
+    background: #ffedd5;
+}
+
+
+/* =========================
+   TABLE CARD
+   ========================= */
+
+.table-container {
+    width: 100%;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow-x: auto;
+
+    margin-top: 20px;
+}
+
+
+/* =========================
+   TABLE
+   ========================= */
+
+.table-container table,
+.admin-container > table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 850px;
+
+    background: white;
+}
+
+
+/* =========================
+   TABLE HEADER
+   ========================= */
+
+.table-container thead,
+.admin-container > table tr:first-child {
+    background: #f1f7f3;
+}
+
+.table-container th,
+.admin-container > table th {
+    padding: 15px 18px;
+
+    color: #385348;
+
+    font-size: 12px;
+
+    font-weight: 750;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    text-align: left;
+
+    border-bottom: 1px solid var(--border);
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   TABLE BODY
+   ========================= */
+
+.table-container td,
+.admin-container > table td {
+    padding: 15px 18px;
+
+    color: var(--text-medium);
+
+    font-size: 14px;
+
+    border-bottom: 1px solid #edf1ee;
+
+    vertical-align: middle;
+}
+
+.table-container tbody tr,
+.admin-container > table tr {
+    transition: background 0.18s ease;
+}
+
+.table-container tbody tr:hover,
+.admin-container > table tr:hover {
+    background: #f8fbf9;
+}
+
+.table-container tbody tr:last-child td,
+.admin-container > table tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================
+   FIRST COLUMN
+   ========================= */
+
+.table-container td:first-child {
+    color: var(--text-dark);
+
+    font-weight: 650;
+}
+
+
+/* =========================
+   SPECIES NAME
+   ========================= */
+
+.table-container td:nth-child(2) {
+    color: var(--primary);
+    font-weight: 650;
+}
+
+
+/* =========================
+   ROLE BADGE
+   ========================= */
+
+.role-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border: 1px solid #d3ebdf;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-transform: capitalize;
+}
+
+
+/* =========================
+   ACTIONS
+   ========================= */
+
+.actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.actions form {
+    margin: 0;
+}
+
+
+/* =========================
+   ROLE SELECT
+   ========================= */
+
+.role-form {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.role-form select {
+    height: 37px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--text-dark);
+
+    outline: none;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.role-form select:focus {
+    border-color: var(--primary);
+
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.08);
+}
+
+
+/* =========================
+   UPDATE BUTTON
+   ========================= */
+
+.update-btn,
+.delete-btn,
+.approve-btn,
+.reject-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    min-height: 37px;
+
+    padding: 0 12px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    border: 1px solid transparent;
+
+    transition: all 0.2s ease;
+}
+
+.update-btn {
+    background: var(--blue-light);
+
+    color: var(--blue);
+
+    border-color: #dbeafe;
+}
+
+.update-btn:hover {
+    background: #dbeafe;
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   DELETE BUTTON
+   ========================= */
+
+.delete-btn {
+    background: var(--red-light);
+
+    color: var(--red);
+
+    border-color: #fee2e2;
+}
+
+.delete-btn:hover {
+    background: #fee2e2;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   STATUS BADGES
+   ========================= */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.status-badge.pending {
+    background: #fff7ed;
+
+    color: #c2410c;
+
+    border: 1px solid #fed7aa;
+}
+
+.status-badge.approved {
+    background: #ecfdf5;
+
+    color: #047857;
+
+    border: 1px solid #a7f3d0;
+}
+
+.status-badge.rejected {
+    background: #fef2f2;
+
+    color: #b91c1c;
+
+    border: 1px solid #fecaca;
+}
+
+
+/* =========================
+   APPROVE / REJECT
+   ========================= */
+
+.approve-btn {
+    background: #ecfdf5;
+
+    color: #047857;
+
+    border-color: #a7f3d0;
+}
+
+.approve-btn:hover {
+    background: #d1fae5;
+
+    transform: translateY(-1px);
+}
+
+.reject-btn {
+    background: var(--red-light);
+
+    color: var(--red);
+
+    border-color: #fecaca;
+}
+
+.reject-btn:hover {
+    background: #fee2e2;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   BACK BUTTON
+   ========================= */
+
+.back-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    margin: 24px 0 35px;
+
+    padding: 11px 17px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: white;
+
+    color: var(--text-medium);
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border-color: #cde6d8;
+
+    transform: translateX(-2px);
+}
+
+
+/* =========================
+   EMPTY TABLE
+   ========================= */
+
+.table-empty {
+    text-align: center;
+
+    padding: 50px 20px;
+
+    color: var(--text-light);
+
+    font-size: 14px;
+}
+
+.table-empty i {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #a7b5ae;
+
+    font-size: 35px;
+}
+
+
+/* =========================
+   SPECIES DATABASE DIRECT TABLE
+   ========================= */
+
+.admin-container > table {
+    border: none;
+
+    border-radius: var(--radius-lg);
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-container > table td,
+.admin-container > table th {
+    border-left: none;
+    border-right: none;
+}
+
+
+/* =========================
+   ICON ALIGNMENT
+   ========================= */
+
+.btn i,
+.nav-btn i,
+.logout-btn i,
+.search-form i,
+.update-btn i,
+.delete-btn i,
+.approve-btn i,
+.reject-btn i {
+    line-height: 1;
+}
+
+
+/* =========================
+   RESPONSIVE — TABLET
+   ========================= */
+
+@media (max-width: 1100px) {
+
+    .top-bar {
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        flex: 1 1 100%;
+    }
+
+    .search-form {
+        flex: 1;
+    }
+
+    .nav-buttons {
+        margin-left: auto;
+    }
+
+    .admin-container {
+        width: min(95%, 1450px);
+    }
+}
+
+
+/* =========================
+   RESPONSIVE — MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+
+    .admin-container {
+        width: calc(100% - 24px);
+
+        margin-top: 15px;
+    }
+
+    .top-bar {
+        padding: 17px;
+
+        gap: 15px;
+    }
+
+    .logo h1 {
+        font-size: 18px;
+    }
+
+    .search-form {
+        width: 100%;
+
+        flex: 1 1 100%;
+    }
+
+    .nav-buttons {
+        width: 100%;
+    }
+
+    .nav-btn,
+    .logout-btn {
+        flex: 1;
+    }
+
+    .section-title {
+        font-size: 23px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .table-container {
+        border-radius: 12px;
+    }
+
+    .table-container th,
+    .table-container td {
+        padding: 12px 14px;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .role-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .role-form select {
+        width: 100%;
+    }
+
+    .update-btn,
+    .delete-btn,
+    .approve-btn,
+    .reject-btn {
+        width: 100%;
+    }
+}
+
+
+/* =========================
+   SMALL MOBILE
+   ========================= */
+
+@media (max-width: 480px) {
+
+    .admin-container {
+        width: calc(100% - 16px);
+    }
+
+    .top-bar {
+        padding: 14px;
+    }
+
+    .logo h1 {
+        font-size: 16px;
+    }
+
+    .logo p {
+        font-size: 11px;
+    }
+
+    .section-title {
+        font-size: 21px;
+    }
+
+    .description {
+        font-size: 13px;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+    }
+
+    .nav-btn,
+    .logout-btn {
+        width: 100%;
+    }
 }

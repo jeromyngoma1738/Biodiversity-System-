@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}
@@ -6,66 +7,372 @@ Species Database
 
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
-{% endblock %}
 
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='species.css') }}">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+{% endblock %}
 
 
 {% block content %}
 
-
-<div class="species-container">
-
-
-<h2>🌿 Add New Species</h2>
+<div class="species-page">
 
 
-<div class="species-form">
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <header class="species-header">
+
+        <div class="header-title">
+
+            <div class="header-icon">
+                <i class="fa-solid fa-paw"></i>
+            </div>
+
+            <div>
+
+                <h1>
+                    Species Database
+                </h1>
+
+                <p>
+                    Add and maintain biodiversity species
+                    recorded in CBU Nature Park.
+                </p>
+
+            </div>
+
+        </div>
 
 
-<form action="{{ url_for('add_species') }}" method="POST">
+        <div class="header-badge">
 
+            <i class="fa-solid fa-leaf"></i>
 
-<label>Scientific Name</label>
+            <span>
+                CBU Nature Park
+            </span>
 
-<input 
-type="text" 
-name="scientificName"
-placeholder="Enter scientific name"
-required>
+        </div>
 
-
-<label>Common Name</label>
-
-<input 
-type="text"
-name="commonName"
-placeholder="Enter common name"
-required>
+    </header>
 
 
 
-<label>Habitat</label>
+    <!-- =========================================
+         MAIN CARD
+    ========================================== -->
 
-<input type="text"name="habitat" placeholder="Enter habitat"required>
-
-
-<label>Location</label>
-
-<input type="text"name="location"placeholder="Enter location" required>
+    <div class="species-card">
 
 
-<button type="submit">➕ Add Species</button>
+        <!-- INTRODUCTION -->
+
+        <div class="form-introduction">
+
+            <div class="intro-icon">
+
+                <i class="fa-solid fa-plus"></i>
+
+            </div>
+
+            <div>
+
+                <h2>
+                    Add New Species
+                </h2>
+
+                <p>
+                    Enter the biological and habitat information
+                    for a species found within the nature park.
+                </p>
+
+            </div>
+
+        </div>
 
 
-</form>
 
+        <form action="{{ url_for('add_species') }}"
+              method="POST">
+
+
+            <!-- =================================
+                 SPECIES INFORMATION
+            ================================== -->
+
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon species-icon">
+
+                        <i class="fa-solid fa-dna"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Species Information
+                        </h3>
+
+                        <p>
+                            Provide the scientific and common
+                            identification of the species.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- SCIENTIFIC NAME -->
+
+                    <div class="form-group">
+
+                        <label for="scientificName">
+
+                            Scientific Name
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-dna"></i>
+
+                            <input
+                                type="text"
+                                id="scientificName"
+                                name="scientificName"
+                                placeholder="e.g. Aepyceros melampus"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- COMMON NAME -->
+
+                    <div class="form-group">
+
+                        <label for="commonName">
+
+                            Common Name
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-paw"></i>
+
+                            <input
+                                type="text"
+                                id="commonName"
+                                name="commonName"
+                                placeholder="e.g. Impala"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 HABITAT & LOCATION
+            ================================== -->
+
+            <section class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon location-icon">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Habitat & Location
+                        </h3>
+
+                        <p>
+                            Specify the environment and location
+                            where the species occurs.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- HABITAT -->
+
+                    <div class="form-group">
+
+                        <label for="habitat">
+
+                            Habitat
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-tree"></i>
+
+                            <input
+                                type="text"
+                                id="habitat"
+                                name="habitat"
+                                placeholder="e.g. Miombo woodland"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+                        <label for="location">
+
+                            Location
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-map-location-dot"></i>
+
+                            <input
+                                type="text"
+                                id="location"
+                                name="location"
+                                placeholder="e.g. CBU Nature Park"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 INFORMATION NOTICE
+            ================================== -->
+
+            <div class="species-notice">
+
+                <div class="notice-icon">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Species identification
+                    </strong>
+
+                    <p>
+                        Use the accepted scientific name and
+                        common name for accurate biodiversity
+                        monitoring and ecological analysis.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 FORM ACTIONS
+            ================================== -->
+
+            <div class="form-actions">
+
+
+                <a href="{{ url_for('view_species') }}"
+                   class="cancel-button">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="save-button">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Species
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+    </div>
 
 </div>
-
-
-</div>
-
-
 
 {% endblock %}
+

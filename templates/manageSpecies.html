@@ -6,62 +6,191 @@ Species Database
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 
-<h2>Species Database</h2>
+<div class="admin-container">
 
-<nav class="action-buttons">
+    <!-- PAGE HEADER -->
+    <header class="top-bar">
 
-    <a href="{{ url_for('add_species') }}" class="btn add-species">
-        <i class="fa-solid fa-plus"></i>
-        Add New Species
-    </a>
+        <div class="logo">
+            <h1>🌿 Biodiversity Monitoring System</h1>
+            <p>Species Database Management</p>
+        </div>
+
+        <div class="nav-buttons">
+
+            <a href="{{ url_for('admin') }}" class="nav-btn">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+
+        </div>
+
+    </header>
 
 
-    <a href="{{ url_for('view_species') }}" class="btn view-species">
-        <i class="fa-solid fa-leaf"></i>
-        View Species
-    </a>
+    <!-- PAGE TITLE -->
+
+    <h2 class="section-title">
+        Species Database
+    </h2>
+
+    <p class="description">
+        Manage species recorded within the CBU Nature Park biodiversity monitoring system.
+    </p>
 
 
-    <a href="{{ url_for('record_observation') }}" class="btn record-observation">
-        Record Observation
-    </a>
+    <!-- ACTION BUTTONS -->
 
-</nav>
+    <nav class="action-buttons">
 
-<br><br>
+        <a href="{{ url_for('add_species') }}"
+           class="btn add-species">
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Scientific Name</th>
-        <th>Common Name</th>
-        <th>Habitat</th>
-        <th>Location</th>
-        <th>Action</th>
-    </tr>
+            <i class="fa-solid fa-plus"></i>
 
-    {% for species in species %}
-    <tr>
-        <td>{{ species.id }}</td>
-        <td>{{ species.scientificName }}</td>
-        <td>{{ species.specie_Common_Name }}</td>
-        <td>{{ species.specie_Habitat }}</td>
-        <td>{{ species.location }}</td>
+            Add New Species
 
-        <td>
-            <form action="{{ url_for('delete_species', id=species.id) }}" method="POST"
-                  onsubmit="return confirm('Are you sure you want to delete this species?');">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+        </a>
 
-<button type="button" onclick="window.location.href='{{ url_for('back') }}'"class="back-btn"> ← Back </button>
+
+        <a href="{{ url_for('view_species') }}"
+           class="btn view-species">
+
+            <i class="fa-solid fa-leaf"></i>
+
+            View Species
+
+        </a>
+
+
+        <a href="{{ url_for('record_observation') }}"
+           class="btn record-observation">
+
+            <i class="fa-solid fa-binoculars"></i>
+
+            Record Observation
+
+        </a>
+
+    </nav>
+
+
+    <!-- SPECIES TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Scientific Name</th>
+                    <th>Common Name</th>
+                    <th>Habitat</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for species_item in species %}
+
+                <tr>
+
+                    <td>
+                        {{ species_item.id }}
+                    </td>
+
+                    <td>
+                        <em>{{ species_item.scientificName }}</em>
+                    </td>
+
+                    <td>
+                        {{ species_item.specie_Common_Name }}
+                    </td>
+
+                    <td>
+                        {{ species_item.specie_Habitat }}
+                    </td>
+
+                    <td>
+                        <i class="fa-solid fa-location-dot"></i>
+                        {{ species_item.location }}
+                    </td>
+
+                    <td class="actions">
+
+                        <form
+                            action="{{ url_for('delete_species', id=species_item.id) }}"
+                            method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this species?');">
+
+                            <button type="submit"
+                                    class="delete-btn">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                                Delete
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="6" class="table-empty">
+
+                        <i class="fa-solid fa-leaf"></i>
+
+                        No species have been registered yet.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- BACK -->
+
+    <button
+        type="button"
+        onclick="window.location.href='{{ url_for('back') }}'"
+        class="back-btn">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Back
+
+    </button>
+
+</div>
 
 {% endblock %}

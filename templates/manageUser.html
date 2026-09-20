@@ -1,26 +1,25 @@
+
 {% extends "base.html" %}
 
-
-{% block title %}Manage Users {% endblock %}
-
-
+{% block title %}
+Manage Users
+{% endblock %}
 
 {% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='table.css') }}">
 
-<link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
-
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 
-
 <div class="admin-container">
-
 
     <!-- HEADER -->
 
     <header class="top-bar">
-
 
         <div class="logo">
 
@@ -31,17 +30,15 @@
         </div>
 
 
+        <form action="{{ url_for('search') }}"
+              method="GET"
+              class="search-form">
 
-        <form action="{{ url_for('search') }}" method="GET" class="search-form">
-
-
-            <input 
+            <input
                 type="text"
                 name="search"
                 placeholder="Search users, species or observations..."
-                value="{{ search if search else '' }}"
-            >
-
+                value="{{ search if search else '' }}">
 
             <button type="submit">
 
@@ -49,16 +46,13 @@
 
             </button>
 
-
         </form>
-
-
 
 
         <div class="nav-buttons">
 
-
-            <a href="{{ url_for('admin') }}" class="nav-btn">
+            <a href="{{ url_for('admin') }}"
+               class="nav-btn">
 
                 <i class="fa-solid fa-house"></i>
 
@@ -67,8 +61,8 @@
             </a>
 
 
-
-            <a href="{{ url_for('logout') }}" class="logout-btn">
+            <a href="{{ url_for('logout') }}"
+               class="logout-btn">
 
                 <i class="fa-solid fa-right-from-bracket"></i>
 
@@ -76,82 +70,88 @@
 
             </a>
 
-
         </div>
-
 
     </header>
 
 
-
-
-
-
     <!-- TITLE -->
 
-
     <h2 class="section-title">
-
         Manage System Users
-
     </h2>
 
-
-
     <p class="description">
-
         View registered users, assign roles and manage system access permissions.
-
     </p>
-
-
-
-
-
 
 
     <!-- USERS TABLE -->
 
-
     <div class="table-container">
 
-
         <table>
-
 
             <thead>
 
                 <tr>
+
                     <th>ID</th>
+
                     <th>First Name</th>
+
                     <th>Surname</th>
+
                     <th>Email</th>
+
                     <th>DOB</th>
+
                     <th>Gender</th>
+
                     <th>Date Created</th>
+
                     <th>Role</th>
+
                     <th>Actions</th>
+
                 </tr>
+
             </thead>
 
+
             <tbody>
+
             {% for user in users %}
+
                 <tr>
-                    <td>{{ user.id }}</td>
 
-                    <td>{{ user.First_name }}</td>
+                    <td>
+                        {{ user.id }}
+                    </td>
 
-                    <td>{{ user.surname }}</td>
+                    <td>
+                        {{ user.First_name }}
+                    </td>
 
-                    <td>{{ user.email }}</td>
+                    <td>
+                        {{ user.surname }}
+                    </td>
 
-                    <td>{{ user.DOB }}</td>
+                    <td>
+                        {{ user.email }}
+                    </td>
 
-                    <td>{{ user.gender }}</td>
+                    <td>
+                        {{ user.DOB }}
+                    </td>
 
-                    <td>{{ user.date_Created }}</td>
+                    <td>
+                        {{ user.gender }}
+                    </td>
 
-
+                    <td>
+                        {{ user.date_Created.strftime('%d %b %Y') if user.date_Created else '—' }}
+                    </td>
 
 
                     <td>
@@ -165,109 +165,101 @@
                     </td>
 
 
-
-
-
-
                     <td class="actions">
 
+                        <!-- CHANGE ROLE -->
 
-                        <form 
-                        action="{{ url_for('change_role', id=user.id) }}" 
-                        method="POST"
-                        class="role-form">
-
+                        <form
+                            action="{{ url_for('change_role', id=user.id) }}"
+                            method="POST"
+                            class="role-form">
 
                             <select name="role">
 
-
                                 <option value="viewer"
-                                {% if user.role == "viewer" %}selected{% endif %}>
-
+                                    {% if user.role == "viewer" %}
+                                    selected
+                                    {% endif %}>
                                     Viewer
-
                                 </option>
-
 
 
                                 <option value="field_officer"
-                                {% if user.role == "field_officer" %}selected{% endif %}>
-
+                                    {% if user.role == "field_officer" %}
+                                    selected
+                                    {% endif %}>
                                     Field Officer
-
                                 </option>
+
+
                                 <option value="admin"
-                                {% if user.role == "admin" %}selected{% endif %}>
+                                    {% if user.role == "admin" %}
+                                    selected
+                                    {% endif %}>
                                     Admin
                                 </option>
+
                             </select>
-                            <button type="submit" class="update-btn">
+
+
+                            <button type="submit"
+                                    class="update-btn">
+
                                 <i class="fa-solid fa-user-shield"></i>
 
                                 Update
 
                             </button>
 
-
-
                         </form>
 
 
+                        <!-- DELETE USER -->
 
+                        <form
+                            action="{{ url_for('delete_user', id=user.id) }}"
+                            method="POST">
 
-
-                        <form 
-                        action="{{ url_for('delete_user', id=user.id) }}" 
-                        method="POST">
-
-
-                            <button 
-                            type="submit"
-                            class="delete-btn"
-                            onclick="return confirm('Delete this user?')">
-
+                            <button
+                                type="submit"
+                                class="delete-btn"
+                                onclick="return confirm('Delete this user?')">
 
                                 <i class="fa-solid fa-trash"></i>
 
                                 Delete
 
-
                             </button>
-
-
 
                         </form>
 
-
-
                     </td>
-
-
-
 
                 </tr>
 
+            {% else %}
+
+                <tr>
+
+                    <td colspan="9"
+                        class="table-empty">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        No users found.
+
+                    </td>
+
+                </tr>
 
             {% endfor %}
 
-
-
             </tbody>
-
-
 
         </table>
 
-
-
     </div>
 
-
-
-
-
 </div>
-
-
 
 {% endblock %}

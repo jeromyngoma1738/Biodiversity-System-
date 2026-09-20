@@ -46,23 +46,35 @@ class Species(db.Model):
 # OBSERVATION TABLE
 class Observation(db.Model):
     __tablename__ = "observation"
-
     id = db.Column(db.Integer, primary_key=True)
-    species_id = db.Column(db.Integer,db.ForeignKey("species.id"), nullable=False)
+    # Species being observed
+    species_id = db.Column(db.Integer, db.ForeignKey("species.id"), nullable=False )
+    # Date/time of the biodiversity observation
     observation_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    population_count = db.Column(db.Integer, nullable=False)
-    notes = db.Column(db.Text)
-    photo = db.Column(db.String(555))
-    status = db.Column(db.String(20), default="Pending")
 
-    reviewed_by = db.Column(db.Integer, db.ForeignKey("details.id"),nullable=True)
+    # Number of individuals observed
+    population_count = db.Column(db.Integer,nullable=False)
+
+    # Field officer's notes
+    notes = db.Column(db.Text)
+
+    # Uploaded observation photograph
+    photo = db.Column(db.String(555))
+
+    # Review status
+    status = db.Column( db.String(20), default="Pending")
+
+    # Administrator who reviewed the observation
+    reviewed_by = db.Column( db.Integer,db.ForeignKey("details.id"), nullable=True)
 
     reviewed_at = db.Column(db.DateTime)
+    # Environmental monitoring record
+    environmental_observation_id = db.Column( db.Integer, db.ForeignKey("environmental_observations.id"), nullable=True)
+
+    environmental_observation = db.relationship( "EnvironmentalObservation", backref="biodiversity_observations")
 
     def __repr__(self):
         return f"<Observation {self.id}>"
-
-
 
 # NOTIFICATION TABLE
 
@@ -77,6 +89,8 @@ class Notification(db.Model):
     notification_type = db.Column( db.String(20), default="Info")
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column( db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+
 class Analysis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -93,40 +107,122 @@ class Analysis(db.Model):
 
     # Relationship
     species = db.relationship("Species",backref="analyses")
+
+    
 class EnvironmentalObservation(db.Model):
     __tablename__ = "environmental_observations"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-    location = db.Column(db.String(150), nullable=False)
-    observation_date = db.Column(db.DateTime, nullable=False)
+    # ========================================================
+    # MONITORING SITE
+    # ========================================================
 
+    monitoring_site_id = db.Column(
+        db.Integer,
+        db.ForeignKey("monitoring_sites.id"),
+        nullable=False
+    )
+
+    # Keep location for compatibility/display if desired
+    location = db.Column(
+        db.String(150),
+        nullable=False
+    )
+
+    observation_date = db.Column(db.DateTime, nullable=False
+    )
+
+    # ========================================================
     # AREA
-    area_hectares = db.Column(db.Float)
+    # ========================================================
 
-    # CLIMATE
+    area_hectares = db.Column( db.Float )
     temperature = db.Column(db.Float)
     rainfall = db.Column(db.Float)
 
+    # ========================================================
     # SOIL
+    # ========================================================
+
     soil_ph = db.Column(db.Float)
     soil_moisture = db.Column(db.Float)
     soil_quality = db.Column(db.Float)
 
+    # ========================================================
     # WATER
+    # ========================================================
+
     water_ph = db.Column(db.Float)
     water_turbidity = db.Column(db.Float)
     water_quality = db.Column(db.Float)
 
+    # ========================================================
     # VEGETATION / RESOURCES
+    # ========================================================
+
     vegetation_cover = db.Column(db.Float)
     vegetation_density = db.Column(db.Float)
     grass_availability = db.Column(db.Float)
     tree_density = db.Column(db.Float)
 
+    # ========================================================
+    # NOTES
+    # ========================================================
+
     notes = db.Column(db.Text)
+
+    # ========================================================
+    # FIELD OFFICER
+    # ========================================================
 
     recorded_by = db.Column(
         db.Integer,
-        db.ForeignKey("details.id")
+        db.ForeignKey("details.id"),
+        nullable=True
     )
+
+    def __repr__(self):
+        return f"<EnvironmentalObservation {self.id}>"
+class MonitoringSite(db.Model):
+    __tablename__ = "monitoring_sites"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.String(100),
+        nullable=False,
+        unique=True
+    )
+
+    area_hectares = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    description = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+
+    # Relationship with environmental observations
+    environmental_observations = db.relationship(
+        "EnvironmentalObservation",
+        backref="monitoring_site",
+        lazy=True
+    )
+
+    def __repr__(self):
+        return f"<MonitoringSite {self.name}>"

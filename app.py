@@ -2,7 +2,7 @@
 from flask import Flask, flash, redirect, url_for, request, render_template, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from extensions import db
-from models import Details, Species, Observation, Notification, Analysis,EnvironmentalObservation
+from models import Details, Species, Observation, Notification, Analysis,EnvironmentalObservation,MonitoringSite
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -20,7 +20,8 @@ from datetime import datetime, timedelta
 from datetime import datetime, timezone
 import uuid
 import numpy as np
-from routes.AI_Analysis_Model import generate_species_effect_report
+
+from routes.AI_Analysis_Model import ( generate_species_effect_report, forecast_species_population)
 
 
 
@@ -59,95 +60,194 @@ def role_required(*roles):
     return decorator  
 
 # SPECIES POPULATION ANALYSIS
+# ============================================================
+# BIODIVERSITY POPULATION ANALYSIS
+# ============================================================
+
+# ============================================================
+# SPECIES POPULATION ANALYSIS
+# ============================================================
+# ============================================================
+# SPECIES POPULATION ANALYSIS
+# ============================================================
+
 def analysis():
 
     species_list = Species.query.all()
+
     results = []
 
     for species in species_list:
 
-        # Get approved observations, newest first
         observations = (
             Observation.query
-            .filter_by(species_id=species.id, status="Approved" )
-            .order_by( Observation.observation_date.desc())
+            .filter_by(
+                species_id=species.id,
+                status="Approved"
+            )
+            .order_by(
+                Observation.observation_date.desc()
+            )
             .all()
         )
 
-        # At least two observations are required
+        # Need at least two observations
         if len(observations) < 2:
             continue
 
-        # Most recent and previous observation
+        # Latest observation
         current = observations[0]
+
+        # Previous observation
         previous = observations[1]
 
-        current_population = current.population_count
-        previous_population = previous.population_count
+        current_population = current.population_count or 0
+
+        previous_population = previous.population_count or 0
 
         # Population change
-      
-        population_change = ( current_population - previous_population)
+        population_change = (
+            current_population - previous_population
+        )
+
         # Percentage change
-
         if previous_population > 0:
+
             percentage_change = (
-                population_change / previous_population
+                population_change /
+                previous_population
             ) * 100
+
         else:
+
             percentage_change = 0
-        # Determine population trend
 
-
+        # Determine trend
         if population_change > 0:
+
             trend = "Increasing"
 
         elif population_change < 0:
+
             trend = "Declining"
 
         else:
+
             trend = "Stable"
 
-        # ----------------------------------------------------
-        # Determine risk level
-        # ----------------------------------------------------
+        # Add result
+        results.append({
 
-        if percentage_change <= -50:
-            risk_level = "Critical"
+            "species_id": species.id,
 
-        elif percentage_change <= -25:
-            risk_level = "High"
+            "species": species.specie_Common_Name,
 
-        elif percentage_change < 0:
-            risk_level = "Moderate"
-
-        else:
-            risk_level = "Low"
-
-        # ----------------------------------------------------
-        # Store result
-        # ----------------------------------------------------
-
-        results.append({ "species_id": species.id, "species": species.specie_Common_Name,
-            "scientific_name": getattr(species,"scientificName","N/A"
+            "scientific_name": getattr(
+                species,
+                "scientificName",
+                "N/A"
             ),
+
             "habitat": species.specie_Habitat,
+
             "location": species.location,
 
             "current_population": current_population,
+
             "previous_population": previous_population,
 
             "population_change": population_change,
 
-            "percentage_change": round( percentage_change,
+            "percentage_change": round(
+                percentage_change,
                 2
             ),
-            "trend": trend, "risk_level": risk_level,
+
+            "trend": trend,
+
             "current_date": current.observation_date,
+
             "previous_date": previous.observation_date
+
         })
 
     return results
+# ============================================================
+# POPULATION FORECASTING
+# ============================================================
+
+@app.route("/analysis/forecast", methods=["GET"])
+@login_required
+@role_required("admin", "field_officer", "viewer")
+def population_forecast():
+
+    # Get selected species
+    species_name = request.args.get("species", "").strip()
+
+    # Get number of years
+    years_raw = request.args.get("years", "3")
+
+    # Validate species
+    if not species_name:
+        return {
+            "success": False,
+            "error": "Please select a species."
+        }, 400
+
+    # Validate years
+    try:
+        years_ahead = int(years_raw)
+
+    except (ValueError, TypeError):
+        return {
+            "success": False,
+            "error": "Years must be a valid number."
+        }, 400
+
+    # Restrict forecast period
+    if years_ahead < 1 or years_ahead > 10:
+        return {
+            "success": False,
+            "error": "Forecast period must be between 1 and 10 years."
+        }, 400
+
+    # Generate population forecast
+    try:
+
+        forecast_result = forecast_species_population(
+            species_name=species_name,
+            years_ahead=years_ahead
+        )
+
+        return forecast_result
+
+    except Exception as e:
+
+        app.logger.exception(
+            "Population forecasting error"
+        )
+
+        return {
+            "success": False,
+            "error": str(e)
+        }, 500
+        
+        
+@app.route("/forecast", methods=["GET"])
+@login_required
+@role_required("admin", "field_officer", "viewer")
+def forecast_page():
+
+    species_list = (
+        Species.query
+        .order_by(Species.specie_Common_Name.asc())
+        .all()
+    )
+
+    return render_template(
+        "forecast.html",
+        species_list=species_list
+    )
 
 def species_abundance():
     observations = ( Observation.query.filter_by(status="Approved").all())
@@ -232,40 +332,106 @@ def calculate_ecological_statistics():
 @login_required
 @role_required("admin", "field_officer", "viewer")
 def analysis_page():
-    population_results = analysis()
+
+    # ========================================================
+    # AI ECOLOGICAL ANALYSIS
     ai_results = generate_species_effect_report()
-    environmental_data = ( EnvironmentalObservation.query.order_by(EnvironmentalObservation.observation_date.desc()).all())
+
+    # ========================================================
+    # ENVIRONMENTAL OBSERVATIONS
+    # ========================================================
+
+    environmental_data = (
+        EnvironmentalObservation.query
+        .order_by(
+            EnvironmentalObservation.observation_date.desc()
+        )
+        .all()
+    )
+
+
+    # ========================================================
+    # CONVERT AI RESULTS TO DICTIONARIES
+    # ========================================================
+
     if not ai_results.empty:
-        ai_results = ai_results.to_dict( orient="records")
+
+        ai_results = ai_results.to_dict(
+            orient="records"
+        )
 
     else:
+
         ai_results = []
 
+
+    # ========================================================
+    # GET ALL SPECIES
+    # ========================================================
+
     species_list = Species.query.all()
+
+
+    # ========================================================
+    # POPULATION TREND DATA
+    # ========================================================
 
     trend_data = []
 
     for species in species_list:
+
         observations = (
-            Observation.query.filter_by(species_id=species.id,status="Approved") .order_by(
-                Observation.observation_date.asc()) .all())
+            Observation.query
+            .filter_by(
+                species_id=species.id,
+                status="Approved"
+            )
+            .order_by(
+                Observation.observation_date.asc()
+            )
+            .all()
+        )
 
         trend_data.append({
+
             "id": species.id,
+
             "name": species.specie_Common_Name,
 
-            "dates": [observation.observation_date.strftime(
-                    "%Y-%m-%d")
+            "dates": [
+                observation.observation_date.strftime(
+                    "%Y-%m-%d"
+                )
                 for observation in observations
             ],
 
-            "counts": [observation.population_count for observation in observations ]
+            "counts": [
+                observation.population_count
+                for observation in observations
+            ]
         })
 
-    return render_template("analysisPage.html", ai_results=ai_results,  results=population_results, species_list=species_list,
-        trend_data=trend_data, environmental_data=environmental_data)
-# CREATE NOTIFICATION
 
+    # ========================================================
+    # RENDER ANALYSIS PAGE
+    # ========================================================
+
+    return render_template(
+        "analysisPage.html",
+        # AI ecological analysis
+        ai_results=ai_results,
+
+        # Species list
+        species_list=species_list,
+
+        # Population trend data
+        trend_data=trend_data,
+
+        # Environmental observations
+        environmental_data=environmental_data
+    )
+    
+    
 def create_notification(role, title, message, notification_type="Info", user_id=None):
 
     notification = Notification(role=role,user_id=user_id, title=title,message=message,
@@ -426,110 +592,217 @@ def field_Officer():
     return render_template("field_Officer.html")
 
 
+
 @app.route("/record_observation", methods=["GET", "POST"])
 @login_required
 @role_required("field_officer")
 def record_observation():
-    species_list = Species.query.all()
+    # GET SPECIES
+    species_list = Species.query.order_by( Species.specie_Common_Name.asc()).all()
+    # GET ENVIRONMENTAL OBSERVATIONS
+    # These are the monitoring surveys that the field officer
+    # can attach the biodiversity observation to.
+    # ---------------------------------------------------------
+    environmental_observations = EnvironmentalObservation.query.order_by(
+        EnvironmentalObservation.observation_date.desc()
+    ).all()
 
+    # =========================================================
+    # POST - RECORD BIODIVERSITY OBSERVATION
+    # =========================================================
     if request.method == "POST":
+
         try:
-            # Get form values safely
+            # -------------------------------------------------
+            # GET FORM VALUES
+            # -------------------------------------------------
+            environmental_observation_id = request.form.get(
+                "environmental_observation_id"
+            )
+
             species_id = request.form.get("species_id")
+
             population_raw = request.form.get("population")
-            notes = request.form.get("note", "").strip()
+
+            notes = request.form.get(
+                "note",
+                ""
+            ).strip()
+
             image = request.files.get("image")
-            
-            # Validate species
+
+            # -------------------------------------------------
+            # VALIDATE ENVIRONMENTAL OBSERVATION
+            # -------------------------------------------------
+            if not environmental_observation_id:
+                flash(
+                    "Please select an environmental monitoring survey.",
+                    "danger"
+                )
+                return redirect(url_for("record_observation"))
+
+            try:
+                environmental_observation_id = int(
+                    environmental_observation_id
+                )
+            except (ValueError, TypeError):
+
+                flash(
+                    "Invalid environmental survey selected.",
+                    "danger"
+                )
+                return redirect(url_for("record_observation"))
+
+            environmental_observation = db.session.get(
+                EnvironmentalObservation,
+                environmental_observation_id
+            )
+
+            if not environmental_observation:
+
+                flash(
+                    "The selected environmental survey does not exist.",
+                    "danger"
+                )
+                return redirect(url_for("record_observation"))
+
+            # -------------------------------------------------
+            # VALIDATE SPECIES
+            # -------------------------------------------------
             if not species_id:
-                flash("Please select a species.", "danger")
+
+                flash( "Please select a species.","danger" )
                 return redirect(url_for("record_observation"))
 
             try:
                 species_id = int(species_id)
-            except ValueError:
-                flash("Invalid species selected.", "danger")
+
+            except (ValueError, TypeError):
+                flash(  "Invalid species selected.",  "danger" )
                 return redirect(url_for("record_observation"))
 
-            species = db.session.get(Species, species_id)
+            species = db.session.get(Species,species_id)
 
             if not species:
-                flash("Selected species does not exist.", "danger")
+
+                flash( "Selected species does not exist.",  "danger")
                 return redirect(url_for("record_observation"))
 
-            # -----------------------------
-            # Validate population
-            # -----------------------------
+            # -------------------------------------------------
+            # VALIDATE POPULATION
+            # -------------------------------------------------
             if not population_raw:
-                flash("Please enter the population count.", "danger")
+                flash( "Please enter the population count.","danger")
                 return redirect(url_for("record_observation"))
 
             try:
                 population = int(population_raw)
             except (ValueError, TypeError):
-                flash("Population must be a valid whole number.", "danger")
+                flash("Population must be a valid whole number.","danger" )
                 return redirect(url_for("record_observation"))
 
             if population < 0:
                 flash("Population cannot be a negative number.", "danger")
                 return redirect(url_for("record_observation"))
 
-            # Handle optional image
-            
+            # -------------------------------------------------
+            # HANDLE OPTIONAL IMAGE
+            # -------------------------------------------------
             filename = None
-
             if image and image.filename:
                 original_filename = image.filename
-                # Secure the filename
-                filename = secure_filename(original_filename)
+                # Secure original filename
+                safe_filename = secure_filename(original_filename)
 
-                if not filename:
-                    flash("Invalid image filename.", "danger")
-                    return redirect(url_for("record_observation"))
+                if not safe_filename:
+                    flash("Invalid image filename.","danger")
+                    return redirect(  url_for("record_observation"))
 
-                # Optional: restrict extensions
-                allowed_extensions = { "jpg", "jpeg","png","gif", "webp"}
+                # Allowed image extensions
+                allowed_extensions = {"jpg","jpeg","png",  "gif",  "webp" }
 
-                extension = filename.rsplit(".", 1)[-1].lower()
+                if "." not in safe_filename:
+                    flash( "Image must have a valid file extension.", "danger")
+                    return redirect(  url_for("record_observation") )
+
+                extension = safe_filename.rsplit(  ".",  1 )[1].lower()
 
                 if extension not in allowed_extensions:
-                    flash( "Invalid image type. Please upload JPG, JPEG, PNG, GIF or WEBP.", "danger")
-                    return redirect(url_for("record_observation"))
+                    flash(  "Invalid image type. Please upload " "JPG, JPEG, PNG, GIF or WEBP.", "danger" )
+                    return redirect(  url_for("record_observation") )
 
-                # Make filename unique to prevent overwriting files
-                unique_filename = f"{uuid.uuid4().hex}_{filename}"
-                upload_folder = os.path.join(app.root_path,"static","uploads")
-                os.makedirs(upload_folder, exist_ok=True)
-                image_path = os.path.join(upload_folder,unique_filename)
+                # Create unique filename
+                unique_filename = ( f"{uuid.uuid4().hex}_{safe_filename}")
+
+                # Upload directory
+                upload_folder = os.path.join( app.root_path,  "static",  "uploads")
+                os.makedirs( upload_folder, exist_ok=True )
+
+                image_path = os.path.join( upload_folder, unique_filename )
+
                 image.save(image_path)
+
                 filename = unique_filename
 
-            # -----------------------------
-            # Create observation
-   
-            new_observation = Observation(species_id=species_id, population_count=population,notes=notes, photo=filename, observation_date=datetime.now(timezone.utc),status="Pending")
+            # -------------------------------------------------
+            # USE ENVIRONMENTAL SURVEY DATE
+            #
+            # The biodiversity observation belongs to the
+            # selected environmental monitoring event.
+            # Therefore, use its observation date rather than
+            # asking the field officer to enter the date again.
+            # -------------------------------------------------
+            observation_date = ( environmental_observation.observation_date )
+            if not observation_date:
+                observation_date = datetime.now(timezone.utc)
+            # CREATE BIODIVERSITY OBSERVATION
+            # -------------------------------------------------
+            new_observation = Observation(
+                # Species being observed
+                species_id=species_id,
+                # Population recorded
+                population_count=population,
+                # Species-specific notes
+                notes=notes,
+                # Uploaded image
+                photo=filename,
+                # Date inherited from environmental survey
+                observation_date=observation_date,
+                # New observation starts pending approval
+                status="Pending",
+                environmental_observation_id=( environmental_observation_id)
+            )
 
             db.session.add(new_observation)
+
             db.session.commit()
+            # NOTIFY FIELD OFFICER
+    
+            create_notification( role="field_officer", user_id=session["user_id"],
+                title="Observation Recorded", message=(f"Your observation of "f"{species.specie_Common_Name} " f"has been successfully recorded."),
+                notification_type="Success"
+            )
 
-            # Notify field officer
-            create_notification( role="field_officer",  user_id=session["user_id"],  title="Observation Recorded",
-                message="Your observation has been successfully recorded.", notification_type="Success" )
-            
-            # Notify administrators
-            create_notification( role="admin", title="New Observation Submitted", message=f"{session['user_name']} submitted a new observation.", notification_type="Info")
-            flash("Observation successfully recorded.", "success")
-            return redirect(url_for("record_observations"))
+            # NOTIFY ADMINISTRATORS
+            # -------------------------------------------------
+            create_notification( role="admin",  title="New Observation Submitted",
+                message=( f"{session['user_name']} submitted a new "  f"biodiversity observation of " f"{species.specie_Common_Name}."),notification_type="Info")
+            # SUCCESS MESSAGE
+            flash("Biodiversity observation successfully recorded " "and linked to the environmental survey.",  "success" )
+            return redirect( url_for("record_observations") )
 
-        except Exception as e:
+        # ERROR HANDLING
+        except Exception:
             db.session.rollback()
-            
-            # If you're developing, log the actual exception
-            app.logger.exception("Error recording observation")
-            flash("An error occurred while recording the observation. Please try again.", "danger" )
-            return redirect(url_for("record_observation"))
+            app.logger.exception("Error recording biodiversity observation")
+            flash("An error occurred while recording the observation. " "Please try again.", "danger")
+            return redirect( url_for("record_observation"))
 
-    return render_template( "record_observation.html", species_list=species_list)
+
+    # GET REQUEST
+    return render_template( "record_observation.html", species_list=species_list,  environmental_observations=environmental_observations )
+
+
 
 
 @app.route("/pending_observations")
@@ -887,71 +1160,455 @@ def gallery():
     observations = Observation.query.filter(Observation.photo.isnot(None)).order_by(Observation.observation_date.desc()).all()
     return render_template("gallery.html",observations=observations)
 
-@app.route("/record_environment",methods=["GET", "POST"])
+
+# ============================================================
+# MANAGE CBU NATURE PARK MONITORING SITES
+# ============================================================
+# ============================================================
+# MANAGE MONITORING SITES
+# ============================================================
+
+@app.route("/manage_sites", methods=["GET", "POST"])
+@login_required
+#@role_required("admin")
+def manage_sites():
+
+    PARK_AREA = 9.12
+
+    # ========================================================
+    # POST - ADD NEW MONITORING SITE
+    # ========================================================
+
+    if request.method == "POST":
+
+        # ----------------------------------------------------
+        # GET FORM VALUES
+        # ----------------------------------------------------
+
+        name = request.form.get("name", "").strip()
+        area_raw = request.form.get("area_hectares", "").strip()
+        description = request.form.get("description", "").strip()
+
+        # ----------------------------------------------------
+        # VALIDATE SITE NAME
+        # ----------------------------------------------------
+
+        if not name:
+            flash(
+                "Please enter the monitoring site or section name.",
+                "danger"
+            )
+
+            return redirect(url_for("manage_sites"))
+
+        # ----------------------------------------------------
+        # VALIDATE AREA
+        # ----------------------------------------------------
+
+        if not area_raw:
+            flash( "Please enter the area of the monitoring site.", "danger")
+            return redirect(url_for("manage_sites"))
+
+        try:
+            area_hectares = float(area_raw)
+
+        except (ValueError, TypeError):
+            flash("Area must be a valid number.",  "danger")
+            return redirect(url_for("manage_sites"))
+
+        # ----------------------------------------------------
+        # CHECK AREA VALUE
+        # ----------------------------------------------------
+
+        if area_hectares <= 0:
+            flash( "Area must be greater than 0 hectares.","danger")
+            return redirect(url_for("manage_sites"))
+
+        # ----------------------------------------------------
+        # CHECK DUPLICATE SITE NAME
+        # ----------------------------------------------------
+
+        existing_site = (MonitoringSite.query.filter( func.lower(MonitoringSite.name) == name.lower()).first())
+
+        if existing_site:
+            flash(f"A monitoring site named '{name}' already exists.","danger" )
+            return redirect(url_for("manage_sites"))
+
+        # ----------------------------------------------------
+        # GET CURRENTLY ALLOCATED AREA
+        # ----------------------------------------------------
+
+        current_area = (db.session.query( func.coalesce( func.sum(MonitoringSite.area_hectares), 0 )).scalar())
+
+        current_area = float(current_area or 0)
+        
+        new_total_area = current_area + area_hectares
+
+        if new_total_area > PARK_AREA:
+            remaining_area = PARK_AREA - current_area
+            
+            flash( f"Cannot add this monitoring site. " f"The total park area is {PARK_AREA:.2f} ha. "  f"Currently allocated: {current_area:.2f} ha. "
+                f"Remaining area: {max(remaining_area, 0):.2f} ha.", "danger")
+            return redirect(url_for("manage_sites"))
+
+        # CREATE MONITORING SITE
+        try:
+
+            new_site = MonitoringSite(name=name, area_hectares=area_hectares, description=description)
+            db.session.add(new_site)
+            db.session.commit()
+
+        except Exception:
+            db.session.rollback()
+            app.logger.exception("Error adding monitoring site")
+            flash("An error occurred while adding the monitoring site.","danger")
+            return redirect(url_for("manage_sites"))
+
+        # ----------------------------------------------------
+        # CREATE NOTIFICATION
+        # ----------------------------------------------------
+
+        try:
+            user_name = session.get( "user_name","Administrator" )
+            create_notification( role="admin", title="Monitoring Site Added",
+                message=( f"{user_name} added the monitoring site "  f"'{name}' covering " f"{area_hectares:.2f} hectares."),notification_type="Success")
+
+        except Exception:
+            app.logger.exception("Monitoring site was added, but notification failed."  )
+
+        # SUCCESS MESSAGE
+        flash( f"Monitoring site '{name}' was added successfully.", "success")
+        return redirect(url_for("manage_sites"))
+
+    # ========================================================
+    # GET - DISPLAY MONITORING SITES
+    # ========================================================
+
+    sites = (MonitoringSite.query .order_by(MonitoringSite.name.asc()).all())
+    # CALCULATE TOTAL ALLOCATED AREA
+    total_area = (db.session.query( func.coalesce( func.sum(MonitoringSite.area_hectares),0)).scalar())
+
+    total_area = float(total_area or 0)
+    remaining_area = max(PARK_AREA - total_area,0)
+
+    return render_template( "manage_sites.html", sites=sites, total_area=total_area, remaining_area=remaining_area,
+        park_area=PARK_AREA)
+
+@app.route("/delete_site/<int:id>", methods=["POST"])
+@login_required
+@role_required("admin")
+def delete_site(id):
+
+    site = MonitoringSite.query.get_or_404(id)
+
+    site_name = site.name
+
+    try:
+
+        # Check whether environmental observations
+        # are linked to this monitoring site.
+        environmental_count = (
+            EnvironmentalObservation.query
+            .filter_by(
+                monitoring_site_id=site.id
+            )
+            .count()
+        )
+
+        if environmental_count > 0:
+
+            flash(
+                f"Cannot delete '{site_name}' because "
+                f"{environmental_count} environmental "
+                f"observation(s) are linked to this "
+                f"monitoring site.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("manage_sites")
+            )
+
+        # Delete the monitoring site
+        db.session.delete(site)
+
+        db.session.commit()
+
+    except Exception:
+
+        db.session.rollback()
+
+        app.logger.exception(
+            "Error deleting monitoring site"
+        )
+
+        flash(
+            "Unable to delete the monitoring site.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("manage_sites")
+        )
+
+    # Optional notification
+    try:
+
+        user_name = session.get(
+            "user_name",
+            "Administrator"
+        )
+
+        create_notification(
+            role="admin",
+            title="Monitoring Site Deleted",
+            message=(
+                f"{user_name} deleted the monitoring site "
+                f"'{site_name}'."
+            ),
+            notification_type="Warning"
+        )
+
+    except Exception:
+
+        app.logger.exception(
+            "Monitoring site was deleted, "
+            "but notification failed."
+        )
+
+    flash(
+        f"Monitoring site '{site_name}' "
+        f"was deleted successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("manage_sites")
+    )
+@app.route("/record_environment", methods=["GET", "POST"])
 @login_required
 @role_required("field_officer")
 def record_environment():
+
+    # ============================================================
+    # GET ALL MONITORING SITES CREATED BY THE ADMIN
+    # ============================================================
+
+    sites = (
+        MonitoringSite.query
+        .order_by(MonitoringSite.name.asc())
+        .all()
+    )
+
+    # ============================================================
+    # SAVE ENVIRONMENTAL OBSERVATION
+    # ============================================================
+
     if request.method == "POST":
-        try:
-            location = request.form.get("location", "").strip()
-            if not location:
-                flash( "Please enter the location.", "danger")
-                return redirect(url_for("record_environment"))
 
-            temperature = request.form.get( "temperature")
-            rainfall = request.form.get("rainfall")
-            soil_ph = request.form.get( "soil_ph")
-            soil_moisture = request.form.get("soil_moisture" )
-            water_ph = request.form.get("water_ph" )
-            water_turbidity = request.form.get("water_turbidity")
-            vegetation_cover = request.form.get("vegetation_cover")
-            vegetation_density = request.form.get( "vegetation_density")
-            grass_availability = request.form.get( "grass_availability" )
-            tree_density = request.form.get("tree_density")
-            notes = request.form.get( "notes", "").strip()
+        monitoring_site_id = request.form.get(
+            "monitoring_site_id"
+        )
 
-            environment = EnvironmentalObservation(
-                location=location,
-                observation_date=datetime.now( timezone.utc),
-                temperature=float(temperature) if temperature else None,
-                rainfall=float(rainfall) if rainfall else None,
-                soil_ph=float( soil_ph) if soil_ph else None,
-                soil_moisture=float(soil_moisture) if soil_moisture else None,
-                water_ph=float( water_ph) if water_ph else None,
-                water_turbidity=float(water_turbidity) if water_turbidity else None,
-                vegetation_cover=float(vegetation_cover) if vegetation_cover else None,
-                vegetation_density=float( vegetation_density) if vegetation_density else None,
-                grass_availability=float(grass_availability ) if grass_availability else None,
-                tree_density=float( tree_density ) if tree_density else None,
-                notes=notes,
-                recorded_by=session[ "user_id"]
+        # --------------------------------------------------------
+        # Check that a monitoring site was selected
+        # --------------------------------------------------------
+
+        if not monitoring_site_id:
+
+            flash(
+                "Please select a monitoring site.",
+                "danger"
             )
 
-            db.session.add(environment)
+            return redirect(
+                url_for("record_environment")
+            )
+
+        # --------------------------------------------------------
+        # Get the monitoring site from the database
+        # --------------------------------------------------------
+
+        monitoring_site = db.session.get(
+            MonitoringSite,
+            int(monitoring_site_id)
+        )
+
+        if monitoring_site is None:
+
+            flash(
+                "The selected monitoring site does not exist.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("record_environment")
+            )
+
+        # ========================================================
+        # HELPER FUNCTION FOR NUMERIC VALUES
+        # ========================================================
+
+        def get_float(field_name):
+
+            value = request.form.get(
+                field_name,
+                ""
+            ).strip()
+
+            if value == "":
+                return None
+
+            try:
+                return float(value)
+
+            except ValueError:
+
+                raise ValueError(
+                    f"{field_name} must be a valid number."
+                )
+
+        # ========================================================
+        # READ FORM VALUES
+        # ========================================================
+
+        try:
+
+            temperature = get_float(
+                "temperature"
+            )
+
+            rainfall = get_float(
+                "rainfall"
+            )
+
+            soil_ph = get_float(
+                "soil_ph"
+            )
+
+            soil_moisture = get_float(
+                "soil_moisture"
+            )
+
+            water_ph = get_float(
+                "water_ph"
+            )
+
+            water_turbidity = get_float(
+                "water_turbidity"
+            )
+
+            vegetation_cover = get_float(
+                "vegetation_cover"
+            )
+
+            vegetation_density = get_float(
+                "vegetation_density"
+            )
+
+            grass_availability = get_float(
+                "grass_availability"
+            )
+
+            tree_density = get_float(
+                "tree_density"
+            )
+
+        except ValueError as error:
+
+            flash(
+                str(error),
+                "danger"
+            )
+
+            return redirect(
+                url_for("record_environment")
+            )
+
+        # ========================================================
+        # CREATE ENVIRONMENTAL OBSERVATION
+        # ========================================================
+
+        try:
+
+            environmental_observation = EnvironmentalObservation(
+
+                # ------------------------------------------------
+                # IMPORTANT:
+                # Take site information FROM DATABASE
+                # ------------------------------------------------
+
+                monitoring_site_id=monitoring_site.id,
+
+                location=monitoring_site.name,
+
+                area_hectares=monitoring_site.area_hectares,
+
+                observation_date=datetime.now(
+                    timezone.utc
+                ),
+
+                # ------------------------------------------------
+                # CLIMATE
+                # ------------------------------------------------
+
+                temperature=temperature,
+
+                rainfall=rainfall,
+
+                # ------------------------------------------------
+                # SOIL
+                # ------------------------------------------------
+
+                soil_ph=soil_ph,
+
+                soil_moisture=soil_moisture,
+
+                # ------------------------------------------------
+                # WATER
+                # ------------------------------------------------
+
+                water_ph=water_ph,
+
+                water_turbidity=water_turbidity,
+
+                # ------------------------------------------------
+                # VEGETATION
+                # ------------------------------------------------
+
+                vegetation_cover=vegetation_cover,
+
+                vegetation_density=vegetation_density,
+
+                grass_availability=grass_availability,
+
+                tree_density=tree_density,
+
+                # ------------------------------------------------
+                # NOTES
+                # ------------------------------------------------
+
+                notes=request.form.get( "notes",  "").strip(),
+                # FIELD OFFICER
+                recorded_by=session.get("user_id")
+            )
+
+            db.session.add(environmental_observation )
             db.session.commit()
 
-            create_notification(role="field_officer",user_id=session["user_id"],title="Environmental Data Recorded",
-                message=( "Environmental observation ""was successfully recorded."),
-                notification_type="Success")
+            flash( f"Environmental data for "  f"'{monitoring_site.name}' was recorded successfully.", "success")
+            return redirect( url_for("record_environment"))
 
-            create_notification(role="admin", title="New Environmental Data",
-                message=( f"{session['user_name']} recorded " f"environmental data at {location}." ), notification_type="Info" )
-
-            flash("Environmental data recorded successfully.", "success")
-            return redirect(url_for("field_Officer"))
-
-        except ValueError:
+        except Exception:
             db.session.rollback()
-            flash( "Environmental measurements must " "contain valid numbers.","danger")
-
-        except Exception as e:
-            db.session.rollback()
-            app.logger.exception( "Error recording environmental data")
-
-            flash("An error occurred while saving ""environmental data.","danger")
-
-    return render_template( "record_environment.html")
+            app.logger.exception( "Error recording environmental observation")
+            flash("An error occurred while saving the environmental data.","danger")
+            return redirect( url_for("record_environment"))
+        
+    return render_template( "record_environment.html", sites=sites)
 @app.route("/resetPassword", methods=["GET", "POST"])
+
+
 def resetPassword():
     token = request.args.get("token")
     user = Details.query.filter_by(reset_token=token).first()

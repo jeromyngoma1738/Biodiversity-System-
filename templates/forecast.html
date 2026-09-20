@@ -1,0 +1,1363 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}Population Forecast | CBU Nature Park{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='forecast.css') }}">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="forecast-page">
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+    <header class="forecast-header">
+
+        <div class="header-left">
+
+            <div class="header-icon">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+
+            <div>
+                <span class="eyebrow">
+                    CBU NATURE PARK
+                </span>
+
+                <h1>
+                    Population Forecasting
+                </h1>
+
+                <p>
+                    Project future species population trends using
+                    historical biodiversity observations.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="header-actions">
+
+            <a href="{{ url_for('analysis_page') }}"
+               class="back-btn">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Analysis
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         FORECAST CONTROL PANEL
+    ========================== -->
+    <section class="forecast-control-card">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-label">
+                    FORECAST CONFIGURATION
+                </span>
+
+                <h2>
+                    Generate Population Forecast
+                </h2>
+
+                <p>
+                    Select a species and define how many years
+                    into the future you want to project.
+                </p>
+            </div>
+
+            <div class="configuration-icon">
+                <i class="fa-solid fa-sliders"></i>
+            </div>
+
+        </div>
+
+
+        <div class="forecast-form">
+
+            <!-- Species -->
+            <div class="form-group">
+
+                <label for="speciesSelect">
+                    <i class="fa-solid fa-leaf"></i>
+                    Species
+                </label>
+
+                <select id="speciesSelect">
+
+                    <option value="">
+                        Select a species
+                    </option>
+
+                    {% for species in species_list %}
+
+                    <option value="{{ species.specie_Common_Name }}">
+                        {{ species.specie_Common_Name }}
+                        {% if species.scientificName %}
+                            — {{ species.scientificName }}
+                        {% endif %}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Forecast period -->
+            <div class="form-group">
+
+                <label for="yearsSelect">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Forecast Period
+                </label>
+
+                <select id="yearsSelect">
+
+                    <option value="1">
+                        1 Year
+                    </option>
+
+                    <option value="2">
+                        2 Years
+                    </option>
+
+                    <option value="3" selected>
+                        3 Years
+                    </option>
+
+                    <option value="4">
+                        4 Years
+                    </option>
+
+                    <option value="5">
+                        5 Years
+                    </option>
+
+                    <option value="6">
+                        6 Years
+                    </option>
+
+                    <option value="7">
+                        7 Years
+                    </option>
+
+                    <option value="8">
+                        8 Years
+                    </option>
+
+                    <option value="9">
+                        9 Years
+                    </option>
+
+                    <option value="10">
+                        10 Years
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Generate -->
+            <div class="form-action">
+
+                <button id="forecastButton"
+                        type="button"
+                        onclick="generateForecast()">
+
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                    Generate Forecast
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Error -->
+        <div id="forecastError"
+             class="forecast-error hidden">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <span id="errorMessage">
+                Unable to generate forecast.
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         EMPTY STATE
+    ========================== -->
+    <section id="emptyState"
+             class="empty-state">
+
+        <div class="empty-icon">
+
+            <i class="fa-solid fa-chart-area"></i>
+
+        </div>
+
+        <h2>
+            Ready to Forecast
+        </h2>
+
+        <p>
+            Select a species and forecast period above to
+            analyse its expected population trend.
+        </p>
+
+    </section>
+
+
+
+    <!-- =========================
+         FORECAST RESULTS
+    ========================== -->
+    <section id="forecastResults"
+             class="forecast-results hidden">
+
+
+        <!-- =========================
+             SPECIES SUMMARY
+        ========================== -->
+        <div class="result-title">
+
+            <div>
+
+                <span class="section-label">
+                    FORECAST RESULTS
+                </span>
+
+                <h2 id="resultSpecies">
+                    Population Forecast
+                </h2>
+
+                <p id="resultDescription">
+                    Projected population trend based on historical observations.
+                </p>
+
+            </div>
+
+            <div class="forecast-status">
+
+                <span class="status-dot"></span>
+
+                Forecast Generated
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             SUMMARY CARDS
+        ========================== -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon blue">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Historical Records
+                    </span>
+
+                    <strong id="historicalRecords">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon green">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Model
+                    </span>
+
+                    <strong id="modelName">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon orange">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        MAE
+                    </span>
+
+                    <strong id="modelMAE">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon purple">
+                    <i class="fa-solid fa-square-poll-vertical"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        R²
+                    </span>
+
+                    <strong id="modelR2">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             CHART + FORECAST SUMMARY
+        ========================== -->
+        <div class="main-grid">
+
+
+            <!-- Chart -->
+            <div class="chart-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            POPULATION TREND
+                        </span>
+
+                        <h3>
+                            Historical vs Forecast
+                        </h3>
+
+                    </div>
+
+                    <div class="chart-icon">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="forecastChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Forecast overview -->
+            <div class="overview-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            FORECAST OVERVIEW
+                        </span>
+
+                        <h3>
+                            Projection Summary
+                        </h3>
+
+                    </div>
+
+                    <div class="chart-icon">
+
+                        <i class="fa-solid fa-binoculars"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overview-content">
+
+                    <div class="overview-row">
+
+                        <span>
+                            Current Population
+                        </span>
+
+                        <strong id="currentPopulation">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="overview-row">
+
+                        <span>
+                            Final Forecast
+                        </span>
+
+                        <strong id="finalForecast">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="overview-row">
+
+                        <span>
+                            Forecast Change
+                        </span>
+
+                        <strong id="forecastChange">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="overview-row">
+
+                        <span>
+                            Forecast Period
+                        </span>
+
+                        <strong id="forecastPeriod">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="forecast-note">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <p>
+                        This projection is based on historical population
+                        trends. Future environmental conditions and
+                        unexpected ecological events are not directly
+                        predicted by the model.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             FORECAST TABLE
+        ========================== -->
+        <div class="table-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-label">
+                        PROJECTED VALUES
+                    </span>
+
+                    <h3>
+                        Year-by-Year Forecast
+                    </h3>
+
+                </div>
+
+                <div class="table-icon">
+
+                    <i class="fa-solid fa-table"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Year
+                            </th>
+
+                            <th>
+                                Population
+                            </th>
+
+                            <th>
+                                Change
+                            </th>
+
+                            <th>
+                                Direction
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="forecastTableBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             MODEL INFORMATION
+        ========================== -->
+        <div class="model-info">
+
+            <div class="model-info-icon">
+
+                <i class="fa-solid fa-brain"></i>
+
+            </div>
+
+            <div>
+
+                <h3>
+                    About This Forecast
+                </h3>
+
+                <p>
+                    The population forecast uses a time-trend
+                    regression model trained on approved historical
+                    biodiversity observations. The projection should
+                    be interpreted as an estimate of the expected
+                    population trajectory rather than a guaranteed
+                    future population.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<script>
+
+let forecastChart = null;
+
+
+/* =========================================
+   GENERATE FORECAST
+========================================= */
+
+async function generateForecast() {
+
+    const species =
+        document.getElementById("speciesSelect").value;
+
+    const years =
+        document.getElementById("yearsSelect").value;
+
+    const button =
+        document.getElementById("forecastButton");
+
+    const errorBox =
+        document.getElementById("forecastError");
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+    const results =
+        document.getElementById("forecastResults");
+
+
+    /* Hide previous error */
+
+    errorBox.classList.add("hidden");
+
+
+    /* Validate species */
+
+    if (!species) {
+
+        showError("Please select a species first.");
+
+        return;
+
+    }
+
+
+    /* Loading state */
+
+    button.disabled = true;
+
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Generating Forecast...
+    `;
+
+
+    try {
+
+        const url =
+            `/analysis/forecast?species=${encodeURIComponent(species)}&years=${encodeURIComponent(years)}`;
+
+
+        const response =
+            await fetch(url);
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.error || "Unable to generate forecast."
+            );
+
+        }
+
+
+        /* Hide empty state */
+
+        emptyState.classList.add("hidden");
+
+
+        /* Display results */
+
+        results.classList.remove("hidden");
+
+
+        displayForecast(data);
+
+
+        results.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Forecast error:",
+            error
+        );
+
+        showError(
+            error.message ||
+            "Unable to generate population forecast."
+        );
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+        button.innerHTML = `
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Generate Forecast
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================
+   DISPLAY FORECAST
+========================================= */
+
+function displayForecast(data) {
+
+    /*
+        The JavaScript below supports common
+        forecast response field names.
+
+        Adjust the property names only if your
+        forecast_species_population() returns
+        different names.
+    */
+
+
+    const species =
+        data.species ||
+        data.species_name ||
+        document.getElementById("speciesSelect").value;
+
+
+    const historical =
+        data.historical ||
+        data.historical_data ||
+        data.history ||
+        [];
+
+
+    const forecast =
+        data.forecast ||
+        data.forecast_data ||
+        data.predictions ||
+        [];
+
+
+    const metrics =
+        data.metrics ||
+        data.model_metrics ||
+        {};
+
+
+    const model =
+        data.model ||
+        data.model_type ||
+        "Time-trend Linear Regression";
+
+
+    /* Title */
+
+    document.getElementById(
+        "resultSpecies"
+    ).textContent =
+        `${species} Population Forecast`;
+
+
+    document.getElementById(
+        "resultDescription"
+    ).textContent =
+        `Projected population trajectory for ${species} based on approved historical observations.`;
+
+
+    /* Summary */
+
+    document.getElementById(
+        "historicalRecords"
+    ).textContent =
+        historical.length;
+
+
+    document.getElementById(
+        "modelName"
+    ).textContent =
+        model;
+
+
+    const mae =
+        metrics.mae ??
+        data.mae ??
+        null;
+
+
+    const r2 =
+        metrics.r2 ??
+        data.r2 ??
+        null;
+
+
+    document.getElementById(
+        "modelMAE"
+    ).textContent =
+        mae !== null
+            ? Number(mae).toFixed(2)
+            : "N/A";
+
+
+    document.getElementById(
+        "modelR2"
+    ).textContent =
+        r2 !== null
+            ? Number(r2).toFixed(3)
+            : "N/A";
+
+
+    /* Extract populations */
+
+    const historicalValues =
+        historical.map(item =>
+            Number(
+                item.population ??
+                item.count ??
+                item.value
+            )
+        );
+
+
+    const forecastValues =
+        forecast.map(item =>
+            Number(
+                item.population ??
+                item.predicted_population ??
+                item.prediction ??
+                item.value
+            )
+        );
+
+
+    /* Current population */
+
+    const currentPopulation =
+        historicalValues.length
+            ? historicalValues[historicalValues.length - 1]
+            : 0;
+
+
+    const finalPopulation =
+        forecastValues.length
+            ? forecastValues[forecastValues.length - 1]
+            : currentPopulation;
+
+
+    const change =
+        finalPopulation - currentPopulation;
+
+
+    document.getElementById(
+        "currentPopulation"
+    ).textContent =
+        formatNumber(currentPopulation);
+
+
+    document.getElementById(
+        "finalForecast"
+    ).textContent =
+        formatNumber(finalPopulation);
+
+
+    document.getElementById(
+        "forecastChange"
+    ).textContent =
+        `${change >= 0 ? "+" : ""}${formatNumber(change)}`;
+
+
+    document.getElementById(
+        "forecastPeriod"
+    ).textContent =
+        `${document.getElementById("yearsSelect").value} years`;
+
+
+    /* Table */
+
+    populateForecastTable(
+        historical,
+        forecast
+    );
+
+
+    /* Chart */
+
+    createForecastChart(
+        historical,
+        forecast,
+        species
+    );
+
+}
+
+
+
+/* =========================================
+   CREATE CHART
+========================================= */
+
+function createForecastChart(
+    historical,
+    forecast,
+    species
+) {
+
+    const canvas =
+        document.getElementById(
+            "forecastChart"
+        );
+
+
+    if (forecastChart) {
+
+        forecastChart.destroy();
+
+    }
+
+
+    const historicalLabels =
+        historical.map(item =>
+            item.year ||
+            item.date ||
+            item.label
+        );
+
+
+    const forecastLabels =
+        forecast.map(item =>
+            item.year ||
+            item.date ||
+            item.label
+        );
+
+
+    const historicalValues =
+        historical.map(item =>
+            Number(
+                item.population ??
+                item.count ??
+                item.value
+            )
+        );
+
+
+    const forecastValues =
+        forecast.map(item =>
+            Number(
+                item.population ??
+                item.predicted_population ??
+                item.prediction ??
+                item.value
+            )
+        );
+
+
+    const labels = [
+        ...historicalLabels,
+        ...forecastLabels
+    ];
+
+
+    const historicalDataset = [
+        ...historicalValues,
+        ...new Array(
+            forecastValues.length
+        ).fill(null)
+    ];
+
+
+    const forecastDataset = [
+        ...new Array(
+            Math.max(
+                historicalValues.length - 1,
+                0
+            )
+        ).fill(null),
+
+        historicalValues.length
+            ? historicalValues[
+                historicalValues.length - 1
+              ]
+            : null,
+
+        ...forecastValues
+    ];
+
+
+    forecastChart =
+        new Chart(canvas, {
+
+            type: "line",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+                        label:
+                            "Historical Population",
+
+                        data:
+                            historicalDataset,
+
+                        borderWidth: 3,
+
+                        tension: 0.35,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 6
+
+                    },
+
+                    {
+                        label:
+                            "Forecast Population",
+
+                        data:
+                            forecastDataset,
+
+                        borderWidth: 3,
+
+                        borderDash: [8, 6],
+
+                        tension: 0.35,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 6
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+
+                    intersect: false,
+
+                    mode: "index"
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top",
+
+                        labels: {
+
+                            usePointStyle: true,
+
+                            padding: 20
+
+                        }
+
+                    },
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label: function(context) {
+
+                                return (
+                                    context.dataset.label +
+                                    ": " +
+                                    Number(
+                                        context.raw
+                                    ).toLocaleString()
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text:
+                                "Population"
+
+                        }
+
+                    },
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text:
+                                "Year"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+
+/* =========================================
+   FORECAST TABLE
+========================================= */
+
+function populateForecastTable(
+    historical,
+    forecast
+) {
+
+    const tbody =
+        document.getElementById(
+            "forecastTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    let previousPopulation = null;
+
+
+    forecast.forEach(item => {
+
+        const year =
+            item.year ||
+            item.date ||
+            item.label ||
+            "—";
+
+
+        const population =
+            Number(
+                item.population ??
+                item.predicted_population ??
+                item.prediction ??
+                item.value
+            );
+
+
+        let change = "—";
+
+        let direction = "Stable";
+
+        let directionClass = "stable";
+
+
+        if (previousPopulation !== null) {
+
+            const difference =
+                population -
+                previousPopulation;
+
+
+            change =
+                `${difference >= 0 ? "+" : ""}${formatNumber(difference)}`;
+
+
+            if (difference > 0) {
+
+                direction =
+                    "Increasing";
+
+                directionClass =
+                    "increasing";
+
+            }
+
+            else if (difference < 0) {
+
+                direction =
+                    "Declining";
+
+                directionClass =
+                    "declining";
+
+            }
+
+        }
+
+
+        previousPopulation =
+            population;
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${year}
+                </strong>
+            </td>
+
+            <td>
+                ${formatNumber(population)}
+            </td>
+
+            <td>
+                ${change}
+            </td>
+
+            <td>
+
+                <span class="direction ${directionClass}">
+
+                    <i class="fa-solid ${
+                        direction === "Increasing"
+                            ? "fa-arrow-trend-up"
+                            : direction === "Declining"
+                                ? "fa-arrow-trend-down"
+                                : "fa-minus"
+                    }"></i>
+
+                    ${direction}
+
+                </span>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+function showError(message) {
+
+    const errorBox =
+        document.getElementById(
+            "forecastError"
+        );
+
+
+    const errorMessage =
+        document.getElementById(
+            "errorMessage"
+        );
+
+
+    errorMessage.textContent =
+        message;
+
+
+    errorBox.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+
+/* =========================================
+   NUMBER FORMATTER
+========================================= */
+
+function formatNumber(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        Number.isNaN(Number(value))
+    ) {
+
+        return "—";
+
+    }
+
+
+    return Number(value)
+        .toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+</script>
+
+{% endblock %}

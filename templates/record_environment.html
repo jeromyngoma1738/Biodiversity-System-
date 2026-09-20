@@ -1,139 +1,361 @@
-
 {% extends "base.html" %}
 
 {% block title %}
 Record Environmental Data
 {% endblock %}
 
+
 {% block css %}
+
 <link rel="stylesheet"
       href="{{ url_for('static', filename='form.css') }}">
 
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 {% endblock %}
+
 
 {% block content %}
 
 <div class="environment-page">
 
-    <!-- Page Header -->
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
     <div class="environment-header">
 
         <div class="header-title">
+
             <div class="header-icon">
+
                 <i class="fa-solid fa-leaf"></i>
+
             </div>
 
             <div>
-                <h1>Environmental Observation</h1>
+
+                <h1>
+                    Environmental Observation
+                </h1>
+
                 <p>
                     Record environmental conditions observed within
                     CBU Nature Park.
                 </p>
+
             </div>
+
         </div>
 
+
         <div class="header-badge">
+
             <i class="fa-solid fa-cloud-sun"></i>
+
             Environmental Monitoring
+
         </div>
 
     </div>
 
 
-    <!-- Main Form Card -->
+
+    <!-- =====================================================
+         MAIN FORM CARD
+    ====================================================== -->
+
     <div class="environment-card">
 
+
+        <!-- =================================================
+             INTRODUCTION
+        ================================================== -->
+
         <div class="form-introduction">
+
             <div class="intro-icon">
+
                 <i class="fa-solid fa-clipboard-list"></i>
+
             </div>
 
             <div>
-                <h2>Environmental Data</h2>
+
+                <h2>
+                    Environmental Data
+                </h2>
+
                 <p>
-                    Enter the latest environmental measurements.
-                    Fields can be left blank when data is unavailable.
+                    Select the monitoring site and enter the latest
+                    environmental measurements. Location and area
+                    are automatically obtained from the monitoring
+                    site configuration.
                 </p>
+
             </div>
+
         </div>
+
 
 
         <form method="POST">
 
 
-            <!-- Location -->
+            <!-- =================================================
+                 MONITORING SITE
+            ================================================== -->
+
             <section class="form-section">
+
 
                 <div class="section-heading">
                     <div class="section-icon location-icon">
                         <i class="fa-solid fa-location-dot"></i>
                     </div>
 
+
                     <div>
-                        <h3>Observation Location</h3>
-                        <p>Specify where the environmental measurements were taken.</p>
+                        <h3>
+                            Monitoring Site
+                        </h3>
+
+                        <p>
+                            Select the ecological monitoring section
+                            where the environmental measurements were
+                            collected.
+                        </p>
+
                     </div>
+
+
                 </div>
+
+
 
                 <div class="form-grid">
 
-                    <div class="form-group full-width">
 
-                        <label for="location">
-                            Location
-                            <span class="required">*</span>
+                    <!-- =========================================
+                         MONITORING SITE
+                    ========================================== -->
+
+                    <div class="form-group">
+
+
+                        <label for="monitoring_site_id">
+
+                            Monitoring Site
+
+                            <span class="required">
+                                *
+                            </span>
+
                         </label>
 
-                        <div class="input-wrapper">
-                            <i class="fa-solid fa-location-dot"></i>
 
-                            <input
-                                type="text"
-                                id="location"
-                                name="location"
-                                placeholder="e.g. CBU Nature Park — Northern Section"
+                        <div class="input-wrapper">
+                            <select
+                                id="monitoring_site_id"
+                                name="monitoring_site_id"
                                 required
                             >
+
+                                <option value="">
+                                    -- Select Monitoring Site --
+                                </option>
+
+
+                                {% for site in sites %}
+
+                                <option
+                                    value="{{ site.id }}"
+                                    data-location="{{ site.name }}"
+                                    data-area="{{ site.area_hectares }}"
+                                >
+
+                                    {{ site.name }}
+                                    —
+                                    {{ "%.2f"|format(site.area_hectares) }} ha
+
+                                </option>
+
+                                {% endfor %}
+
+
+                            </select>
+
+
                         </div>
+
 
                     </div>
 
+
+
+                    <!-- =========================================
+                         LOCATION
+                         AUTOMATICALLY DISPLAYED
+                    ========================================== -->
+
+                    <div class="form-group">
+
+
+                        <label for="location_display">
+
+                            Location
+
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+
+                            <input
+                                type="text"
+                                id="location_display"
+                                placeholder="Select a monitoring site"
+                                readonly
+                            >
+
+
+                        </div>
+
+
+                        <small class="form-help">
+
+                            Location is automatically obtained from
+                            the selected monitoring site.
+
+                        </small>
+
+
+                    </div>
+
+
+
+                    <!-- =========================================
+                         OBSERVATION AREA
+                         AUTOMATICALLY DISPLAYED
+                    ========================================== -->
+
+                    <div class="form-group">
+
+
+                        <label for="area_display">
+
+                            Observation Area
+
+                            <span class="unit">
+                                (hectares)
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="fa-solid fa-vector-square"></i>
+
+
+                            <input
+                                type="text"
+                                id="area_display"
+                                placeholder="Select a monitoring site"
+                                readonly
+                            >
+
+
+                            <span class="input-unit">
+                                ha
+                            </span>
+
+
+                        </div>
+
+
+                        <small class="form-help">
+
+                            Area is automatically obtained from
+                            the monitoring site configuration.
+
+                        </small>
+
+
+                    </div>
+
+
                 </div>
+
 
             </section>
 
 
-            <!-- Climate -->
+
+            <!-- =================================================
+                 CLIMATE CONDITIONS
+            ================================================== -->
+
             <section class="form-section">
+
 
                 <div class="section-heading">
 
+
                     <div class="section-icon climate-icon">
+
                         <i class="fa-solid fa-temperature-half"></i>
+
                     </div>
 
+
                     <div>
-                        <h3>Climate Conditions</h3>
-                        <p>Record temperature and rainfall measurements.</p>
+
+                        <h3>
+                            Climate Conditions
+                        </h3>
+
+                        <p>
+                            Record temperature and rainfall measurements.
+                        </p>
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="form-grid">
+
+
+                    <!-- Temperature -->
 
                     <div class="form-group">
 
+
                         <label for="temperature">
+
                             Temperature
-                            <span class="unit">(°C)</span>
+
+                            <span class="unit">
+                                (°C)
+                            </span>
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-temperature-half"></i>
+
 
                             <input
                                 type="number"
@@ -143,71 +365,123 @@ Record Environmental Data
                                 placeholder="e.g. 24.50"
                             >
 
-                            <span class="input-unit">°C</span>
+
+                            <span class="input-unit">
+                                °C
+                            </span>
+
 
                         </div>
+
 
                     </div>
 
 
+
+                    <!-- Rainfall -->
+
                     <div class="form-group">
 
+
                         <label for="rainfall">
+
                             Rainfall
-                            <span class="unit">(mm)</span>
+
+                            <span class="unit">
+                                (mm)
+                            </span>
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-cloud-rain"></i>
+
 
                             <input
                                 type="number"
                                 id="rainfall"
                                 name="rainfall"
                                 step="0.01"
+                                min="0"
                                 placeholder="e.g. 12.50"
                             >
 
-                            <span class="input-unit">mm</span>
+
+                            <span class="input-unit">
+                                mm
+                            </span>
+
 
                         </div>
 
+
                     </div>
 
+
                 </div>
+
 
             </section>
 
 
-            <!-- Soil -->
+
+            <!-- =================================================
+                 SOIL CONDITIONS
+            ================================================== -->
+
             <section class="form-section">
+
 
                 <div class="section-heading">
 
+
                     <div class="section-icon soil-icon">
+
                         <i class="fa-solid fa-seedling"></i>
+
                     </div>
 
+
                     <div>
-                        <h3>Soil Conditions</h3>
-                        <p>Capture soil acidity and moisture measurements.</p>
+
+                        <h3>
+                            Soil Conditions
+                        </h3>
+
+                        <p>
+                            Capture soil acidity and moisture measurements.
+                        </p>
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="form-grid">
+
+
+                    <!-- Soil pH -->
 
                     <div class="form-group">
 
+
                         <label for="soil_ph">
+
                             Soil pH
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-flask"></i>
+
 
                             <input
                                 type="number"
@@ -219,22 +493,36 @@ Record Environmental Data
                                 placeholder="e.g. 6.50"
                             >
 
-                            <span class="input-unit">pH</span>
+
+                            <span class="input-unit">
+                                pH
+                            </span>
+
 
                         </div>
+
 
                     </div>
 
 
+
+                    <!-- Soil Moisture -->
+
                     <div class="form-group">
 
+
                         <label for="soil_moisture">
+
                             Soil Moisture
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-droplet"></i>
+
 
                             <input
                                 type="number"
@@ -246,45 +534,79 @@ Record Environmental Data
                                 placeholder="e.g. 45.00"
                             >
 
-                            <span class="input-unit">%</span>
+
+                            <span class="input-unit">
+                                %
+                            </span>
+
 
                         </div>
 
+
                     </div>
 
+
                 </div>
+
 
             </section>
 
 
-            <!-- Water -->
+
+            <!-- =================================================
+                 WATER CONDITIONS
+            ================================================== -->
+
             <section class="form-section">
+
 
                 <div class="section-heading">
 
+
                     <div class="section-icon water-icon">
+
                         <i class="fa-solid fa-water"></i>
+
                     </div>
 
+
                     <div>
-                        <h3>Water Conditions</h3>
-                        <p>Record available water quality measurements.</p>
+
+                        <h3>
+                            Water Conditions
+                        </h3>
+
+                        <p>
+                            Record available water quality measurements.
+                        </p>
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="form-grid">
+
+
+                    <!-- Water pH -->
 
                     <div class="form-group">
 
+
                         <label for="water_ph">
+
                             Water pH
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-flask"></i>
+
 
                             <input
                                 type="number"
@@ -296,22 +618,36 @@ Record Environmental Data
                                 placeholder="e.g. 7.00"
                             >
 
-                            <span class="input-unit">pH</span>
+
+                            <span class="input-unit">
+                                pH
+                            </span>
+
 
                         </div>
+
 
                     </div>
 
 
+
+                    <!-- Water Turbidity -->
+
                     <div class="form-group">
 
+
                         <label for="water_turbidity">
+
                             Water Turbidity
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-water"></i>
+
 
                             <input
                                 type="number"
@@ -322,44 +658,74 @@ Record Environmental Data
                                 placeholder="Enter turbidity"
                             >
 
+
                         </div>
+
 
                     </div>
 
+
                 </div>
+
 
             </section>
 
 
-            <!-- Vegetation -->
+
+            <!-- =================================================
+                 VEGETATION CONDITIONS
+            ================================================== -->
+
             <section class="form-section">
+
 
                 <div class="section-heading">
 
+
                     <div class="section-icon vegetation-icon">
+
                         <i class="fa-solid fa-tree"></i>
+
                     </div>
+
 
                     <div>
-                        <h3>Vegetation Conditions</h3>
-                        <p>Estimate vegetation and food-resource availability.</p>
+
+                        <h3>
+                            Vegetation Conditions
+                        </h3>
+
+                        <p>
+                            Estimate vegetation and food-resource availability.
+                        </p>
+
                     </div>
 
+
                 </div>
+
 
 
                 <div class="form-grid">
 
 
+                    <!-- Vegetation Cover -->
+
                     <div class="form-group">
 
+
                         <label for="vegetation_cover">
+
                             Vegetation Cover
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-leaf"></i>
+
 
                             <input
                                 type="number"
@@ -371,22 +737,36 @@ Record Environmental Data
                                 placeholder="e.g. 75.00"
                             >
 
-                            <span class="input-unit">%</span>
+
+                            <span class="input-unit">
+                                %
+                            </span>
+
 
                         </div>
+
 
                     </div>
 
 
+
+                    <!-- Vegetation Density -->
+
                     <div class="form-group">
 
+
                         <label for="vegetation_density">
+
                             Vegetation Density
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-tree"></i>
+
 
                             <input
                                 type="number"
@@ -398,22 +778,36 @@ Record Environmental Data
                                 placeholder="e.g. 60.00"
                             >
 
-                            <span class="input-unit">%</span>
+
+                            <span class="input-unit">
+                                %
+                            </span>
+
 
                         </div>
+
 
                     </div>
 
 
+
+                    <!-- Grass Availability -->
+
                     <div class="form-group">
 
+
                         <label for="grass_availability">
+
                             Grass Availability
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-wheat-awn"></i>
+
 
                             <input
                                 type="number"
@@ -425,22 +819,36 @@ Record Environmental Data
                                 placeholder="e.g. 80.00"
                             >
 
-                            <span class="input-unit">%</span>
+
+                            <span class="input-unit">
+                                %
+                            </span>
+
 
                         </div>
+
 
                     </div>
 
 
+
+                    <!-- Tree Density -->
+
                     <div class="form-group">
 
+
                         <label for="tree_density">
+
                             Tree Density
+
                         </label>
+
 
                         <div class="input-wrapper">
 
+
                             <i class="fa-solid fa-tree"></i>
+
 
                             <input
                                 type="number"
@@ -452,39 +860,69 @@ Record Environmental Data
                                 placeholder="e.g. 55.00"
                             >
 
-                            <span class="input-unit">%</span>
+
+                            <span class="input-unit">
+                                %
+                            </span>
+
 
                         </div>
 
+
                     </div>
 
+
                 </div>
+
 
             </section>
 
 
-            <!-- Notes -->
+
+            <!-- =================================================
+                 ADDITIONAL NOTES
+            ================================================== -->
+
             <section class="form-section">
+
 
                 <div class="section-heading">
 
+
                     <div class="section-icon notes-icon">
+
                         <i class="fa-solid fa-note-sticky"></i>
+
                     </div>
 
+
                     <div>
-                        <h3>Additional Notes</h3>
-                        <p>Add observations or important environmental information.</p>
+
+                        <h3>
+                            Additional Notes
+                        </h3>
+
+                        <p>
+                            Add observations or important environmental
+                            information.
+                        </p>
+
                     </div>
+
 
                 </div>
 
 
+
                 <div class="form-group">
 
+
                     <label for="notes">
+
                         Notes
+
                     </label>
+
 
                     <textarea
                         id="notes"
@@ -493,37 +931,100 @@ Record Environmental Data
                         placeholder="Describe any unusual environmental conditions, visible changes, weather conditions, or other relevant observations..."
                     ></textarea>
 
+
                 </div>
+
 
             </section>
 
 
-            <!-- Form Actions -->
+
+            <!-- =================================================
+                 FORM ACTIONS
+            ================================================== -->
+
             <div class="form-actions">
+
 
                 <a
                     href="{{ url_for('view_field_Officer') }}"
                     class="cancel-button"
                 >
+
                     <i class="fa-solid fa-arrow-left"></i>
+
                     Cancel
+
                 </a>
+
+
 
                 <button
                     type="submit"
                     class="save-button"
                 >
+
                     <i class="fa-solid fa-floppy-disk"></i>
+
                     Save Environmental Data
+
                 </button>
+
 
             </div>
 
+
         </form>
+
 
     </div>
 
+
 </div>
 
-{% endblock %}
 
+
+<!-- =========================================================
+     MONITORING SITE AUTO-FILL
+========================================================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const siteSelect =
+        document.getElementById("monitoring_site_id");
+
+    const locationDisplay =
+        document.getElementById("location_display");
+
+    const areaDisplay =
+        document.getElementById("area_display");
+
+
+    function updateSiteInformation() {
+        const selectedOption =
+            siteSelect.options[siteSelect.selectedIndex];
+
+        if (!selectedOption || !selectedOption.value) {
+            locationDisplay.value = "";
+            areaDisplay.value = "";
+            return;
+        }
+        const location =
+            selectedOption.dataset.location;
+
+        const area =
+            selectedOption.dataset.area;
+        locationDisplay.value =
+            location || "";
+        areaDisplay.value =area ? parseFloat(area).toFixed(2) : "";
+    }
+    siteSelect.addEventListener(
+        "change",
+        updateSiteInformation
+    );
+});
+
+</script>
+
+
+{% endblock %}

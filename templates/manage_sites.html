@@ -1,0 +1,713 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Manage CBU Nature Park Sites
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="sites-page">
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+    <section class="sites-header">
+
+        <div class="header-content">
+
+            <div class="header-icon">
+                <i class="fa-solid fa-tree"></i>
+            </div>
+
+            <div>
+                <span class="eyebrow">
+                    CBU NATURE PARK
+                </span>
+
+                <h1>Manage Monitoring Sites</h1>
+
+                <p>
+                    Define and manage the four ecological monitoring
+                    sections of CBU Nature Park.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="park-area">
+            <span>Total Park Area</span>
+            <strong>9.12</strong>
+            <small>hectares</small>
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FLASH MESSAGES
+    ========================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="flash-container">
+
+                {% for category, message in messages %}
+
+                    <div class="flash {{ category }}">
+
+                        {% if category == "success" %}
+                            <i class="fa-solid fa-circle-check"></i>
+                        {% elif category == "danger" or category == "error" %}
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info"></i>
+                        {% endif %}
+
+                        <span>{{ message }}</span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================
+         PARK OVERVIEW
+    ========================== -->
+
+    <section class="overview-grid">
+
+        <div class="overview-card">
+
+            <div class="overview-icon green">
+                <i class="fa-solid fa-tree-city"></i>
+            </div>
+
+            <div>
+                <span>Park Area</span>
+                <strong>9.12 ha</strong>
+                <small>CBU Nature Park</small>
+            </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+            <div class="overview-icon blue">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+
+            <div>
+                <span>Monitoring Sections</span>
+                <strong>4</strong>
+                <small>North, South, East & West</small>
+            </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+            <div class="overview-icon orange">
+                <i class="fa-solid fa-ruler-combined"></i>
+            </div>
+
+            <div>
+                <span>Area Measurement</span>
+                <strong>Hectares</strong>
+                <small>Used for ecological analysis</small>
+            </div>
+
+        </div>
+
+
+        <div class="overview-card">
+
+            <div class="overview-icon purple">
+                <i class="fa-solid fa-chart-area"></i>
+            </div>
+
+            <div>
+                <span>Monitoring Purpose</span>
+                <strong>Ecological</strong>
+                <small>Biodiversity & environment</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         PARK SECTION MAP
+    ========================== -->
+
+    <section class="park-layout">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-label">
+                    <i class="fa-solid fa-map"></i>
+                    MONITORING ZONES
+                </span>
+
+                <h2>CBU Nature Park Sections</h2>
+
+                <p>
+                    The park is divided into four geographical monitoring
+                    sections for systematic biodiversity and environmental
+                    observations.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="park-map">
+
+            <!-- NORTH -->
+
+            <div class="map-section north">
+
+                <div class="map-section-content">
+
+                    <i class="fa-solid fa-arrow-up"></i>
+
+                    <div>
+                        <strong>North Section</strong>
+                        <span>North monitoring zone</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- WEST -->
+
+            <div class="map-section west">
+
+                <div class="map-section-content">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    <div>
+                        <strong>West Section</strong>
+                        <span>West monitoring zone</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CENTER -->
+
+            <div class="map-center">
+
+                <i class="fa-solid fa-tree"></i>
+
+                <strong>CBU</strong>
+
+                <span>
+                    NATURE PARK
+                </span>
+
+                <small>
+                    9.12 hectares
+                </small>
+
+            </div>
+
+
+            <!-- EAST -->
+
+            <div class="map-section east">
+
+                <div class="map-section-content">
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                    <div>
+                        <strong>East Section</strong>
+                        <span>East monitoring zone</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SOUTH -->
+
+            <div class="map-section south">
+
+                <div class="map-section-content">
+
+                    <i class="fa-solid fa-arrow-down"></i>
+
+                    <div>
+                        <strong>South Section</strong>
+                        <span>South monitoring zone</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ADD SITE
+    ========================== -->
+
+    <section class="management-grid">
+
+        <div class="form-card">
+
+            <div class="card-heading">
+
+                <div class="heading-icon">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+                <div>
+                    <h2>Add Monitoring Site</h2>
+
+                    <p>
+                        Create a new monitoring section or site
+                        within CBU Nature Park.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form action="{{ url_for('manage_sites') }}"
+                  method="POST"
+                  class="site-form">
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Site / Section Name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="e.g. North Section"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="area_hectares">
+                        Area
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-ruler-combined"></i>
+
+                        <input
+                            type="number"
+                            id="area_hectares"
+                            name="area_hectares"
+                            step="0.01"
+                            min="0.01"
+                            placeholder="e.g. 2.28"
+                            required>
+
+                        <span class="input-unit">
+                            ha
+                        </span>
+
+                    </div>
+
+                    <small class="field-help">
+                        Enter the measured area of this monitoring
+                        section in hectares.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <div class="textarea-wrapper">
+
+                        <i class="fa-solid fa-align-left"></i>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="4"
+                            placeholder="Describe the monitoring area, vegetation, landmarks or other useful information..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="primary-button">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Monitoring Site
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =========================
+             INFORMATION CARD
+        ========================== -->
+
+        <div class="info-card">
+
+            <div class="info-header">
+
+                <div class="info-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+
+                <div>
+                    <h2>Site Monitoring</h2>
+
+                    <p>
+                        Why site information matters
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="info-list">
+
+                <div class="info-item">
+
+                    <span class="info-number">
+                        01
+                    </span>
+
+                    <div>
+                        <strong>Location</strong>
+
+                        <p>
+                            Each biodiversity observation can be
+                            associated with a specific monitoring site.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-number">
+                        02
+                    </span>
+
+                    <div>
+                        <strong>Area</strong>
+
+                        <p>
+                            Site area allows the system to calculate
+                            population density and support ecological
+                            analysis.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-number">
+                        03
+                    </span>
+
+                    <div>
+                        <strong>Environmental Monitoring</strong>
+
+                        <p>
+                            Environmental observations can be linked
+                            to the corresponding monitoring section.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-number">
+                        04
+                    </span>
+
+                    <div>
+                        <strong>Historical Comparison</strong>
+
+                        <p>
+                            Consistent site locations make it easier
+                            to compare biodiversity observations over
+                            time.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         EXISTING SITES
+    ========================== -->
+
+    <section class="sites-table-card">
+
+        <div class="table-top">
+
+            <div>
+
+                <span class="section-label">
+                    <i class="fa-solid fa-database"></i>
+                    SITE DATABASE
+                </span>
+
+                <h2>Existing Monitoring Sites</h2>
+
+                <p>
+                    Registered monitoring areas within CBU Nature Park.
+                </p>
+
+            </div>
+
+            <div class="site-count">
+
+                <strong>
+                    {{ sites|length }}
+                </strong>
+
+                <span>
+                    Sites
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if sites %}
+
+        <div class="table-wrapper">
+
+            <table class="modern-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>
+                            <i class="fa-solid fa-location-dot"></i>
+                            Site
+                        </th>
+
+                        <th>
+                            <i class="fa-solid fa-ruler-combined"></i>
+                            Area
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for site in sites %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="row-number">
+                                {{ "%02d"|format(loop.index) }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="site-name">
+
+                                <div class="site-marker">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ site.name }}
+                                    </strong>
+
+                                    <small>
+                                        CBU Nature Park
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="area-badge">
+
+                                <i class="fa-solid fa-ruler-combined"></i>
+
+                                {{ "%.2f"|format(site.area_hectares) }}
+                                ha
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="description-text">
+
+                                {{ site.description or
+                                   "No description provided." }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <form
+                                action="{{ url_for('delete_site', id=site.id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Delete this site? Its environmental records will also be removed.');">
+
+                                <button
+                                    type="submit"
+                                    class="delete-button">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+
+            <h3>No Monitoring Sites Yet</h3>
+
+            <p>
+                Add the first monitoring section of CBU Nature Park
+                using the form above.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =========================
+         BACK BUTTON
+    ========================== -->
+
+    <div class="page-actions">
+
+        <a href="{{ url_for('back') }}" class="back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

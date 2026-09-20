@@ -1,0 +1,1214 @@
+
+/*    CBU NATURE PARK - MANAGE SITES */
+
+.sites-page {
+    width: min(1400px, 94%);
+    margin: 0 auto;
+    padding: 30px 0 50px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.sites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+
+    padding: 30px;
+
+    background: linear-gradient(
+        135deg,
+        #123d2a,
+        #176b3a
+    );
+
+    border-radius: 22px;
+
+    color: white;
+
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+
+    margin-bottom: 25px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    border-radius: 18px;
+
+    font-size: 28px;
+}
+
+.eyebrow {
+    display: block;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    opacity: 0.75;
+
+    margin-bottom: 5px;
+}
+
+.sites-header h1 {
+    margin: 0 0 7px;
+
+    font-size: 30px;
+    font-weight: 750;
+}
+
+.sites-header p {
+    margin: 0;
+
+    max-width: 650px;
+
+    font-size: 14px;
+
+    opacity: 0.85;
+}
+
+.park-area {
+    min-width: 170px;
+
+    text-align: center;
+
+    padding: 18px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    border-radius: 16px;
+}
+
+.park-area span,
+.park-area small {
+    display: block;
+
+    font-size: 12px;
+
+    opacity: 0.75;
+}
+
+.park-area strong {
+    display: block;
+
+    font-size: 32px;
+
+    line-height: 1.1;
+
+    margin: 5px 0;
+}
+
+
+/* =========================================================
+   FLASH MESSAGES
+   ========================================================= */
+
+.flash-container {
+    margin-bottom: 22px;
+}
+
+.flash {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 18px;
+
+    border-radius: 12px;
+
+    margin-bottom: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.flash.success {
+    background: #e9f8ef;
+    color: #176b3a;
+}
+
+.flash.error,
+.flash.danger {
+    background: #fdecec;
+    color: #b42318;
+}
+
+.flash.info {
+    background: #edf5ff;
+    color: #175cd3;
+}
+
+
+/* =========================================================
+   OVERVIEW CARDS
+   ========================================================= */
+
+.overview-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 30px;
+}
+
+.overview-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 17px;
+
+    border: 1px solid #e8ece9;
+
+    box-shadow: 0 8px 24px rgba(20, 45, 30, 0.06);
+}
+
+.overview-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    font-size: 19px;
+}
+
+.overview-icon.green {
+    background: #e7f6ed;
+    color: #176b3a;
+}
+
+.overview-icon.blue {
+    background: #eaf2ff;
+    color: #2563eb;
+}
+
+.overview-icon.orange {
+    background: #fff3e6;
+    color: #d97706;
+}
+
+.overview-icon.purple {
+    background: #f3edff;
+    color: #7c3aed;
+}
+
+.overview-card span {
+    display: block;
+
+    color: #718096;
+
+    font-size: 12px;
+
+    margin-bottom: 3px;
+}
+
+.overview-card strong {
+    display: block;
+
+    color: #17251d;
+
+    font-size: 20px;
+}
+
+.overview-card small {
+    color: #8a968f;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   PARK SECTION
+   ========================================================= */
+
+.park-layout {
+    background: white;
+
+    border: 1px solid #e7ece8;
+
+    border-radius: 20px;
+
+    padding: 28px;
+
+    margin-bottom: 30px;
+
+    box-shadow: 0 8px 24px rgba(20, 45, 30, 0.05);
+}
+
+.section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #176b3a;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+
+    margin-bottom: 6px;
+}
+
+.section-heading h2 {
+    margin: 0;
+
+    font-size: 23px;
+
+    color: #17251d;
+}
+
+.section-heading p {
+    color: #718096;
+
+    font-size: 13px;
+
+    margin: 7px 0 25px;
+}
+
+
+/* =========================================================
+   VISUAL PARK MAP
+   ========================================================= */
+
+.park-map {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.15fr 1fr;
+
+    grid-template-rows:
+        125px 125px 125px;
+
+    gap: 8px;
+
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    position: relative;
+}
+
+.map-section {
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.map-section:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.map-section-content {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.map-section-content > i {
+    font-size: 20px;
+}
+
+.map-section strong {
+    display: block;
+
+    font-size: 16px;
+}
+
+.map-section span {
+    display: block;
+
+    font-size: 11px;
+
+    margin-top: 3px;
+
+    opacity: 0.7;
+}
+
+.north {
+    grid-column: 2;
+    grid-row: 1;
+
+    background: #e7f6ed;
+    color: #176b3a;
+}
+
+.west {
+    grid-column: 1;
+    grid-row: 2;
+
+    background: #eef6ee;
+    color: #21613b;
+}
+
+.east {
+    grid-column: 3;
+    grid-row: 2;
+
+    background: #eef6ee;
+    color: #21613b;
+}
+
+.south {
+    grid-column: 2;
+    grid-row: 3;
+
+    background: #e7f6ed;
+    color: #176b3a;
+}
+
+.map-center {
+    grid-column: 2;
+    grid-row: 2;
+
+    background: #176b3a;
+
+    color: white;
+
+    border-radius: 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 8px 20px rgba(23, 107, 58, 0.2);
+}
+
+.map-center i {
+    font-size: 25px;
+
+    margin-bottom: 4px;
+}
+
+.map-center strong {
+    font-size: 17px;
+}
+
+.map-center span {
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    opacity: 0.8;
+}
+
+.map-center small {
+    margin-top: 7px;
+
+    font-size: 11px;
+
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   MANAGEMENT GRID
+   ========================================================= */
+
+.management-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.25fr)
+        minmax(300px, 0.75fr);
+
+    gap: 22px;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.form-card,
+.info-card {
+    background: white;
+
+    border: 1px solid #e7ece8;
+
+    border-radius: 20px;
+
+    padding: 28px;
+
+    box-shadow: 0 8px 24px rgba(20, 45, 30, 0.05);
+}
+
+.card-heading,
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    margin-bottom: 25px;
+}
+
+.heading-icon,
+.info-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #e7f6ed;
+
+    color: #176b3a;
+}
+
+.card-heading h2,
+.info-header h2 {
+    margin: 0;
+
+    font-size: 19px;
+
+    color: #17251d;
+}
+
+.card-heading p,
+.info-header p {
+    margin: 3px 0 0;
+
+    color: #7a8780;
+
+    font-size: 12px;
+}
+
+.site-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 19px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #34443a;
+
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+.input-wrapper,
+.textarea-wrapper {
+    display: flex;
+    align-items: center;
+
+    border: 1px solid #dce4de;
+
+    border-radius: 11px;
+
+    background: #fbfcfb;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.input-wrapper:focus-within,
+.textarea-wrapper:focus-within {
+    border-color: #176b3a;
+
+    box-shadow: 0 0 0 3px rgba(23, 107, 58, 0.08);
+}
+
+.input-wrapper > i,
+.textarea-wrapper > i {
+    margin-left: 14px;
+
+    color: #7d8b82;
+
+    font-size: 14px;
+}
+
+.input-wrapper input,
+.textarea-wrapper textarea {
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    padding: 13px 14px;
+
+    font-size: 13px;
+
+    color: #17251d;
+
+    font-family: inherit;
+}
+
+.textarea-wrapper {
+    align-items: flex-start;
+}
+
+.textarea-wrapper > i {
+    margin-top: 15px;
+}
+
+.textarea-wrapper textarea {
+    resize: vertical;
+}
+
+.input-unit {
+    padding-right: 14px;
+
+    color: #718096;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.field-help {
+    display: block;
+
+    color: #8a968f;
+
+    font-size: 11px;
+
+    margin-top: 6px;
+}
+
+.primary-button {
+    border: none;
+
+    background: #176b3a;
+
+    color: white;
+
+    padding: 13px 18px;
+
+    border-radius: 11px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.primary-button:hover {
+    background: #12572f;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   INFORMATION CARD
+   ========================================================= */
+
+.info-card {
+    background: #f8fbf9;
+}
+
+.info-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+
+    gap: 13px;
+}
+
+.info-number {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #e4f2e9;
+
+    color: #176b3a;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+.info-item strong {
+    display: block;
+
+    color: #24332a;
+
+    font-size: 13px;
+
+    margin-bottom: 3px;
+}
+
+.info-item p {
+    margin: 0;
+
+    color: #718096;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   SITES TABLE
+   ========================================================= */
+
+.sites-table-card {
+    background: white;
+
+    border: 1px solid #e7ece8;
+
+    border-radius: 20px;
+
+    padding: 28px;
+
+    box-shadow: 0 8px 24px rgba(20, 45, 30, 0.05);
+}
+
+.table-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 22px;
+}
+
+.table-top h2 {
+    margin: 0;
+
+    color: #17251d;
+
+    font-size: 21px;
+}
+
+.table-top p {
+    margin: 5px 0 0;
+
+    color: #7b887f;
+
+    font-size: 12px;
+}
+
+.site-count {
+    min-width: 75px;
+
+    text-align: center;
+
+    padding: 10px 14px;
+
+    border-radius: 12px;
+
+    background: #e9f6ee;
+
+    color: #176b3a;
+}
+
+.site-count strong {
+    display: block;
+
+    font-size: 20px;
+}
+
+.site-count span {
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.modern-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 750px;
+}
+
+.modern-table thead {
+    background: #f6f9f7;
+}
+
+.modern-table th {
+    padding: 13px 15px;
+
+    text-align: left;
+
+    color: #6f7d74;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    font-weight: 800;
+}
+
+.modern-table th i {
+    margin-right: 5px;
+}
+
+.modern-table td {
+    padding: 16px 15px;
+
+    border-top: 1px solid #edf1ee;
+
+    color: #3b4940;
+
+    font-size: 13px;
+
+    vertical-align: middle;
+}
+
+.modern-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.modern-table tbody tr:hover {
+    background: #f9fcfa;
+}
+
+.row-number {
+    color: #8b978f;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.site-name {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+}
+
+.site-marker {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #e7f6ed;
+
+    color: #176b3a;
+}
+
+.site-name strong {
+    display: block;
+
+    color: #24332a;
+
+    font-size: 13px;
+}
+
+.site-name small {
+    display: block;
+
+    color: #8a968f;
+
+    font-size: 10px;
+
+    margin-top: 2px;
+}
+
+.area-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border-radius: 8px;
+
+    background: #eef7f1;
+
+    color: #176b3a;
+
+    font-weight: 700;
+
+    font-size: 11px;
+}
+
+.description-text {
+    color: #718096;
+
+    font-size: 12px;
+}
+
+.delete-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    border: 1px solid #f0caca;
+
+    background: #fff7f7;
+
+    color: #b42318;
+
+    padding: 8px 11px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.delete-button:hover {
+    background: #fdecec;
+
+    border-color: #e7aaaa;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+    text-align: center;
+
+    padding: 50px 20px;
+
+    border: 1px dashed #ccd8cf;
+
+    border-radius: 14px;
+}
+
+.empty-icon {
+    width: 55px;
+    height: 55px;
+
+    margin: 0 auto 12px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e9f6ee;
+
+    color: #176b3a;
+
+    font-size: 21px;
+}
+
+.empty-state h3 {
+    margin: 0 0 6px;
+
+    color: #26352c;
+
+    font-size: 16px;
+}
+
+.empty-state p {
+    margin: 0;
+
+    color: #7b887f;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.page-actions {
+    display: flex;
+
+    justify-content: flex-start;
+
+    margin-top: 25px;
+}
+
+.back-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border-radius: 10px;
+
+    background: white;
+
+    border: 1px solid #dce4de;
+
+    color: #405047;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.back-button:hover {
+    border-color: #176b3a;
+
+    color: #176b3a;
+
+    transform: translateX(-2px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .overview-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .management-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .sites-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .park-area {
+        width: 100%;
+    }
+
+    .park-map {
+        grid-template-columns:
+            1fr 1fr;
+
+        grid-template-rows:
+            repeat(4, 110px);
+    }
+
+    .north {
+        grid-column: 1 / 3;
+        grid-row: 1;
+    }
+
+    .west {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .east {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .map-center {
+        grid-column: 1 / 3;
+        grid-row: 3;
+    }
+
+    .south {
+        grid-column: 1 / 3;
+        grid-row: 4;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .sites-page {
+        width: 94%;
+
+        padding-top: 18px;
+    }
+
+    .sites-header {
+        padding: 22px;
+
+        border-radius: 17px;
+    }
+
+    .header-content {
+        align-items: flex-start;
+    }
+
+    .header-icon {
+        width: 50px;
+        height: 50px;
+
+        font-size: 20px;
+    }
+
+    .sites-header h1 {
+        font-size: 23px;
+    }
+
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .park-layout,
+    .form-card,
+    .info-card,
+    .sites-table-card {
+        padding: 20px;
+    }
+
+    .park-map {
+        grid-template-columns: 1fr;
+
+        grid-template-rows:
+            repeat(5, 100px);
+    }
+
+    .north,
+    .west,
+    .east,
+    .map-center,
+    .south {
+        grid-column: 1;
+    }
+
+    .north {
+        grid-row: 1;
+    }
+
+    .west {
+        grid-row: 2;
+    }
+
+    .map-center {
+        grid-row: 3;
+    }
+
+    .east {
+        grid-row: 4;
+    }
+
+    .south {
+        grid-row: 5;
+    }
+
+    .table-top {
+        align-items: flex-start;
+    }
+
+}
+
