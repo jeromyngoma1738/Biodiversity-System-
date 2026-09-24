@@ -1,48 +1,7 @@
-"""
-CBU NATURE PARK - UNIFIED ECOLOGICAL ANALYSIS MODEL
-===================================================
-
-This module replaces the two earlier models with a single working one.
-
-WHAT IT DOES
-------------
-1. Loads approved observations (with environmental data when linked).
-2. Builds a stable per-species, per-section time series.
-3. Detects population increase / decrease / stability reliably.
-4. Scores ecological impact, always producing a level when a previous
-   survey exists.
-5. Reports evidence as a CONFIDENCE field instead of suppressing results.
-6. Produces a short plain-English summary plus optional detail.
-7. Forecasts population from the historical time trend.
-
-KEY FIXES OVER THE OLD MODELS
------------------------------
-* Baseline is the PREVIOUS survey, not the mean of all surveys
-  (the old mean included the latest value, hiding real change).
-* Section and survey keys are normalised, so one physical section no
-  longer splits into several one-row series.
-* Falls back to a park-wide comparison when a section has only one survey.
-* Low evidence no longer blanks out the impact score.
-* The Shannon-index regression was removed. It regressed the biodiversity
-  index on the same counts used to compute it, so its coefficients were an
-  algebraic identity, not an ecological result. A per-species trend
-  regression over time replaces it.
-
-SCIENTIFIC LIMITATIONS
-----------------------
-This is a project-level decision-support screening tool. It is not an
-IUCN assessment, not a validated carrying-capacity model, and not proof
-of causation. Wildlife grazing-unit factors are reference values and must
-be replaced with CBU-calibrated figures before being quoted as such.
-"""
-
 from __future__ import annotations
-
 from typing import Any, Dict, List, Optional, Tuple
-
 import numpy as np
 import pandas as pd
-
 from models import Observation
 
 
@@ -55,22 +14,6 @@ TREND_BAND_PCT = 10.0
 
 # Below this count, percentage changes are noisy and get damped.
 LOW_COUNT_THRESHOLD = 5
-
-# ----------------------------------------------------------------
-# How to treat two counts of the SAME species, in the SAME section,
-# on the SAME day.
-#
-#   "separate" - each observation is its own point in time. Use this
-#                when every record is a fresh monitoring event.
-#                THIS IS THE DEFAULT.
-#   "sum"      - add them up. Only correct when one survey counts a
-#                species across several plots.
-#   "latest"   - keep the newest and discard the rest, for when
-#                duplicates are corrections.
-#
-# The old behaviour was "sum", which turned a drop from 39 to 2 into
-# a single reading of 41.
-# ----------------------------------------------------------------
 SAME_SURVEY_POLICY = "separate"
 
 # A count this many times the median of previous counts is flagged as
@@ -391,42 +334,14 @@ for _name in ["Tree", "Acacia", "Miombo Tree", "Brachystegia", "Julbernardia",
 
 def get_observation_data() -> pd.DataFrame:
     """Load approved observations, joined to environmental data if present."""
-    observations = (
-        Observation.query
-        .filter_by(status="Approved")
-        .order_by(Observation.observation_date.asc())
-        .all()
-    )
+    observations = (Observation.query.filter_by(status="Approved").order_by(Observation.observation_date.asc()).all())
 
     rows = []
-
     for obs in observations:
         species = obs.species
         if not species:
             continue
-
         env = getattr(obs, "environmental_observation", None)
-
-        # ----------------------------------------------------------
-        # FIX 1 (revised): key on the site's database ID, not its name.
-        #
-        # EnvironmentalObservation.monitoring_site_id is NOT NULL, so a
-        # MonitoringSite is guaranteed whenever an environmental
-        # observation exists. Its numeric id never changes once created.
-        # MonitoringSite.name CAN change (a rename, a typo fix) - keying
-        # on the name would silently fracture that site's history at the
-        # point of the rename, the same failure mode as the original bug,
-        # just triggered a different way. The id is immune to that.
-        #
-        # EnvironmentalObservation.location is a free-text field kept
-        # only "for compatibility/display" per the schema - it is shown
-        # to the user but never used to decide which section a survey
-        # belongs to, precisely because free text is not reliable for that.
-        #
-        # Only when an observation has NO linked environmental record at
-        # all do we fall back to the species' free-text location, since
-        # that is the only identity we have left in that case.
-        # ----------------------------------------------------------
         if env is not None:
             site = env.monitoring_site
             section_key = f"site:{site.id}"
@@ -440,8 +355,7 @@ def get_observation_data() -> pd.DataFrame:
         if (area is None or area <= 0) and site is not None:
             area = safe_number(getattr(site, "area_hectares", None))
 
-        date = (
-            env.observation_date
+        date = (env.observation_date
             if env and getattr(env, "observation_date", None)
             else obs.observation_date
         )
@@ -471,9 +385,7 @@ def get_observation_data() -> pd.DataFrame:
 
         source = getattr(env, "water_source_available", None) if env else None
         row["water_source_available"] = None if source is None else bool(source)
-        row["water_body_hectares"] = (
-            safe_number(getattr(env, "water_body_hectares", None)) if env else None
-        )
+        row["water_body_hectares"] = ( safe_number(getattr(env, "water_body_hectares", None)) if env else None)
 
         rows.append(row)
 
@@ -520,24 +432,10 @@ def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return df
 
-    # ----------------------------------------------------------
-    # FIX 2: two different keys, for two different jobs.
-    #
-    # co_survey_key groups the species counted TOGETHER in one field
-    # survey. It drives grazing pressure and the biodiversity index.
-    #
-    # survey_key identifies one point in the time series for a single
-    # species. Under the default "separate" policy every observation is
-    # its own point, so a re-count of the same species on the same day
-    # registers as change instead of being added to the previous count.
-    # ----------------------------------------------------------
     df["survey_day"] = df["date"].dt.tz_convert(None).dt.normalize()
 
-    df["co_survey_key"] = np.where(
-        df["environmental_observation_id"].notna(),
-        "env:" + df["environmental_observation_id"].astype(str),
-        "day:" + df["survey_day"].dt.strftime("%Y-%m-%d"),
-    )
+    df["co_survey_key"] = np.where( df["environmental_observation_id"].notna(),  "env:" + df["environmental_observation_id"].astype(str),
+        "day:" + df["survey_day"].dt.strftime("%Y-%m-%d"),)
 
     df = df.sort_values(["date", "observation_id"])
 
@@ -567,11 +465,6 @@ def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     )
     df["rainfall_class"] = df["rainfall"].apply(classify_rainfall)
 
-    # The recorded free-text location is display-only (see the schema
-    # note on EnvironmentalObservation.location) and never decides
-    # section identity. When it disagrees with the site name, that is
-    # not a bug in this model - it is a sign the two fields have drifted
-    # apart in the source data and a human should take a look.
     df["location_mismatch"] = (
         df["recorded_location_text"].notna()
         & (df["recorded_location_text"].apply(normalize_name)
@@ -604,10 +497,7 @@ def compute_biodiversity_index(df: pd.DataFrame) -> pd.DataFrame:
             proportions = proportions[proportions > 0]
             index = float(-(proportions * np.log(proportions)).sum())
 
-        results.append({
-            "section_key": section_key,
-            "co_survey_key": survey_key,
-            "biodiversity_index": round(index, 4),
+        results.append({ "section_key": section_key, "co_survey_key": survey_key, "biodiversity_index": round(index, 4),
             "species_richness": int(group["canonical_species"].nunique()),
         })
 
@@ -630,7 +520,6 @@ def _linear_slope(days: np.ndarray, values: np.ndarray) -> Optional[float]:
 def summarise_series(group: pd.DataFrame) -> Dict[str, Any]:
     """
     Population change for one species in one section.
-
     The baseline is the PREVIOUS survey. The old model used the mean of
     every survey including the latest one, which dragged the percentage
     toward zero and reported real change as "Stable".
@@ -763,10 +652,7 @@ def change_direction(change: Dict[str, Any]) -> Optional[str]:
         return "stable"
     return "increase" if percentage > 0 else "decline"
 
-
-# ============================================================
 # ENVIRONMENT
-# ============================================================
 
 def classify_factor(factor: str, value: float, ranges) -> str:
     if factor in PERCENT_FACTORS and not (0 <= value <= 100):
@@ -1273,226 +1159,1166 @@ def calculate_evidence(observation_count: int, has_previous: bool,
 
     return {"score": score, "level": level, "reasons": reasons}
 
-
-# ============================================================
-# IMPACT  (the part that was never firing)
-# ============================================================
-
-def population_risk_score(percentage: Optional[float],
-                          previous: Optional[float]) -> Optional[int]:
-    if percentage is None:
-        return None
-
-    if percentage <= -80:
-        risk = 4
-    elif percentage <= -50:
-        risk = 3
-    elif percentage <= -25:
-        risk = 2
-    elif percentage < -TREND_BAND_PCT:
-        risk = 1
-    elif percentage >= 150:
-        risk = 3
-    elif percentage >= 100:
-        risk = 2
-    elif percentage > TREND_BAND_PCT:
-        risk = 1
-    else:
-        risk = 0
-
-    # Small counts swing wildly in percentage terms, so cap the risk.
-    if previous is not None and previous < LOW_COUNT_THRESHOLD:
-        risk = min(risk, 1)
-
-    return risk
-
-
 def calculate_impact(ctx: Dict[str, Any], evidence: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    A population change is judged against the conditions it happened in,
-    not on its own.
+ 
+    # ============================================================
+    # GET POPULATION INFORMATION
+    # ============================================================
 
-      * A decline alongside low rainfall, scarce forage, limited water or
-        heavy grazing pressure is plausibly the environment doing what
-        environments do, so its risk is REDUCED - by two levels when two
-        or more of those are present, one level when a single factor is
-        present. The reduction is capped so a genuinely catastrophic drop
-        (a fresh percentage_change <= -80, see population_risk_score)
-        can never fall all the way to zero.
-      * A decline with NONE of those present is not explained by
-        anything in the record. Its risk is left as-is, but it is
-        flagged for follow-up (disease, poaching, emigration) rather
-        than being read as reassuring.
-      * An increase happening despite scarce resources is a bigger
-        concern than an increase into abundant ones, so it is RAISED by
-        one level when two or more stress factors are present.
+    population = ctx.get("population", {})
 
-    Resource pressure and park effect were previously blended in as
-    independent risk components on top of this. Both are already built
-    from the same rainfall/forage/water/pressure signals used above, so
-    adding them again double-counted the same evidence and is why a
-    single stressed section could push every species in it to Critical
-    regardless of whether their own population had moved. They remain
-    in the output for context but no longer inflate the score; only the
-    context-adjusted population risk and the qualitative park effect
-    (which also reflects food-web consequences, not just pressure) feed
-    the final number.
-    """
-    change = ctx["population"]
-    percentage = change["percentage_change"]
-    previous = change["previous"]
-    direction = ctx["direction"]
-    resource_pressure = ctx["resource"]["pressure"]
-    park_effect = ctx["park_effect"]
-    context = ctx["environmental_context"]
+    current_population = (
+        population.get("current")
+        if population.get("current") is not None
+        else population.get("population")
+    )
 
-    base_population_risk = population_risk_score(percentage, previous)
-    population_risk = base_population_risk
-    context_note = None
+    previous_population = population.get("previous")
 
-    if base_population_risk is not None:
-        if direction == "decline":
-            if context["level"] == "High":
-                population_risk = max(0, base_population_risk - 2)
-                context_note = (
-                    f"The decline coincides with {', '.join(context['factors'])}. "
-                    f"This looks at least partly environmentally driven, so the "
-                    f"risk was reduced.")
-            elif context["level"] == "Some":
-                population_risk = max(0, base_population_risk - 1)
-                context_note = (
-                    f"The decline coincides with {context['factors'][0]}, which "
-                    f"may partly explain it.")
-            elif base_population_risk >= 2:
-                context_note = (
-                    "No recorded resource stress explains this decline. Consider "
-                    "checking for other causes such as disease, poaching or "
-                    "emigration.")
+    percentage_change = population.get(
+        "percentage_change"
+    )
 
-        elif direction == "increase":
-            if context["level"] == "High":
-                population_risk = min(4, base_population_risk + 1)
-                context_note = (
-                    f"The increase is happening despite "
-                    f"{', '.join(context['factors'])}, which adds pressure to "
-                    f"already limited resources.")
-            elif context["level"] == "None" and base_population_risk >= 2:
-                context_note = "Resources currently look adequate to support this increase."
+    direction = (
+        population.get("direction")
+        or ctx.get("direction")
+    )
 
-    resource_risk = {"Very High": 4, "High": 3, "Moderate": 2,
-                     "Low": 0, "Unknown": None}.get(resource_pressure)
+    # ============================================================
+    # CONVERT NUMERIC VALUES SAFELY
+    # ============================================================
 
-    park_effect_risk = {"Harmful": 4, "Concern": 3, "Potentially Beneficial": 0,
-                        "Beneficial": 0, "Monitor": 0, "Neutral": 0,
-                        "Uncertain": None,
-                        "Insufficient Evidence": None}.get(park_effect)
+    try:
+        current_population = (
+            float(current_population)
+            if current_population is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        current_population = None
 
-    unscored = {
-        "score": None,
-        "level": None,
-        "label": "Insufficient Evidence",
-        "confidence": evidence["level"],
-        "population_risk": population_risk,
-        "base_population_risk": base_population_risk,
-        "resource_risk": resource_risk,
-        "park_effect_risk": park_effect_risk,
-        "context_note": context_note,
-        "stress_factors": context["factors"],
-    }
+    try:
+        previous_population = (
+            float(previous_population)
+            if previous_population is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        previous_population = None
 
-    # ----------------------------------------------------------
-    # No population history means no impact claim.
+    try:
+        percentage_change = (
+            float(percentage_change)
+            if percentage_change is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        percentage_change = None
+
+    
+    if (
+        current_population is not None
+        and previous_population is not None
+    ):
+
+        if current_population > previous_population:
+            direction = "increase"
+
+        elif current_population < previous_population:
+            direction = "decline"
+
+        else:
+            direction = "stable"
+
+    # ============================================================
+    # RESOURCE INFORMATION
+    # ============================================================
+
+    resource = ctx.get(
+        "resource",
+        {}
+    )
+
+    resource_pressure = resource.get(
+        "pressure"
+    )
+
+    # ============================================================
+    # LAND AREA
     #
-    # The previous version averaged whatever components existed, so a
-    # first-ever survey in a crowded section scored Critical on grazing
-    # pressure alone. Resource pressure is still reported in its own
-    # field; it no longer becomes a risk level by itself.
-    # ----------------------------------------------------------
-    if previous is None or population_risk is None:
-        return unscored
+    # ALL LAND VALUES ARE ASSUMED TO BE HECTARES.
+    # ============================================================
 
-    if change.get("outlier"):
-        unscored["label"] = "Check Data"
-        return unscored
+    area_hectares = resource.get(
+        "area_hectares"
+    )
 
-    # Population risk (already context-adjusted above) is the primary
-    # signal. Park effect is a secondary, qualitative check that also
-    # weighs food-web consequences, not just resource numbers.
-    weighted = [(population_risk, 0.7), (park_effect_risk, 0.3)]
-    weighted = [(v, w) for v, w in weighted if v is not None]
+    if area_hectares is None:
+        area_hectares = resource.get(
+            "area"
+        )
 
-    total_weight = sum(w for _, w in weighted)
-    score = sum(v * w for v, w in weighted) / total_weight
+    if area_hectares is None:
+        area_hectares = ctx.get(
+            "area_hectares"
+        )
 
-    if score >= 3:
-        level = 4
-    elif score >= 2:
-        level = 3
-    elif score >= 1:
-        level = 2
-    elif score > 0:
-        level = 1
+    try:
+        area_hectares = (
+            float(area_hectares)
+            if area_hectares is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        area_hectares = None
+
+    # ============================================================
+    # ENVIRONMENT
+    # ============================================================
+
+    park_effect = ctx.get(
+        "park_effect"
+    )
+
+    environmental_context = ctx.get(
+        "environmental_context",
+        {}
+    )
+
+    stress_factors = environmental_context.get(
+        "factors",
+        []
+    )
+
+    # RESOURCE RISK
+
+    resource_risk = {
+        "Very High": 3,
+        "High": 2,
+        "Moderate": 1,
+        "Low": 0,
+        "Unknown": None
+    }.get(
+        resource_pressure
+    )
+
+    # ============================================================
+    # PARK EFFECT RISK
+    # ============================================================
+
+    park_effect_risk = {
+        "Harmful": 3,
+        "Concern": 2,
+        "Monitor": 1,
+        "Potentially Beneficial": 0,
+        "Beneficial": 0,
+        "Neutral": 0,
+        "Uncertain": None,
+        "Insufficient Evidence": None
+    }.get(
+        park_effect
+    )
+
+    # ============================================================
+    # OUTLIER PROTECTION
+    # ============================================================
+
+    if population.get("outlier"):
+
+        return {
+            "score": None,
+            "level": None,
+            "label": "Check Data",
+
+            "confidence": evidence.get(
+                "level",
+                "Unknown"
+            ),
+
+            "population": current_population,
+            "previous_population": previous_population,
+
+            "population_category": "Unknown",
+
+            "population_risk": None,
+            "base_population_risk": None,
+
+            "percentage_change": percentage_change,
+            "direction": direction,
+
+            "area_hectares": area_hectares,
+            "population_density": None,
+            "density_category": "Unknown",
+
+            "resource_pressure": resource_pressure,
+            "resource_risk": resource_risk,
+
+            "park_effect_risk": park_effect_risk,
+
+            "context_note": (
+                "The population count differs substantially from "
+                "previous observations and should be checked before "
+                "ecological impact is interpreted."
+            ),
+
+            "stress_factors": stress_factors
+        }
+
+    # ============================================================
+    # POPULATION INFORMATION CHECK
+    
+
+    if current_population is None:
+
+        return {
+            "score": None,
+            "level": None,
+            "label": "Insufficient Evidence",
+
+            "confidence": evidence.get(
+                "level",
+                "Unknown"
+            ),
+
+            "population": None,
+            "previous_population": previous_population,
+
+            "population_category": "Unknown",
+
+            "population_risk": None,
+            "base_population_risk": None,
+
+            "percentage_change": percentage_change,
+            "direction": direction,
+
+            "area_hectares": area_hectares,
+            "population_density": None,
+            "density_category": "Unknown",
+
+            "resource_pressure": resource_pressure,
+            "resource_risk": resource_risk,
+
+            "park_effect_risk": park_effect_risk,
+
+            "context_note": (
+                "A valid current population count is required "
+                "to determine ecological impact."
+            ),
+
+            "stress_factors": stress_factors
+        }
+
+    # POPULATION CATEGORY
+
+    if current_population < 30:
+        population_category = "Low"
+
+    elif current_population < 50:
+        population_category = "Moderate"
+
+    elif current_population < 100:
+        population_category = "High"
+
     else:
-        level = 0
+        population_category = "Very High"
+
+
+    # LAND AREA CHECK
+    
+
+    if (
+        area_hectares is None
+        or area_hectares <= 0
+    ):
+
+        return {
+            "score": None,
+            "level": None,
+            "label": "Insufficient Evidence",
+
+            "confidence": evidence.get(  "level", "Unknown"),
+
+            "population": current_population,
+            "previous_population": previous_population,
+
+            "population_category": population_category,
+
+            "population_risk": None,
+            "base_population_risk": None,
+
+            "percentage_change": percentage_change,
+            "direction": direction,
+
+            "area_hectares": None,
+            "population_density": None,
+            "density_category": "Unknown",
+
+            "resource_pressure": resource_pressure,
+            "resource_risk": resource_risk,
+
+            "park_effect_risk": park_effect_risk,
+
+            "context_note": (
+                "The land area is missing or invalid. Land area "
+                "must be recorded in hectares before population "
+                "pressure can be evaluated relative to available "
+                "space."
+            ),
+
+            "stress_factors": stress_factors
+        }
+
+
+    # RESOURCE INFORMATION CHECK
+
+    if resource_risk is None:
+
+        return {
+            "score": None,
+            "level": None,
+            "label": "Insufficient Evidence",
+
+            "confidence": evidence.get("level","Unknown"),
+
+            "population": current_population,
+            "previous_population": previous_population,
+            "population_category": population_category,
+
+            "population_risk": None,
+            "base_population_risk": None,
+
+            "percentage_change": percentage_change,
+            "direction": direction,
+
+            "area_hectares": area_hectares,
+            "population_density": None,
+            "density_category": "Unknown",
+
+            "resource_pressure": None,
+            "resource_risk": None,
+
+            "park_effect_risk": park_effect_risk,
+
+            "context_note": (
+                "Resource pressure information is unavailable. "
+                "Population trend can be identified, but ecological "
+                "pressure cannot be classified reliably without "
+                "resource information."
+            ),
+
+            "stress_factors": stress_factors
+        }
+
+    population_density = (current_population /area_hectares)
+    if population_density < 1:
+        density_category = "Low"
+
+    elif population_density < 5:
+        density_category = "Moderate"
+
+    elif population_density < 10:
+        density_category = "High"
+
+    else:
+        density_category = "Very High"
+
+    if direction == "increase":
+        population_risk = 1
+
+    else:
+        population_risk = 0
+
+    base_population_risk = population_risk
+    
+    # DECREASING POPULATION
+    if direction == "decline":
+
+        ecological_score = 0
+
+        context_note = (
+            f"The population has decreased to "
+            f"{current_population:g} from "
+            f"{previous_population:g}."
+            if previous_population is not None
+            else
+            f"The current population is "
+            f"{current_population:g} and is showing a decline."
+        )
+
+        context_note += (
+            f" The available area is "
+            f"{area_hectares:g} hectares, giving a population "
+            f"density of {population_density:.2f} per hectare. "
+            "The declining population is classified as Low "
+            "ecological impact because population demand is "
+            "decreasing rather than increasing."
+        )
+
+    # ============================================================
+    # STABLE POPULATION
+    # ============================================================
+
+    elif direction == "stable":
+
+        # Stable + very high density + very high resources
+        # can still represent substantial pressure.
+
+        if (
+            density_category == "Very High"
+            and resource_pressure == "Very High"
+        ):
+
+            ecological_score = 2
+
+            context_note = (
+                f"The population is stable at "
+                f"{current_population:g}, but population density "
+                f"is very high at {population_density:.2f} per "
+                f"hectare across {area_hectares:g} hectares. "
+                "Resources are also very highly constrained. "
+                "Although the population is not increasing, the "
+                "current population is placing substantial pressure "
+                "on the available land and resources."
+            )
+
+        elif (
+            density_category in (
+                "High",
+                "Very High"
+            )
+            and resource_pressure in (
+                "High",
+                "Very High"
+            )
+        ):
+
+            ecological_score = 2
+
+            context_note = (
+                f"The population is stable at "
+                f"{current_population:g}, with a population density "
+                f"of {population_density:.2f} per hectare. "
+                f"Resources are under {resource_pressure.lower()} "
+                "pressure. Current conditions indicate substantial "
+                "ecological pressure even though the population is "
+                "not currently increasing."
+            )
+
+        else:
+
+            ecological_score = 1
+
+            context_note = (
+                f"The population is stable at "
+                f"{current_population:g}, with "
+                f"{area_hectares:g} hectares available and a "
+                f"population density of {population_density:.2f} "
+                "per hectare. Current population conditions are "
+                "generally stable."
+            )
+
+    # ============================================================
+    # INCREASING POPULATION
+    # ============================================================
+
+    elif direction == "increase":
+
+        if (
+            density_category == "Very High"
+            and resource_pressure in (
+                "High",
+                "Very High"
+            )
+        ):
+
+            ecological_score = 3
+
+            context_note = (
+                f"The population is increasing and is currently "
+                f"{current_population:g}. The population density "
+                f"is very high at {population_density:.2f} per "
+                f"hectare across {area_hectares:g} hectares. "
+                f"Resources are under {resource_pressure.lower()} "
+                "pressure. The combination of increasing population, "
+                "very high land pressure and constrained resources "
+                "indicates critical ecological pressure."
+            )
+        # HIGH
+        # Increasing population should normally be High.
+
+
+        else:
+
+            ecological_score = 2
+
+            context_note = (
+                f"The population is increasing and is currently "
+                f"{current_population:g}. The available area is "
+                f"{area_hectares:g} hectares, giving a population "
+                f"density of {population_density:.2f} per hectare. "
+                f"Resources are under {resource_pressure.lower()} "
+                "pressure. The increase in population represents "
+                "higher ecological demand and is therefore "
+                "classified as High impact."
+            )
+
+    # ============================================================
+    # UNKNOWN DIRECTION
+    # ============================================================
+
+    else:
+
+        ecological_score = 1
+
+        context_note = (
+            f"The current population is "
+            f"{current_population:g}, with a density of "
+            f"{population_density:.2f} per hectare across "
+            f"{area_hectares:g} hectares. The population trend "
+            "could not be determined, so the impact is classified "
+            "as Stable pending additional observations."
+        )
+
+    # ============================================================
+    # POPULATION TREND INFORMATION
+    # ============================================================
+
+    if (
+        percentage_change is not None
+        and direction == "increase"
+    ):
+
+        context_note += (
+            f" The population increased by approximately "
+            f"{percentage_change:.1f}% compared with the previous "
+            "observation."
+        )
+
+    elif (
+        percentage_change is not None
+        and direction == "decline"
+    ):
+
+        context_note += (
+            f" The population decreased by approximately "
+            f"{abs(percentage_change):.1f}% compared with the "
+            "previous observation."
+        )
+
+    # ============================================================
+    # ENVIRONMENTAL STRESS
+    # ============================================================
+
+    if stress_factors:
+
+        context_note += (
+            " Environmental stress factors were also recorded "
+            "and should be considered when interpreting future "
+            "population changes."
+        )
+
+    # ============================================================
+    # PARK EFFECT
+
+
+    if park_effect == "Harmful":
+
+        context_note += (
+            " A harmful park effect was recorded and may add "
+            "additional ecological pressure."
+        )
+
+    elif park_effect == "Concern":
+
+        context_note += (
+            " A park-related concern was recorded and should "
+            "continue to be monitored."
+        )
+
+    # ============================================================
+    # SAFETY LIMIT
+    # ============================================================
+
+    ecological_score = int(
+        max(
+            0,
+            min(
+                3,
+                ecological_score
+            )
+        )
+    )
+
+    level = ecological_score
+
+    # ============================================================
+    # FINAL RESULT
+    # ============================================================
 
     return {
-        "score": round(score, 2),
+        "score": float(level),
+
         "level": level,
+
         "label": IMPACT_LABELS[level],
-        "confidence": evidence["level"],
+
+        "confidence": evidence.get(
+            "level",
+            "Unknown"
+        ),
+
+        # --------------------------------------------------------
+        # POPULATION
+        # --------------------------------------------------------
+
+        "population": current_population,
+
+        "previous_population": previous_population,
+
+        "population_category": population_category,
+
         "population_risk": population_risk,
+
         "base_population_risk": base_population_risk,
+
+        "percentage_change": percentage_change,
+
+        "direction": direction,
+
+        # --------------------------------------------------------
+        # LAND
+        # --------------------------------------------------------
+
+        "area_hectares": area_hectares,
+
+        "population_density": population_density,
+
+        "density_category": density_category,
+
+        # --------------------------------------------------------
+        # RESOURCES
+        # --------------------------------------------------------
+
+        "resource_pressure": resource_pressure,
+
         "resource_risk": resource_risk,
+
+        # --------------------------------------------------------
+        # OTHER
+        # --------------------------------------------------------
+
         "park_effect_risk": park_effect_risk,
+
         "context_note": context_note,
-        "stress_factors": context["factors"],
+
+        "stress_factors": stress_factors
     }
-
-
 # ============================================================
-# INTERPRETATION  (short summary first, detail optional)
+# INTERPRETATION
+# Simple, clear and direct
 # ============================================================
 
-def build_summary(ctx: Dict[str, Any], impact: Dict[str, Any]) -> str:
-    """One or two plain sentences. This is what the UI should show."""
-    species = pretty_name(ctx["species"])
-    section = ctx["section_name"]
-    change = ctx["population"]
+def build_summary(
+    ctx: Dict[str, Any],
+    impact: Dict[str, Any]
+) -> str:
+    """
+    Build the short interpretation shown on the main
+    biodiversity analysis page.
 
-    if change["previous"] is None:
-        return (f"{species} in {section}: {int(change['current'])} recorded. "
-                f"This is the first survey, so no change can be measured yet.")
+    Population trend:
+        Declining -> resource demand is decreasing
+        Stable   -> resource demand is relatively stable
+        Increasing -> resource demand is increasing
 
-    previous = int(change["previous"])
-    current = int(change["current"])
-    percentage = change["percentage_change"]
+    The final Impact label comes from calculate_impact().
+    """
 
-    if percentage is None:
-        head = (f"{species} in {section} went from {previous} to {current} "
-                f"({change['trend'].lower()}).")
+    # ========================================================
+    # BASIC INFORMATION
+    # ========================================================
+
+    species = pretty_name(
+        ctx.get(
+            "species",
+            "Unknown species"
+        )
+    )
+
+    section = ctx.get(
+        "section_name",
+        "Monitoring Site"
+    )
+
+    population = ctx.get(
+        "population",
+        {}
+    )
+
+    # ========================================================
+    # POPULATION VALUES
+    # ========================================================
+
+    current = population.get(
+        "current"
+    )
+
+    previous = population.get(
+        "previous"
+    )
+
+    percentage = population.get(
+        "percentage_change"
+    )
+
+    # ========================================================
+    # DIRECTION
+    # ========================================================
+
+    direction = (
+        population.get("direction")
+        or ctx.get("direction")
+    )
+
+    # ========================================================
+    # IMPACT
+    # ========================================================
+
+    impact_label = impact.get(
+        "label",
+        "Insufficient Evidence"
+    )
+
+    # ========================================================
+    # FIRST SURVEY
+    # ========================================================
+
+    if previous is None:
+
+        if current is None:
+
+            return (
+                f"{species} in {section}: "
+                "No current population was recorded. "
+                "There is not enough information to determine "
+                "population pressure."
+            )
+
+        current = int(current)
+
+        return (
+            f"{species} in {section}: "
+            f"{current} recorded. "
+            "This is the first survey, so population change "
+            "cannot yet be determined."
+        )
+
+    # ========================================================
+    # SAFE CONVERSION
+    # ========================================================
+
+    try:
+        current = int(current)
+    except (TypeError, ValueError):
+        current = 0
+
+    try:
+        previous = int(previous)
+    except (TypeError, ValueError):
+        previous = 0
+
+    # ========================================================
+    # POPULATION CHANGE TEXT
+    # ========================================================
+
+    if percentage is not None:
+
+        try:
+            percentage = float(
+                percentage
+            )
+
+            population_text = (
+                f"{species} in {section} changed "
+                f"from {previous} to {current} "
+                f"({percentage:+.0f}%)."
+            )
+
+        except (TypeError, ValueError):
+
+            population_text = (
+                f"{species} in {section} changed "
+                f"from {previous} to {current}."
+            )
+
     else:
-        head = (f"{species} in {section} {change['trend'].lower()} from "
-                f"{previous} to {current} ({percentage:+.0f}%).")
 
-    tail = impact["label"] if impact["label"] else "Insufficient evidence"
-    reason = ctx["park_reasons"][0] if ctx["park_reasons"] else ""
+        population_text = (
+            f"{species} in {section} changed "
+            f"from {previous} to {current}."
+        )
 
-    sentence = f"{head} {tail}. {reason}".strip()
+    if direction == "decline":
 
-    if impact.get("context_note"):
-        sentence += " " + impact["context_note"]
+        trend_text = (
+            "The population is decreasing, so its demand "
+            "for food, water, vegetation and habitat is "
+            "also decreasing."
+        )
 
-    if change.get("outlier"):
-        sentence += (" This count is far above every earlier record here, "
-                     "so it is treated as a possible data-entry error and is "
-                     "not scored. Check the record before acting on it.")
-    if change["small_sample"]:
-        sentence += " Counts are small, so the percentage is unreliable."
-    if ctx["change_basis"] == "park":
-        sentence += " (Compared park-wide: only one survey in this section.)"
+    elif direction == "increase":
 
-    return sentence
+        trend_text = (
+            "The population is increasing, so its demand "
+            "for food, water, vegetation and habitat is "
+            "also increasing."
+        )
 
+    elif direction == "stable":
+
+        trend_text = (
+            "The population is stable, so its demand "
+            "for food, water, vegetation and habitat "
+            "is relatively stable."
+        )
+
+    else:
+
+        trend_text = (
+            "The population trend could not be determined."
+        )
+
+    # ========================================================
+    # IMPACT INTERPRETATION
+    #
+    # This uses the result from calculate_impact().
+    # It does NOT recalculate impact here.
+    # ========================================================
+
+    if impact_label == "Low":
+
+        impact_text = (
+            "Overall ecological pressure is low."
+        )
+
+    elif impact_label == "Stable":
+
+        impact_text = (
+            "Overall ecological pressure is stable "
+            "and currently manageable."
+        )
+
+    elif impact_label == "High":
+
+        impact_text = (
+            "Overall ecological pressure is high and "
+            "should be monitored."
+        )
+
+    elif impact_label == "Critical":
+
+        impact_text = (
+            "Overall ecological pressure is critical "
+            "and requires close monitoring."
+        )
+
+
+    else:
+
+        impact_text = ( "" )
+
+    # ========================================================
+    # OUTLIER
+    # ========================================================
+
+    if population.get(
+        "outlier"
+    ):
+
+        impact_text = (
+            "The recorded population is unusually different "
+            "from previous observations and should be checked."
+        )
+
+    # ========================================================
+    # SMALL SAMPLE
+    # ========================================================
+
+    small_sample_text = ""
+
+    if population.get(
+        "small_sample"
+    ):
+
+        small_sample_text = (
+            " The population is small, so the percentage "
+            "change should be interpreted carefully."
+        )
+
+    # ========================================================
+    # FINAL SUMMARY
+    # ========================================================
+
+    return (
+        f"{population_text} "
+        f"{trend_text} "
+        f"Impact: {impact_label}. "
+        f"{impact_text}"
+        f"{small_sample_text}"
+    )
+# ============================================================
+# SUPPORTING DETAILS
+# ============================================================
+
+def build_details(
+    ctx: Dict[str, Any]
+) -> List[str]:
+    """
+    Build the technical information shown under
+    'More Details'.
+    """
+
+    details = []
+
+    # ========================================================
+    # DATA CHECK
+    # ========================================================
+
+    if ctx.get("location_mismatch"):
+
+        recorded_location = ctx.get(
+            "recorded_location_text",
+            "Unknown"
+        )
+
+        section = ctx.get(
+            "section_name",
+            "Unknown"
+        )
+
+        details.append(
+            f"Data check: recorded location "
+            f"'{recorded_location}' does not match "
+            f"monitoring site '{section}'."
+        )
+
+    # ========================================================
+    # SPECIES ROLE
+    # ========================================================
+
+    role = ctx.get("role")
+
+    if role:
+
+        role_text = ROLE_TEXT.get(
+            role,
+            ""
+        )
+
+        if role_text:
+
+            details.append(
+                f"Ecological role: {role}. "
+                f"{role_text}"
+            )
+
+        else:
+
+            details.append(
+                f"Ecological role: {role}."
+            )
+
+    # ========================================================
+    # LONG-TERM TREND
+    # ========================================================
+
+    population = ctx.get(
+        "population",
+        {}
+    )
+
+    slope = population.get(
+        "slope_per_year"
+    )
+
+    if slope is not None:
+
+        details.append(
+            f"Long-term population trend: "
+            f"{slope:+.1f} individuals per year "
+            f"across {population.get('n_surveys', 0)} surveys."
+        )
+
+    
+    # ENVIRONMENT
+    environment = ctx.get(
+        "environment",
+        {}
+    )
+
+    interpretation = environment.get(
+        "interpretation"
+    )
+
+    if interpretation:
+
+        details.append(
+            f"Environment: {interpretation}"
+        )
+
+    # ========================================================
+    # ENVIRONMENTAL CONDITIONS
+    # ========================================================
+
+    groups = environment.get(
+        "groups",
+        {}
+    )
+
+    if groups:
+
+        temperature = groups.get(
+            "temperature",
+            "Unknown"
+        )
+
+        water_condition = groups.get(
+            "water",
+            "Unknown"
+        )
+
+        soil = groups.get(
+            "soil",
+            "Unknown"
+        )
+
+        details.append(
+            f"Conditions: temperature "
+            f"{temperature.lower()}, "
+            f"water {water_condition.lower()}, "
+            f"soil {soil.lower()}."
+        )
+
+    # POPULATION DENSITY
+    resource = ctx.get( "resource",{})
+
+    area = resource.get("area_hectares")
+
+    density = ctx.get(  "current_density")
+    if area is not None and density is not None:
+
+        details.append(
+            f"Population density: "
+            f"{density:.2f} individuals/ha "
+            f"over {area:.2f} ha."
+        )
+
+    # ========================================================
+    # WATER
+    # ========================================================
+
+    water = ctx.get(
+        "water",
+        {}
+    )
+
+    water_level = water.get(
+        "level"
+    )
+
+    water_basis = water.get(
+        "basis"
+    )
+
+    if water_level:
+
+        water_text = (
+            f"Water availability: "
+            f"{water_level.lower()}"
+        )
+
+        if water_basis:
+            water_text += ( f" ({water_basis})")
+        details.append( water_text + ".")
+
+    # ========================================================
+    # RESOURCE PRESSURE
+    # ========================================================
+
+    units = resource.get(
+        "units_per_hectare"
+    )
+
+    pressure = resource.get(
+        "pressure"
+    )
+
+    if units is not None:
+
+        pressure_text = (
+            pressure.lower()
+            if pressure
+            else "unknown"
+        )
+
+        details.append( f"Resource pressure: " f"{units:.2f} reference units/ha "  f"({pressure_text}).")
+
+    elif pressure:
+        details.append(f"Resource pressure: " f"{pressure.lower()}.")
+
+    # ENVIRONMENTAL STRESS
+    environmental_context = ctx.get("environmental_context",{})
+    factors = environmental_context.get( "factors", [])
+
+    if factors:
+        details.append(   "Recorded environmental stress: "     + "; ".join(factors)  + ".")
+
+    else:
+        details.append("No recorded stress affecting ""water, vegetation, food or habitat." )
+
+
+    # FOOD / VEGETATION RESOURCES
+    diet = ctx.get("diet",{})
+
+    producers = diet.get("producers", [] )
+    if producers:
+        food_resources = []
+
+        for producer in producers:
+            name = pretty_name(producer.get("name","Unknown"))
+            availability = producer.get("availability")
+            status = producer.get("status", "Unknown")
+
+            if availability is not None:
+                food_resources.append(   f"{name} "  f"{availability:.0f}/100 "  f"({status.lower()})")
+
+            else:
+                food_resources.append(f"{name} "  f"({status.lower()})")
+
+        details.append( "Vegetation/food resources: " + "; ".join(food_resources) + ".")
+
+    # FOOD WEB
+    food_web_effect = ctx.get( "food_web_effect" )
+
+    if food_web_effect:
+        details.append(f"Food-web effect: " f"{food_web_effect}")
+
+
+    # CONFIDENCE
+    evidence = ctx.get( "evidence",{})
+
+    confidence_level = evidence.get("level","Unknown")
+
+    confidence_reasons = evidence.get("reasons",  [])
+
+    confidence_text = ( f"Confidence: " f"{confidence_level.lower()}" )
+
+    if confidence_reasons:
+        confidence_text += ( " - " + "; ".join(confidence_reasons) )
+
+    details.append(confidence_text + ".")
+    details.append("This interpretation is based on recorded monitoring " "data and does not by itself prove the cause of " "population change.")
+    return details
 
 def build_details(ctx: Dict[str, Any]) -> List[str]:
     """Supporting lines. Show these behind a 'more detail' toggle."""

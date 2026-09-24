@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Biodiversity & AI Ecological Analysis
+Biodiversity &amp; AI Ecological Analysis
 {% endblock %}
 
 {% block css %}
@@ -14,727 +14,1531 @@ Biodiversity & AI Ecological Analysis
 
 {% endblock %}
 
+
 {% block content %}
 
 <div class="analysis-page">
 
-<!-- =====================================================
-     PAGE HEADER
-====================================================== -->
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
 
-<header class="analysis-hero">
+    <header class="analysis-hero">
 
-    <div class="hero-content">
+        <div class="hero-content">
 
-        <div class="hero-icon">
-            <i class="fa-solid fa-leaf"></i>
-        </div>
-
-        <div>
-
-            <span class="hero-label">
-                CBU NATURE PARK
-            </span>
-
-            <h1>
-                Biodiversity & AI Ecological Analysis
-            </h1>
-
-            <p>
-                Monitor species population changes, identify population
-                trends, and examine potential ecological relationships
-                within the CBU Nature Park ecosystem.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="hero-actions">
-
-        <a href="{{ url_for('download_report') }}"
-           class="download-btn">
-
-            <i class="fa-solid fa-file-pdf"></i>
-
-            <span>
-                Download PDF Report
-            </span>
-
-        </a>
-
-    </div>
-
-</header>
-
-
-
-<!-- =====================================================
-     FILTER BAR
-====================================================== -->
-
-<div class="analysis-toolbar">
-
-    <div class="filter-title">
-
-        <div class="toolbar-icon">
-            <i class="fa-solid fa-filter"></i>
-        </div>
-
-        <div>
-
-            <strong>
-                Filter Analysis
-            </strong>
-
-            <span>
-                Select a species to focus the analysis
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="filter-control">
-
-        <i class="fa-solid fa-paw"></i>
-
-        <select id="speciesFilter"
-                onchange="filterAnalysis()">
-
-            <option value="all">
-                All Species
-            </option>
-
-            {% for species in species_list %}
-
-            <option value="{{ species.specie_Common_Name }}">
-                {{ species.specie_Common_Name }}
-            </option>
-
-            {% endfor %}
-
-        </select>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     AI ECOLOGICAL ANALYSIS
-====================================================== -->
-
-<section class="ai-section">
-
-    <div class="ai-header">
-
-        <div class="ai-header-content">
-
-            <div class="ai-icon">
-
-                <i class="fa-solid fa-brain"></i>
-
+            <div class="hero-icon">
+                <i class="fa-solid fa-leaf"></i>
             </div>
 
             <div>
 
-                <span class="ai-label">
-
-                    ECOLOGICAL INTELLIGENCE
-
+                <span class="hero-label">
+                    CBU NATURE PARK
                 </span>
 
-                <h2>
-
-                    AI Ecological Impact Analysis
-
-                </h2>
+                <h1>
+                    Biodiversity &amp; AI Ecological Analysis
+                </h1>
 
                 <p>
-
-                    Analyse population changes, trophic roles,
-                    ecological relationships and potential food-web effects.
-
+                    Monitor species population changes, identify population
+                    trends, and examine potential ecological relationships
+                    within the CBU Nature Park ecosystem.
                 </p>
 
             </div>
 
         </div>
 
-    </div>
+
+        <div class="hero-actions">
+
+            <a href="{{ url_for('download_report') }}"
+               class="download-btn">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                <span>
+                    Download PDF Report
+                </span>
+
+            </a>
+
+        </div>
+
+    </header>
 
 
+    <!-- =====================================================
+         FILTER BAR
+    ====================================================== -->
 
-    {% if ai_results %}
+    <div class="analysis-toolbar">
 
+        <div class="filter-title">
 
-    <!-- =================================================
-         AI SUMMARY
-    ================================================== -->
-
-    <div class="ai-summary-grid">
-
-
-        <!-- SPECIES ANALYSED -->
-
-        <div class="ai-stat-card">
-
-            <div class="ai-stat-icon blue">
-
-                <i class="fa-solid fa-microscope"></i>
-
+            <div class="toolbar-icon">
+                <i class="fa-solid fa-filter"></i>
             </div>
 
             <div>
 
-                <span>
-                    Species Analysed
-                </span>
-
-                <strong id="aiTotal">
-
-                    {{ ai_results|length }}
-
+                <strong>
+                    Filter Analysis
                 </strong>
+
+                <span>
+                    Select a species to focus the analysis
+                </span>
 
             </div>
 
         </div>
 
 
+        <div class="filter-control">
 
-        <!-- HIGH / CRITICAL -->
+            <i class="fa-solid fa-paw"></i>
 
-        <div class="ai-stat-card">
+            <select id="speciesFilter"
+                    onchange="filterAnalysis()">
 
-            <div class="ai-stat-icon red">
+                <option value="all">
+                    All Species
+                </option>
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
+                {% for species in species_list %}
 
-            </div>
+                <option value="{{ species.specie_Common_Name }}">
+                    {{ species.specie_Common_Name }}
+                </option>
 
-            <div>
+                {% endfor %}
 
-                <span>
-                    High / Critical Impact
-                </span>
-
-                <strong id="aiHighRisk">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- DECLINING -->
-
-        <div class="ai-stat-card">
-
-            <div class="ai-stat-icon orange">
-
-                <i class="fa-solid fa-arrow-trend-down"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    Species Declining
-                </span>
-
-                <strong id="aiDeclining">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- INCREASING -->
-
-        <div class="ai-stat-card">
-
-            <div class="ai-stat-icon green">
-
-                <i class="fa-solid fa-arrow-trend-up"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    Species Increasing
-                </span>
-
-                <strong id="aiIncreasing">
-                    0
-                </strong>
-
-            </div>
+            </select>
 
         </div>
 
     </div>
 
 
+    <!-- =====================================================
+         AI ECOLOGICAL ANALYSIS
+    ====================================================== -->
 
-    <!-- =================================================
-         AI TABLE
-    ================================================== -->
+    <section class="ai-section">
 
-    <div class="ai-data-card">
+        <div class="ai-header">
 
-        <div class="data-card-header">
+            <div class="ai-header-content">
 
-            <div>
+                <div class="ai-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
 
-                <div class="card-title-row">
+                <div>
 
-                    <div class="ai-table-icon">
+                    <span class="ai-label">
+                        ECOLOGICAL INTELLIGENCE
+                    </span>
 
-                        <i class="fa-solid fa-robot"></i>
+                    <h2>
+                        AI Ecological Impact Analysis
+                    </h2>
 
-                    </div>
-
-                    <h3>
-
-                        Ecological Impact Assessment
-
-                    </h3>
+                    <p>
+                        Analyse population changes, trophic roles,
+                        ecological relationships and potential food-web effects.
+                    </p>
 
                 </div>
 
-                <p>
+            </div>
 
-                    AI-generated ecological interpretation based on
-                    approved biodiversity observations.
+        </div>
 
-                </p>
+
+        {% if ai_results %}
+
+        <!-- =================================================
+             AI SUMMARY
+        ================================================== -->
+
+        <div class="ai-summary-grid">
+
+            <!-- SPECIES ANALYSED -->
+
+            <div class="ai-stat-card">
+
+                <div class="ai-stat-icon blue">
+                    <i class="fa-solid fa-microscope"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Species Analysed
+                    </span>
+
+                    <strong id="aiTotal">
+                        {{ ai_results|length }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- HIGH / CRITICAL -->
+
+            <div class="ai-stat-card">
+
+                <div class="ai-stat-icon red">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        High / Critical Impact
+                    </span>
+
+                    <strong id="aiHighRisk">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- DECLINING -->
+
+            <div class="ai-stat-card">
+
+                <div class="ai-stat-icon orange">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Species Declining
+                    </span>
+
+                    <strong id="aiDeclining">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- INCREASING -->
+
+            <div class="ai-stat-card">
+
+                <div class="ai-stat-icon green">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Species Increasing
+                    </span>
+
+                    <strong id="aiIncreasing">
+                        0
+                    </strong>
+
+                </div>
 
             </div>
 
         </div>
 
 
+        <!-- ============================================================
+             LAND SECTION ECOLOGICAL INTELLIGENCE
+        ============================================================ -->
 
-        <div class="ai-table-wrapper">
+        <section class="section-analysis">
 
-            <table class="ai-table">
+            <!-- ========================================================
+                 SECTION HEADER
+            ========================================================= -->
 
-                <thead>
+            <div class="section-analysis-header">
 
-                    <tr>
+                <div class="section-analysis-title">
 
-                        <th>Species</th>
+                    <div class="section-analysis-icon">
+                        <i class="fa-solid fa-tree-city"></i>
+                    </div>
 
-                        <th>Trophic Role</th>
+                    <div>
 
-                        <th>Population</th>
+                        <span class="section-label">
+                            LAND SECTION INTELLIGENCE
+                        </span>
 
-                        <th>Change</th>
+                        <h2>
+                            Section Ecological Analysis
+                        </h2>
 
-                        <th>Impact</th>
+                        <p>
+                            Analyse environmental conditions, biodiversity,
+                            resource pressure and potential ecological effects
+                            for a specific monitoring section.
+                        </p>
 
-                        <th>Ecological Interpretation</th>
+                    </div>
 
-                        <th>Food-Web Effect</th>
-
-                        <th>Affected Species</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                {% for item in ai_results %}
-
-                <tr class="ai-row"
-                    data-species="{{ item.species }}">
+                </div>
 
 
-                    <!-- SPECIES -->
+                <!-- ====================================================
+                     ENVIRONMENTAL SURVEY SELECTOR
+                ===================================================== -->
 
-                    <td>
+                <div class="section-selector">
 
-                        <div class="ai-species">
+                    <label for="environmentalObservationSelect">
+                        Environmental Survey
+                    </label>
 
-                            <div class="ai-species-icon">
+                    <select
+                        id="environmentalObservationSelect"
+                        onchange="loadSectionAnalysis(this.value)"
+                    >
 
-                                <i class="fa-solid fa-paw"></i>
+                        <option value="">
+                            Select a survey
+                        </option>
+
+                        {% for survey in environmental_observations %}
+
+                        <option value="{{ survey.id }}">
+
+                            {% if survey.monitoring_site %}
+                                {{ survey.monitoring_site.name }}
+                            {% else %}
+                                {{ survey.location or "Unknown Section" }}
+                            {% endif %}
+
+                            {% if survey.observation_date %}
+                                — {{ survey.observation_date.strftime('%d %b %Y') }}
+                            {% endif %}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================================
+                 LOADING STATE
+            ========================================================= -->
+
+            <div
+                id="sectionAnalysisLoading"
+                class="section-loading"
+                style="display: none;"
+            >
+
+                <div class="loading-spinner"></div>
+
+                <p>
+                    Analysing land section...
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================
+                 EMPTY STATE
+            ========================================================= -->
+
+            <div
+                id="sectionAnalysisEmpty"
+                class="section-empty"
+            >
+
+                <div class="section-empty-icon">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+
+                <h3>
+                    Select a Monitoring Survey
+                </h3>
+
+                <p>
+                    Select an environmental survey above to view the
+                    ecological condition of its land section.
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================
+                 ANALYSIS CONTENT
+            ========================================================= -->
+
+            <div
+                id="sectionAnalysisContent"
+                style="display: none;"
+            >
+
+                <!-- ====================================================
+                     MONITORING SECTION OVERVIEW
+                ===================================================== -->
+
+                <div class="section-overview-card">
+
+                    <div class="section-overview-information">
+
+                        <span class="overview-label">
+                            MONITORING SECTION
+                        </span>
+
+                        <h2 id="sectionName">
+                            —
+                        </h2>
+
+                        <div class="section-meta">
+
+                            <span>
+
+                                <i class="fa-solid fa-ruler-combined"></i>
+
+                                <strong id="sectionArea">
+                                    —
+                                </strong>
+
+                                ha
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="fa-solid fa-calendar"></i>
+
+                                Survey:
+
+                                <strong id="surveyDate">
+                                    —
+                                </strong>
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                                Previous:
+
+                                <strong id="previousSurveyDate">
+                                    —
+                                </strong>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LAND CONDITION -->
+
+                    <div class="land-condition-display">
+
+                        <span>
+                            LAND CONDITION
+                        </span>
+
+                        <strong id="landCondition">
+                            —
+                        </strong>
+
+                        <small id="landConditionScore">
+                            Score: —
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================================
+                     BIODIVERSITY KPI CARDS
+                ===================================================== -->
+
+                <div class="section-kpi-grid">
+
+                    <!-- SPECIES RICHNESS -->
+
+                    <div class="section-kpi-card">
+
+                        <div class="section-kpi-icon biodiversity">
+                            <i class="fa-solid fa-paw"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Species Richness
+                            </span>
+
+                            <strong id="speciesCount">
+                                —
+                            </strong>
+
+                            <small>
+                                approved species
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL INDIVIDUALS -->
+
+                    <div class="section-kpi-card">
+
+                        <div class="section-kpi-icon population">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Individuals
+                            </span>
+
+                            <strong id="totalIndividuals">
+                                —
+                            </strong>
+
+                            <small>
+                                recorded population
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- POPULATION DENSITY -->
+
+                    <div class="section-kpi-card">
+
+                        <div class="section-kpi-icon density">
+                            <i class="fa-solid fa-chart-column"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Population Density
+                            </span>
+
+                            <strong id="populationDensity">
+                                —
+                            </strong>
+
+                            <small>
+                                individuals / hectare
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SHANNON INDEX -->
+
+                    <div class="section-kpi-card">
+
+                        <div class="section-kpi-icon diversity">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Shannon Index
+                            </span>
+
+                            <strong id="shannonIndex">
+                                —
+                            </strong>
+
+                            <small>
+                                species diversity
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================================
+                     ENVIRONMENTAL CONDITIONS
+                ===================================================== -->
+
+                <div class="analysis-grid">
+
+
+                    <!-- =================================================
+                         WATER CONDITIONS
+                    ================================================== -->
+
+                    <div class="analysis-card water-card">
+
+                        <div class="analysis-card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    WATER CONDITIONS
+                                </span>
+
+                                <h3>
+                                    Water Suitability
+                                </h3>
 
                             </div>
 
-                            <strong>
+                            <i class="fa-solid fa-droplet"></i>
 
-                                {{ item.species }}
+                        </div>
 
+
+                        <!-- BASIC WATER MEASUREMENTS -->
+
+                        <div class="water-metrics">
+
+                            <div class="water-metric">
+
+                                <span>
+                                    Water Quality
+                                </span>
+
+                                <strong id="waterQuality">
+                                    —
+                                </strong>
+
+                            </div>
+
+
+                            <div class="water-metric">
+
+                                <span>
+                                    pH
+                                </span>
+
+                                <strong id="waterPH">
+                                    —
+                                </strong>
+
+                            </div>
+
+
+                            <div class="water-metric">
+
+                                <span>
+                                    Turbidity
+                                </span>
+
+                                <strong id="waterTurbidity">
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- WATER SUITABILITY -->
+
+                        <div class="suitability-grid">
+
+                            <!-- WILDLIFE -->
+
+                            <div class="suitability-box">
+
+                                <span>
+
+                                    <i class="fa-solid fa-paw"></i>
+
+                                    Wildlife
+
+                                </span>
+
+                                <strong id="wildlifeWaterStatus">
+                                    —
+                                </strong>
+
+                                <small id="wildlifeWaterScore">
+                                    Score: —
+                                </small>
+
+                            </div>
+
+
+                            <!-- VEGETATION -->
+
+                            <div class="suitability-box">
+
+                                <span>
+
+                                    <i class="fa-solid fa-leaf"></i>
+
+                                    Vegetation
+
+                                </span>
+
+                                <strong id="vegetationWaterStatus">
+                                    —
+                                </strong>
+
+                                <small id="vegetationWaterScore">
+                                    Score: —
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- WATER PROBLEMS -->
+
+                        <div
+                            id="waterProblems"
+                            class="analysis-notice"
+                            style="display: none;"
+                        >
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CLIMATE
+                    ================================================== -->
+
+                    <div class="analysis-card climate-card">
+
+                        <div class="analysis-card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    CLIMATE
+                                </span>
+
+                                <h3>
+                                    Temperature &amp; Rainfall
+                                </h3>
+
+                            </div>
+
+                            <i class="fa-solid fa-cloud-sun"></i>
+
+                        </div>
+
+
+                        <!-- TEMPERATURE -->
+
+                        <div class="climate-row">
+
+                            <div class="climate-icon temperature">
+                                <i class="fa-solid fa-temperature-half"></i>
+                            </div>
+
+                            <div class="climate-main">
+
+                                <span>
+                                    Temperature
+                                </span>
+
+                                <strong id="currentTemperature">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <div
+                                class="climate-change"
+                                id="temperatureChange"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="effect-box"
+                            id="temperatureEffect"
+                        >
+                            —
+                        </div>
+
+
+                        <!-- RAINFALL -->
+
+                        <div class="climate-row">
+
+                            <div class="climate-icon rainfall">
+                                <i class="fa-solid fa-cloud-rain"></i>
+                            </div>
+
+                            <div class="climate-main">
+
+                                <span>
+                                    Rainfall
+                                </span>
+
+                                <strong id="currentRainfall">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <div
+                                class="climate-change"
+                                id="rainfallChange"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="effect-box"
+                            id="rainfallEffect"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         VEGETATION
+                    ================================================== -->
+
+                    <div class="analysis-card vegetation-card">
+
+                        <div class="analysis-card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    VEGETATION
+                                </span>
+
+                                <h3>
+                                    Vegetation Condition
+                                </h3>
+
+                            </div>
+
+                            <i class="fa-solid fa-seedling"></i>
+
+                        </div>
+
+
+                        <!-- OVERALL VEGETATION CONDITION -->
+
+                        <div class="vegetation-status">
+
+                            <span>
+                                Overall condition
+                            </span>
+
+                            <strong id="vegetationOverall">
+                                —
                             </strong>
 
                         </div>
 
-                    </td>
+
+                        <!-- VEGETATION MEASUREMENTS -->
+
+                        <div class="vegetation-metrics">
+
+                            <div>
+
+                                <span>
+                                    Cover
+                                </span>
+
+                                <strong id="vegetationCover">
+                                    —
+                                </strong>
+
+                            </div>
 
 
+                            <div>
 
-                    <!-- TROPHIC ROLE -->
+                                <span>
+                                    Density
+                                </span>
 
-                    <td>
+                                <strong id="vegetationDensity">
+                                    —
+                                </strong>
 
-                        <span class="role-badge role-{{ item.role }}">
-
-                            {{ item.role|replace("_", " ")|capitalize }}
-
-                        </span>
-
-                    </td>
-
+                            </div>
 
 
-                    <!-- CURRENT POPULATION -->
+                            <div>
 
-                    <td>
+                                <span>
+                                    Grass
+                                </span>
 
-                        <strong>
+                                <strong id="grassAvailability">
+                                    —
+                                </strong>
 
-                            {{ item.current_population|round(1) }}
-
-                        </strong>
-
-                    </td>
+                            </div>
 
 
+                            <div>
 
-                    <!-- PERCENTAGE CHANGE -->
+                                <span>
+                                    Trees
+                                </span>
 
-                    <td>
+                                <strong id="treeDensity">
+                                    —
+                                </strong>
 
-                        {% if item.percentage_change is not none %}
+                            </div>
 
-                            {% if item.percentage_change > 0 %}
+                        </div>
 
-                            <span class="change positive">
 
-                                <i class="fa-solid fa-arrow-up"></i>
+                        <!-- VEGETATION CHANGE -->
 
-                                {{ item.percentage_change }}%
+                        <div class="vegetation-change-list">
 
+                            <div>
+
+                                <span>
+                                    Declining indicators
+                                </span>
+
+                                <strong id="vegetationDeclining">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Increasing indicators
+                                </span>
+
+                                <strong id="vegetationIncreasing">
+                                    0
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         RESOURCE PRESSURE
+                    ================================================== -->
+
+                    <div class="analysis-card pressure-card">
+
+                        <div class="analysis-card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    RESOURCE PRESSURE
+                                </span>
+
+                                <h3>
+                                    Section Pressure
+                                </h3>
+
+                            </div>
+
+                            <i class="fa-solid fa-gauge-high"></i>
+
+                        </div>
+
+
+                        <div class="pressure-display">
+
+                            <div class="pressure-score">
+
+                                <strong id="pressureScore">
+                                    —
+                                </strong>
+
+                                <span>
+                                    points
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Recorded pressure
+                                </span>
+
+                                <strong id="pressureLevel">
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PRESSURE REASONS -->
+
+                        <div
+                            id="pressureReasons"
+                            class="reason-list"
+                        >
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================================
+                     LAND IMPACT / ECOLOGICAL CONDITION
+                ===================================================== -->
+
+                <div class="land-impact-card">
+
+                    <div class="land-impact-header">
+
+                        <div class="impact-icon">
+                            <i class="fa-solid fa-earth-africa"></i>
+                        </div>
+
+                        <div>
+
+                            <span class="card-label">
+                                ECOLOGICAL CONDITION
                             </span>
 
-                            {% elif item.percentage_change < 0 %}
+                            <h3>
+                                Land Section Impact Assessment
+                            </h3>
 
-                            <span class="change negative">
+                            <p>
+                                Recorded environmental pressures and
+                                biodiversity conditions affecting this section.
+                            </p>
 
-                                <i class="fa-solid fa-arrow-down"></i>
+                        </div>
 
-                                {{ item.percentage_change }}%
+                    </div>
 
+
+                    <div class="land-impact-body">
+
+
+                        <!-- IMPACT CONDITION -->
+
+                        <div class="impact-condition">
+
+                            <span>
+                                Overall condition
                             </span>
+
+                            <strong id="impactCondition">
+                                —
+                            </strong>
+
+
+                            <div class="impact-score-bar">
+
+                                <div
+                                    id="impactScoreBar"
+                                    class="impact-score-fill"
+                                    style="width: 0%;"
+                                >
+                                </div>
+
+                            </div>
+
+
+                            <small>
+
+                                Impact score:
+
+                                <strong id="impactScore">
+                                    —
+                                </strong>
+
+                            </small>
+
+                        </div>
+
+
+                        <!-- CONTRIBUTING FACTORS -->
+
+                        <div class="impact-factors">
+
+                            <h4>
+                                Recorded contributing factors
+                            </h4>
+
+                            <ul id="impactFactors">
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================================
+                     SPECIES RECORDED IN THIS SECTION
+                ===================================================== -->
+
+                <div class="species-section-card">
+
+                    <div class="analysis-card-header">
+
+                        <div>
+
+                            <span class="card-label">
+                                BIODIVERSITY
+                            </span>
+
+                            <h3>
+                                Species Recorded in This Section
+                            </h3>
+
+                        </div>
+
+                        <i class="fa-solid fa-binoculars"></i>
+
+                    </div>
+
+
+                    <div
+                        id="sectionSpeciesList"
+                        class="section-species-list"
+                    >
+                        <!-- JavaScript inserts species here -->
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AI TABLE
+        ================================================== -->
+
+        <div class="ai-data-card">
+
+            <div class="data-card-header">
+
+                <div>
+
+                    <div class="card-title-row">
+
+                        <div class="ai-table-icon">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+
+                        <h3>
+                            Ecological Impact Assessment
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        AI-generated ecological interpretation based on
+                        approved biodiversity observations.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ai-table-wrapper">
+
+                <table class="ai-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Species
+                            </th>
+
+                            <th>
+                                Trophic Role
+                            </th>
+
+                            <th>
+                                Population
+                            </th>
+
+                            <th>
+                                Impact
+                            </th>
+
+                            <th>
+                                Ecological Interpretation
+                            </th>
+
+                            <th>
+                                Food-Web Effect
+                            </th>
+
+                            <th>
+                                Affected Species
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for item in ai_results %}
+
+                    <tr
+                        class="ai-row"
+                        data-species="{{ item.species }}"
+                    >
+
+                        <!-- SPECIES -->
+
+                        <td>
+
+                            <div class="ai-species">
+
+                                <div class="ai-species-icon">
+                                    <i class="fa-solid fa-paw"></i>
+                                </div>
+
+                                <strong>
+                                    {{ item.species }}
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- TROPHIC ROLE -->
+
+                        <td>
+
+                            <span
+                                class="role-badge role-{{ item.role }}"
+                            >
+                                {{ item.role|replace('_', ' ')|capitalize }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- CURRENT POPULATION -->
+
+                        <td>
+
+                            <strong>
+                                {{ item.current_population|round(1) }}
+                            </strong>
+
+                        </td>
+
+
+                        
+
+
+                        <!-- IMPACT -->
+
+                        <td>
+
+                            <span
+                                class="impact-badge impact-{{ item.impact_level }}"
+                            >
+                                {{ item.impact_label }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- ECOLOGICAL INTERPRETATION -->
+
+                        <td>
+
+                            <div class="ai-insight">
+
+                                <i class="fa-solid fa-circle-info"></i>
+
+                                <span>
+                                    {{ item.reason }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- FOOD WEB -->
+
+                        <td>
+
+                            <div class="ai-effect">
+
+                                <i class="fa-solid fa-diagram-project"></i>
+
+                                <span>
+                                    {{ item.downstream_effect }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- AFFECTED SPECIES -->
+
+                        <td>
+
+                            {% if item.affected_species %}
+
+                            <div class="affected-list">
+
+                                {% for affected in item.affected_species %}
+
+                                <span class="affected-tag">
+                                    {{ affected }}
+                                </span>
+
+                                {% endfor %}
+
+                            </div>
 
                             {% else %}
 
-                            <span class="change neutral">
-
-                                <i class="fa-solid fa-minus"></i>
-
-                                0%
-
+                            <span class="no-mapping">
+                                No mapped species
                             </span>
 
                             {% endif %}
 
-                        {% else %}
+                        </td>
 
-                            <span class="change neutral">
+                    </tr>
 
-                                N/A
+                    {% endfor %}
 
-                            </span>
+                    </tbody>
 
-                        {% endif %}
-
-                    </td>
-
-
-
-                    <!-- IMPACT -->
-
-                    <td>
-
-                        <span class="impact-badge impact-{{ item.impact_level }}">
-
-                            {{ item.impact_label }}
-
-                        </span>
-
-                    </td>
-
-
-
-                    <!-- ECOLOGICAL INTERPRETATION -->
-
-                    <td>
-
-                        <div class="ai-insight">
-
-                            <i class="fa-solid fa-circle-info"></i>
-
-                            <span>
-
-                                {{ item.reason }}
-
-                            </span>
-
-                        </div>
-
-                    </td>
-
-
-
-                    <!-- FOOD WEB -->
-
-                    <td>
-
-                        <div class="ai-effect">
-
-                            <i class="fa-solid fa-diagram-project"></i>
-
-                            <span>
-
-                                {{ item.downstream_effect }}
-
-                            </span>
-
-                        </div>
-
-                    </td>
-
-
-
-                    <!-- AFFECTED SPECIES -->
-
-                    <td>
-
-                        {% if item.affected_species %}
-
-                        <div class="affected-list">
-
-                            {% for affected in item.affected_species %}
-
-                            <span class="affected-tag">
-
-                                {{ affected }}
-
-                            </span>
-
-                            {% endfor %}
-
-                        </div>
-
-                        {% else %}
-
-                        <span class="no-mapping">
-
-                            No mapped species
-
-                        </span>
-
-                        {% endif %}
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-    {% else %}
-
-    <div class="ai-empty-state">
-
-        <div class="ai-empty-icon">
-
-            <i class="fa-solid fa-brain"></i>
-
-        </div>
-
-        <h3>
-
-            AI Analysis Not Available
-
-        </h3>
-
-        <p>
-
-            There are currently not enough approved observations
-            to generate the ecological impact analysis.
-
-        </p>
-
-        <p>
-
-            Add approved species observations and return to this
-            page to generate the analysis.
-
-        </p>
-
-    </div>
-
-    {% endif %}
-
-</section>
-
-
-
-<!-- =====================================================
-     POPULATION TREND CHARTS
-====================================================== -->
-
-<section class="trends-section">
-
-    <div class="section-header">
-
-        <div>
-
-            <div class="section-label">
-
-                <i class="fa-solid fa-chart-line"></i>
-
-                HISTORICAL MONITORING
+                </table>
 
             </div>
 
-            <h2>
+        </div>
 
-                Species Population Trends
 
-            </h2>
+        {% else %}
+
+        <div class="ai-empty-state">
+
+            <div class="ai-empty-icon">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+
+            <h3>
+                AI Analysis Not Available
+            </h3>
 
             <p>
+                There are currently not enough approved observations
+                to generate the ecological impact analysis.
+            </p>
 
-                Historical population observations recorded
-                for each species.
-
+            <p>
+                Add approved species observations and return to this
+                page to generate the analysis.
             </p>
 
         </div>
 
-    </div>
+        {% endif %}
+
+    </section>
+    
 
 
+    <!-- =====================================================
+         POPULATION TREND CHARTS
+    ====================================================== -->
 
-    <div class="chart-grid">
+    <section class="trends-section">
 
-        {% for item in trend_data %}
+        <div class="section-header">
 
-        <div class="chart-card"
-             data-chart-species="{{ item.name }}">
+            <div>
 
-            <div class="chart-header">
-
-                <div>
-
-                    <h3>
-
-                        {{ item.name }}
-
-                    </h3>
-
-                    <span>
-
-                        Population history
-
-                    </span>
-
-                </div>
-
-                <div class="chart-icon">
+                <div class="section-label">
 
                     <i class="fa-solid fa-chart-line"></i>
 
+                    HISTORICAL MONITORING
+
                 </div>
 
-            </div>
-
-
-
-            {% if item.dates %}
-
-            <div class="canvas-container">
-
-                <canvas id="chart-{{ loop.index }}"></canvas>
-
-            </div>
-
-            {% else %}
-
-            <div class="chart-no-data">
-
-                <i class="fa-solid fa-chart-column"></i>
+                <h2>
+                    Species Population Trends
+                </h2>
 
                 <p>
-
-                    No observations recorded yet.
-
+                    Historical population observations recorded
+                    for each species.
                 </p>
 
             </div>
 
-            {% endif %}
+        </div>
+
+
+        <div class="chart-grid">
+
+            {% for item in trend_data %}
+
+            <div
+                class="chart-card"
+                data-chart-species="{{ item.name }}"
+            >
+
+                <div class="chart-header">
+
+                    <div>
+
+                        <h3>
+                            {{ item.name }}
+                        </h3>
+
+                        <span>
+                            Population history
+                        </span>
+
+                    </div>
+
+                    <div class="chart-icon">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                    </div>
+
+                </div>
+
+
+                {% if item.dates %}
+
+                <div class="canvas-container">
+
+                    <canvas id="chart-{{ loop.index }}"></canvas>
+
+                </div>
+
+                {% else %}
+
+                <div class="chart-no-data">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <p>
+                        No observations recorded yet.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
 
         </div>
 
-        {% endfor %}
+    </section>
+
+
+    <!-- =====================================================
+         BACK BUTTON
+    ====================================================== -->
+
+    <div class="analysis-footer">
+
+        <button
+            type="button"
+            onclick="window.location.href='{{ url_for('back') }}'"
+            class="back-btn"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back
+
+        </button>
 
     </div>
 
-</section>
-
-
-
-<!-- =====================================================
-     BACK BUTTON
-====================================================== -->
-
-<div class="analysis-footer">
-
-    <button
-        onclick="window.location.href='{{ url_for('back') }}'"
-        class="back-btn">
-
-        <i class="fa-solid fa-arrow-left"></i>
-
-        Back
-
-    </button>
-
 </div>
-```
 
-</div>
 
 <!-- =========================================================
      CHART.JS
 ========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 <script>
 
@@ -743,129 +1547,1250 @@ const aiData = {{ ai_results | tojson }};
 
 
 /* =========================================================
+   SECTION ECOLOGICAL ANALYSIS
+========================================================= */
+
+async function loadSectionAnalysis(environmentalObservationId) {
+
+    const emptyState =
+        document.getElementById("sectionAnalysisEmpty");
+
+    const loading =
+        document.getElementById("sectionAnalysisLoading");
+
+    const content =
+        document.getElementById("sectionAnalysisContent");
+
+
+    if (!environmentalObservationId) {
+
+        emptyState.style.display = "";
+        loading.style.display = "none";
+        content.style.display = "none";
+
+        return;
+    }
+
+
+    emptyState.style.display = "none";
+    content.style.display = "none";
+    loading.style.display = "flex";
+
+
+    try {
+
+        const response = await fetch(
+            `/api/section/${encodeURIComponent(environmentalObservationId)}/analysis`
+        );
+
+
+        const result = await response.json();
+
+
+        if (!response.ok || !result.success) {
+
+            throw new Error(
+                result.error ||
+                "Unable to analyse this section."
+            );
+
+        }
+
+
+        renderSectionAnalysis(result.data);
+
+
+    } catch (error) {
+
+        console.error(
+            "Section analysis error:",
+            error
+        );
+
+
+        emptyState.innerHTML = `
+
+            <div class="section-empty-icon error">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+            <h3>
+                Analysis Unavailable
+            </h3>
+
+            <p>
+                ${escapeHtml(error.message)}
+            </p>
+
+        `;
+
+
+        emptyState.style.display = "";
+
+
+    } finally {
+
+        loading.style.display = "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER COMPLETE SECTION ANALYSIS
+========================================================= */
+
+function renderSectionAnalysis(data) {
+
+    const section =
+        data.section || {};
+
+    const survey =
+        data.survey || {};
+
+    const water =
+        data.water || {};
+
+    const temperature =
+        data.temperature || {};
+
+    const rainfall =
+        data.rainfall || {};
+
+    const vegetation =
+        data.vegetation || {};
+
+    const biodiversity =
+        data.biodiversity || {};
+
+    const pressure =
+        data.resource_pressure || {};
+
+    const impact =
+        data.land_impact || {};
+
+
+    /* =====================================================
+       SECTION
+    ===================================================== */
+
+    setText(
+        "sectionName",
+        section.name || "Unknown Section"
+    );
+
+
+    setText(
+        "sectionArea",
+        formatNumber(section.area_hectares)
+    );
+
+
+    setText(
+        "surveyDate",
+        formatDate(survey.date)
+    );
+
+
+    setText(
+        "previousSurveyDate",
+        formatDate(survey.previous_survey_date)
+    );
+
+
+    /* =====================================================
+       LAND CONDITION
+    ===================================================== */
+
+    setText(
+        "landCondition",
+        impact.condition || "Unknown"
+    );
+
+
+    setText(
+        "landConditionScore",
+        `Score: ${impact.score ?? "N/A"}`
+    );
+
+
+    /* =====================================================
+       BIODIVERSITY
+    ===================================================== */
+
+    setText(
+        "speciesCount",
+        biodiversity.species_count ?? 0
+    );
+
+
+    setText(
+        "totalIndividuals",
+        formatNumber(
+            biodiversity.total_individuals
+        )
+    );
+
+
+    setText(
+        "populationDensity",
+        biodiversity.density !== null &&
+        biodiversity.density !== undefined
+            ? formatNumber(biodiversity.density)
+            : "N/A"
+    );
+
+
+    setText(
+        "shannonIndex",
+        biodiversity.shannon_index ?? "N/A"
+    );
+
+
+    /* =====================================================
+       WATER
+    ===================================================== */
+
+    setText(
+        "waterQuality",
+        formatNumber(water.quality)
+    );
+
+
+    setText(
+        "waterPH",
+        formatNumber(water.ph)
+    );
+
+
+    setText(
+        "waterTurbidity",
+        formatNumber(water.turbidity)
+    );
+
+
+    const wildlife =
+        water.wildlife || {};
+
+    const waterVegetation =
+        water.vegetation || {};
+
+
+    setText(
+        "wildlifeWaterStatus",
+        wildlife.status || "Unknown"
+    );
+
+
+    setText(
+        "wildlifeWaterScore",
+        `Score: ${
+            wildlife.score !== null &&
+            wildlife.score !== undefined
+                ? wildlife.score
+                : "N/A"
+        }`
+    );
+
+
+    setText(
+        "vegetationWaterStatus",
+        waterVegetation.status || "Unknown"
+    );
+
+
+    setText(
+        "vegetationWaterScore",
+        `Score: ${
+            waterVegetation.score !== null &&
+            waterVegetation.score !== undefined
+                ? waterVegetation.score
+                : "N/A"
+        }`
+    );
+
+
+    renderWaterProblems(
+        water.problems || []
+    );
+
+
+    /* =====================================================
+       TEMPERATURE
+    ===================================================== */
+
+    setText(
+        "currentTemperature",
+        formatMeasurement(
+            temperature.current,
+            "°C"
+        )
+    );
+
+
+    setChangeDisplay(
+        "temperatureChange",
+        temperature.change,
+        temperature.direction
+    );
+
+
+    const tempEffect =
+        temperature.effect || {};
+
+
+    setText(
+        "temperatureEffect",
+        tempEffect.effect || "Unknown"
+    );
+
+
+    /* =====================================================
+       RAINFALL
+    ===================================================== */
+
+    setText(
+        "currentRainfall",
+        formatMeasurement(
+            rainfall.current,
+            " mm"
+        )
+    );
+
+
+    setChangeDisplay(
+        "rainfallChange",
+        rainfall.change,
+        rainfall.direction
+    );
+
+
+    const rainfallEffect =
+        rainfall.effect || {};
+
+
+    setText(
+        "rainfallEffect",
+        rainfallEffect.effect || "Unknown"
+    );
+
+
+    /* =====================================================
+       VEGETATION
+    ===================================================== */
+
+    setText(
+        "vegetationOverall",
+        vegetation.overall || "Unknown"
+    );
+
+
+    const measurements =
+        vegetation.measurements || {};
+
+
+    setText(
+        "vegetationCover",
+        formatNumber(
+            measurements.vegetation_cover?.current
+        )
+    );
+
+
+    setText(
+        "vegetationDensity",
+        formatNumber(
+            measurements.vegetation_density?.current
+        )
+    );
+
+
+    setText(
+        "grassAvailability",
+        formatNumber(
+            measurements.grass_availability?.current
+        )
+    );
+
+
+    setText(
+        "treeDensity",
+        formatNumber(
+            measurements.tree_density?.current
+        )
+    );
+
+
+    setText(
+        "vegetationDeclining",
+        Array.isArray(vegetation.declining)
+            ? vegetation.declining.length
+            : 0
+    );
+
+
+    setText(
+        "vegetationIncreasing",
+        Array.isArray(vegetation.increasing)
+            ? vegetation.increasing.length
+            : 0
+    );
+
+
+    /* =====================================================
+       RESOURCE PRESSURE
+    ===================================================== */
+
+    setText(
+        "pressureScore",
+        pressure.score ?? 0
+    );
+
+
+    setText(
+        "pressureLevel",
+        pressure.pressure || "Unknown"
+    );
+
+
+    renderPressureReasons(
+        Array.isArray(pressure.reasons)
+            ? pressure.reasons
+            : []
+    );
+
+
+    /* =====================================================
+       LAND IMPACT
+    ===================================================== */
+
+    setText(
+        "impactCondition",
+        impact.condition || "Unknown"
+    );
+
+
+    setText(
+        "impactScore",
+        impact.score ?? 0
+    );
+
+
+    renderImpactScore(
+        impact.score ?? 0
+    );
+
+
+    renderImpactFactors(
+        Array.isArray(impact.factors)
+            ? impact.factors
+            : []
+    );
+
+
+    /* =====================================================
+       SPECIES
+    ===================================================== */
+
+    renderSpeciesList(
+        Array.isArray(biodiversity.species)
+            ? biodiversity.species
+            : []
+    );
+
+
+    /* =====================================================
+       DISPLAY
+    ===================================================== */
+
+    document.getElementById(
+        "sectionAnalysisContent"
+    ).style.display = "";
+
+
+    /* =====================================================
+       UPDATE STATUS CLASSES
+    ===================================================== */
+
+    updateStatusClass(
+        "wildlifeWaterStatus",
+        wildlife.status
+    );
+
+
+    updateStatusClass(
+        "vegetationWaterStatus",
+        waterVegetation.status
+    );
+
+
+    updateStatusClass(
+        "vegetationOverall",
+        vegetation.overall
+    );
+
+
+    updateStatusClass(
+        "pressureLevel",
+        pressure.pressure
+    );
+
+
+    updateStatusClass(
+        "impactCondition",
+        impact.condition
+    );
+
+}
+
+
+/* =========================================================
+   WATER PROBLEMS
+========================================================= */
+
+function renderWaterProblems(problems) {
+
+    const container =
+        document.getElementById(
+            "waterProblems"
+        );
+
+
+    if (!problems.length) {
+
+        container.style.display = "none";
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <strong>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Recorded water concerns
+
+        </strong>
+
+        <ul>
+
+            ${problems.map(problem => `
+
+                <li>
+                    ${escapeHtml(problem)}
+                </li>
+
+            `).join("")}
+
+        </ul>
+
+    `;
+
+
+    container.style.display = "";
+
+}
+
+
+/* =========================================================
+   RESOURCE PRESSURE
+========================================================= */
+
+function renderPressureReasons(reasons) {
+
+    const container =
+        document.getElementById(
+            "pressureReasons"
+        );
+
+
+    if (!reasons.length) {
+
+        container.innerHTML = `
+
+            <div class="reason-item neutral">
+
+                <i class="fa-solid fa-check"></i>
+
+                No specific pressure factors recorded.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = reasons.map(
+        reason => `
+
+            <div class="reason-item">
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <span>
+                    ${escapeHtml(reason)}
+                </span>
+
+            </div>
+
+        `
+    ).join("");
+
+}
+
+
+/* =========================================================
+   LAND IMPACT FACTORS
+========================================================= */
+
+function renderImpactFactors(factors) {
+
+    const container =
+        document.getElementById(
+            "impactFactors"
+        );
+
+
+    if (!factors.length) {
+
+        container.innerHTML = `
+
+            <li>
+
+                <i class="fa-solid fa-check"></i>
+
+                No specific environmental pressure factors recorded.
+
+            </li>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = factors.map(
+        factor => `
+
+            <li>
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <span>
+                    ${escapeHtml(factor)}
+                </span>
+
+            </li>
+
+        `
+    ).join("");
+
+}
+
+
+/* =========================================================
+   SPECIES LIST
+========================================================= */
+
+function renderSpeciesList(species) {
+
+    const container =
+        document.getElementById(
+            "sectionSpeciesList"
+        );
+
+
+    if (!species.length) {
+
+        container.innerHTML = `
+
+            <div class="species-empty">
+
+                <i class="fa-solid fa-paw"></i>
+
+                <p>
+                    No approved species observations were
+                    recorded for this survey.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = species.map(
+        name => `
+
+            <div class="species-tag">
+
+                <i class="fa-solid fa-leaf"></i>
+
+                <span>
+                    ${escapeHtml(name)}
+                </span>
+
+            </div>
+
+        `
+    ).join("");
+
+}
+
+
+/* =========================================================
+   SCORE BAR
+========================================================= */
+
+function renderImpactScore(score) {
+
+    const bar =
+        document.getElementById(
+            "impactScoreBar"
+        );
+
+
+    if (!bar) {
+        return;
+    }
+
+
+    const numericScore = Number(score);
+
+
+    if (Number.isNaN(numericScore)) {
+
+        bar.style.width = "0%";
+
+        return;
+
+    }
+
+
+    /*
+     * The backend score is not a percentage.
+     * The visual bar is capped at 100%.
+     */
+
+    const visualScore =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                numericScore * 10
+            )
+        );
+
+
+    bar.style.width =
+        `${visualScore}%`;
+
+}
+
+
+/* =========================================================
+   CHANGE DISPLAY
+========================================================= */
+
+function setChangeDisplay(
+    elementId,
+    change,
+    direction
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    if (
+        change === null ||
+        change === undefined ||
+        change === ""
+    ) {
+
+        element.textContent =
+            "No previous record";
+
+        element.className =
+            "climate-change neutral";
+
+        return;
+
+    }
+
+
+    const numericChange =
+        Number(change);
+
+
+    if (Number.isNaN(numericChange)) {
+
+        element.textContent =
+            "N/A";
+
+        element.className =
+            "climate-change neutral";
+
+        return;
+
+    }
+
+
+    let icon =
+        "fa-minus";
+
+    let className =
+        "neutral";
+
+
+    if (numericChange > 0) {
+
+        icon =
+            "fa-arrow-up";
+
+        className =
+            "increase";
+
+    } else if (numericChange < 0) {
+
+        icon =
+            "fa-arrow-down";
+
+        className =
+            "decrease";
+
+    }
+
+
+    element.className =
+        `climate-change ${className}`;
+
+
+    element.innerHTML = `
+
+        <i class="fa-solid ${icon}"></i>
+
+        ${Math.abs(numericChange).toFixed(2)}
+
+        <small>
+            ${escapeHtml(direction || "")}
+        </small>
+
+    `;
+
+}
+
+
+/* =========================================================
+   STATUS CLASSES
+========================================================= */
+
+function updateStatusClass(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.classList.remove(
+        "status-good",
+        "status-warning",
+        "status-danger",
+        "status-neutral"
+    );
+
+
+    const text =
+        String(value || "")
+            .trim()
+            .toLowerCase();
+
+
+    if (!text) {
+
+        element.classList.add(
+            "status-neutral"
+        );
+
+        return;
+
+    }
+
+
+    if (
+
+        text === "suitable" ||
+
+        text.includes("suitable") ||
+
+        text === "increasing" ||
+
+        text.includes("increasing") ||
+
+        text.includes("low recorded") ||
+
+        text === "stable" ||
+
+        text.includes("stable")
+
+    ) {
+
+        element.classList.add(
+            "status-good"
+        );
+
+    } else if (
+
+        text.includes("marginal") ||
+
+        text.includes("moderate") ||
+
+        text.includes("some decline") ||
+
+        text.includes("some pressure")
+
+    ) {
+
+        element.classList.add(
+            "status-warning"
+        );
+
+    } else if (
+
+        text === "unsuitable" ||
+
+        text.includes("unsuitable") ||
+
+        text.includes("very high") ||
+
+        text.includes("high") ||
+
+        text.includes("declining")
+
+    ) {
+
+        element.classList.add(
+            "status-danger"
+        );
+
+    } else {
+
+        element.classList.add(
+            "status-neutral"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function setText(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+
+    if (element) {
+
+        element.textContent =
+            value ?? "N/A";
+
+    }
+
+}
+
+
+function formatNumber(value) {
+
+    if (
+
+        value === null ||
+
+        value === undefined ||
+
+        value === ""
+
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+
+        return "N/A";
+
+    }
+
+
+    return number.toLocaleString(
+        undefined,
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+function formatMeasurement(
+    value,
+    unit
+) {
+
+    if (
+
+        value === null ||
+
+        value === undefined ||
+
+        value === ""
+
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    return `${formatNumber(value)}${unit}`;
+
+}
+
+
+function formatDate(value) {
+
+    if (!value) {
+        return "N/A";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        value ?? "";
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
    CREATE POPULATION TREND CHARTS
 ========================================================= */
 
 trendData.forEach((item, index) => {
 
-    if (!item.dates || item.dates.length === 0) {
+    if (
+        !item.dates ||
+        item.dates.length === 0
+    ) {
         return;
     }
 
-    const canvas = document.getElementById(
-        `chart-${index + 1}`
-    );
+
+    const canvas =
+        document.getElementById(
+            `chart-${index + 1}`
+        );
+
 
     if (!canvas) {
         return;
     }
 
-    new Chart(canvas, {
 
-        type: "line",
+    new Chart(
+        canvas,
+        {
 
-        data: {
+            type: "line",
 
-            labels: item.dates,
+            data: {
 
-            datasets: [{
+                labels: item.dates,
 
-                label: "Population Count",
+                datasets: [{
 
-                data: item.counts,
+                    label:
+                        "Population Count",
 
-                borderColor: "#176b3a",
+                    data:
+                        item.counts,
 
-                backgroundColor: "rgba(23, 107, 58, 0.08)",
+                    borderColor:
+                        "#176b3a",
 
-                borderWidth: 2,
+                    backgroundColor:
+                        "rgba(23, 107, 58, 0.08)",
 
-                pointRadius: 4,
+                    borderWidth:
+                        2,
 
-                pointHoverRadius: 6,
+                    pointRadius:
+                        4,
 
-                fill: true,
+                    pointHoverRadius:
+                        6,
 
-                tension: 0.3
+                    fill:
+                        true,
 
-            }]
+                    tension:
+                        0.3
 
-        },
-
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            interaction: {
-
-                mode: "index",
-
-                intersect: false
+                }]
 
             },
 
 
-            plugins: {
+            options: {
 
-                legend: {
+                responsive:
+                    true,
 
-                    display: false
+                maintainAspectRatio:
+                    false,
+
+
+                interaction: {
+
+                    mode:
+                        "index",
+
+                    intersect:
+                        false
 
                 },
 
-                tooltip: {
 
-                    callbacks: {
+                plugins: {
 
-                        label: function(context) {
+                    legend: {
 
-                            return (
-                                " Population: "
-                                + context.parsed.y
-                            );
+                        display:
+                            false
+
+                    },
+
+
+                    tooltip: {
+
+                        callbacks: {
+
+                            label:
+                                function(context) {
+
+                                    return (
+                                        " Population: " +
+                                        context.parsed.y
+                                    );
+
+                                }
 
                         }
 
                     }
 
-                }
-
-            },
-
-
-            scales: {
-
-                x: {
-
-                    grid: {
-
-                        display: false
-
-                    },
-
-                    title: {
-
-                        display: true,
-
-                        text: "Observation Date"
-
-                    }
-
                 },
 
 
-                y: {
+                scales: {
 
-                    beginAtZero: true,
+                    x: {
 
-                    title: {
+                        grid: {
+                            display: false
+                        },
 
-                        display: true,
+                        title: {
 
-                        text: "Population Count"
+                            display: true,
+
+                            text:
+                                "Observation Date"
+
+                        }
+
+                    },
+
+
+                    y: {
+
+                        beginAtZero:
+                            true,
+
+                        title: {
+
+                            display: true,
+
+                            text:
+                                "Population Count"
+
+                        }
 
                     }
 
@@ -874,11 +2799,9 @@ trendData.forEach((item, index) => {
             }
 
         }
-
-    });
+    );
 
 });
-
 
 
 /* =========================================================
@@ -887,10 +2810,19 @@ trendData.forEach((item, index) => {
 
 function filterAnalysis() {
 
-    const selected =
+    const filter =
         document.getElementById(
             "speciesFilter"
-        ).value;
+        );
+
+
+    if (!filter) {
+        return;
+    }
+
+
+    const selected =
+        filter.value;
 
 
     const rows =
@@ -902,12 +2834,15 @@ function filterAnalysis() {
     rows.forEach(row => {
 
         const species =
-            row.dataset.species;
+            row.dataset.species || "";
 
 
         if (
+
             selected === "all" ||
+
             species === selected
+
         ) {
 
             row.style.display = "";
@@ -930,12 +2865,15 @@ function filterAnalysis() {
     charts.forEach(chart => {
 
         const species =
-            chart.dataset.chartSpecies;
+            chart.dataset.chartSpecies || "";
 
 
         if (
+
             selected === "all" ||
+
             species === selected
+
         ) {
 
             chart.style.display = "";
@@ -948,100 +2886,123 @@ function filterAnalysis() {
 
     });
 
-}
 
+    /*
+     * Keep the AI summary synchronized with
+     * the selected species.
+     */
 
-
-/* =========================================================
-   SEARCH SPECIES
-========================================================= */
-
-function searchSpecies() {
-
-    const search =
-        document.getElementById(
-            "speciesSearch"
-        ).value
-        .toLowerCase()
-        .trim();
-
-
-    const rows =
-        document.querySelectorAll(
-            ".analysis-row, .ai-row"
-        );
-
-
-    rows.forEach(row => {
-
-        const species =
-            row.dataset.species
-            .toLowerCase();
-
-
-        if (
-            species.includes(search)
-        ) {
-
-            row.style.display = "";
-
-        } else {
-
-            row.style.display = "none";
-
-        }
-
-    });
-
-
-    const charts =
-        document.querySelectorAll(
-            ".chart-card"
-        );
-
-
-    charts.forEach(chart => {
-
-        const species =
-            chart.dataset.chartSpecies
-            .toLowerCase();
-
-
-        chart.style.display =
-            species.includes(search)
-                ? ""
-                : "none";
-
-    });
+    updateAISummary(selected);
 
 }
-
 
 
 /* =========================================================
    AI SUMMARY
 ========================================================= */
 
-function updateAISummary() {
+function updateAISummary(
+    selectedSpecies = "all"
+) {
 
-    let highRisk = 0;
+    let highRisk =
+        0;
 
-    let declining = 0;
+    let declining =
+        0;
 
-    let increasing = 0;
+    let increasing =
+        0;
+
+    let total =
+        0;
 
 
     aiData.forEach(item => {
 
+        const species =
+            String(
+                item.species || ""
+            );
+
+
+        if (
+
+            selectedSpecies !== "all" &&
+
+            species !== selectedSpecies
+
+        ) {
+
+            return;
+
+        }
+
+
+        total++;
+
 
         /*
-         * AI IMPACT LEVEL
-         *
-         * This belongs to the AI ecological analysis.
+         * Convert numeric impact levels safely.
+         */
+
+        let impactLevel =
+            Number(item.impact_level);
+
+
+        /*
+         * Also support textual impact levels
+         * if the backend returns them.
          */
 
         if (
-            Number(item.impact_level) >= 3
+            Number.isNaN(impactLevel)
+        ) {
+
+            const impactText =
+                String(
+                    item.impact_level ||
+                    ""
+                )
+                .toLowerCase()
+                .trim();
+
+
+            const impactMap = {
+
+                low: 1,
+
+                stable: 1,
+
+                slight: 1,
+
+                "slight disturbance": 1,
+
+                moderate: 2,
+
+                "moderate risk": 2,
+
+                high: 3,
+
+                "high risk": 3,
+
+                critical: 4
+
+            };
+
+
+            impactLevel =
+                impactMap[impactText] || 0;
+
+        }
+
+
+        /*
+         * High / Critical
+         */
+
+        if (
+            impactLevel >= 3
         ) {
 
             highRisk++;
@@ -1050,73 +3011,84 @@ function updateAISummary() {
 
 
         /*
-         * AI POPULATION CHANGE
-         *
-         * IMPORTANT:
-         * Use percentage_change, not percent_change.
+         * Population change
          */
 
         if (
+
             item.percentage_change !== null &&
-            Number(item.percentage_change) < 0
+
+            item.percentage_change !== undefined
+
         ) {
 
-            declining++;
+            const change =
+                Number(
+                    item.percentage_change
+                );
 
-        }
 
+            if (
+                !Number.isNaN(change)
+            ) {
 
-        if (
-            item.percentage_change !== null &&
-            Number(item.percentage_change) > 0
-        ) {
+                if (
+                    change < 0
+                ) {
 
-            increasing++;
+                    declining++;
+
+                } else if (
+                    change > 0
+                ) {
+
+                    increasing++;
+
+                }
+
+            }
 
         }
 
     });
 
 
-    const highRiskElement =
-        document.getElementById(
-            "aiHighRisk"
-        );
+    setText(
+        "aiTotal",
+        total
+    );
 
 
-    const decliningElement =
-        document.getElementById(
-            "aiDeclining"
-        );
+    setText(
+        "aiHighRisk",
+        highRisk
+    );
 
 
-    const increasingElement =
-        document.getElementById(
-            "aiIncreasing"
-        );
+    setText(
+        "aiDeclining",
+        declining
+    );
 
 
-    if (highRiskElement) {
-        highRiskElement.textContent =  highRisk;
-    }
+    setText(
+        "aiIncreasing",
+        increasing
+    );
 
-
-    if (decliningElement) {
-        decliningElement.textContent =declining;
-    }
-
-
-    if (increasingElement) {
-        increasingElement.textContent = increasing;
-    }
 }
 
-/* INITIALIZE*/
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
+
         updateAISummary();
+
     }
 );
 

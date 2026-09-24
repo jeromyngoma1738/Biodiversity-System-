@@ -4,11 +4,10 @@
 Record Environmental Data
 {% endblock %}
 
-
 {% block css %}
 
 <link rel="stylesheet"
-      href="{{ url_for('static', filename='form.css') }}">
+      href="{{ url_for('static', filename='env.css') }}">
 
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -20,7 +19,6 @@ Record Environmental Data
 
 <div class="environment-page">
 
-
     <!-- =====================================================
          PAGE HEADER
     ====================================================== -->
@@ -30,9 +28,7 @@ Record Environmental Data
         <div class="header-title">
 
             <div class="header-icon">
-
                 <i class="fa-solid fa-leaf"></i>
-
             </div>
 
             <div>
@@ -62,6 +58,52 @@ Record Environmental Data
     </div>
 
 
+    <!-- =====================================================
+         FLASH MESSAGES
+    ====================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="flash-container">
+
+                {% for category, message in messages %}
+
+                    <div class="alert alert-{{ category }}">
+
+                        {% if category == "success" %}
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                        {% elif category == "danger" %}
+
+                            <i class="fa-solid fa-circle-exclamation"></i>
+
+                        {% elif category == "warning" %}
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        {% else %}
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                        {% endif %}
+
+                        <span>
+                            {{ message }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
 
     <!-- =====================================================
          MAIN FORM CARD
@@ -77,9 +119,7 @@ Record Environmental Data
         <div class="form-introduction">
 
             <div class="intro-icon">
-
                 <i class="fa-solid fa-clipboard-list"></i>
-
             </div>
 
             <div>
@@ -100,8 +140,12 @@ Record Environmental Data
         </div>
 
 
+        <!-- =================================================
+             FORM
+        ================================================== -->
 
-        <form method="POST">
+        <form method="POST"
+              action="{{ url_for('record_environment') }}">
 
 
             <!-- =================================================
@@ -110,14 +154,16 @@ Record Environmental Data
 
             <section class="form-section">
 
-
                 <div class="section-heading">
+
                     <div class="section-icon location-icon">
+
                         <i class="fa-solid fa-location-dot"></i>
+
                     </div>
 
-
                     <div>
+
                         <h3>
                             Monitoring Site
                         </h3>
@@ -130,20 +176,15 @@ Record Environmental Data
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="form-grid">
 
 
-                    <!-- =========================================
-                         MONITORING SITE
-                    ========================================== -->
+                    <!-- MONITORING SITE -->
 
                     <div class="form-group">
-
 
                         <label for="monitoring_site_id">
 
@@ -155,8 +196,8 @@ Record Environmental Data
 
                         </label>
 
-
                         <div class="input-wrapper">
+
                             <select
                                 id="monitoring_site_id"
                                 name="monitoring_site_id"
@@ -167,13 +208,15 @@ Record Environmental Data
                                     -- Select Monitoring Site --
                                 </option>
 
-
                                 {% for site in sites %}
 
                                 <option
                                     value="{{ site.id }}"
                                     data-location="{{ site.name }}"
                                     data-area="{{ site.area_hectares }}"
+                                    {% if request.form.get('monitoring_site_id') == site.id|string %}
+                                        selected
+                                    {% endif %}
                                 >
 
                                     {{ site.name }}
@@ -184,37 +227,31 @@ Record Environmental Data
 
                                 {% endfor %}
 
-
                             </select>
-
 
                         </div>
 
+                        <small class="form-help">
+
+                            Select a monitoring site created by
+                            the administrator.
+
+                        </small>
 
                     </div>
 
 
-
-                    <!-- =========================================
-                         LOCATION
-                         AUTOMATICALLY DISPLAYED
-                    ========================================== -->
+                    <!-- LOCATION -->
 
                     <div class="form-group">
 
-
                         <label for="location_display">
-
                             Location
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-location-dot"></i>
-
 
                             <input
                                 type="text"
@@ -223,9 +260,7 @@ Record Environmental Data
                                 readonly
                             >
 
-
                         </div>
-
 
                         <small class="form-help">
 
@@ -234,18 +269,12 @@ Record Environmental Data
 
                         </small>
 
-
                     </div>
 
 
-
-                    <!-- =========================================
-                         OBSERVATION AREA
-                         AUTOMATICALLY DISPLAYED
-                    ========================================== -->
+                    <!-- AREA -->
 
                     <div class="form-group">
-
 
                         <label for="area_display">
 
@@ -257,12 +286,9 @@ Record Environmental Data
 
                         </label>
 
-
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-vector-square"></i>
-
 
                             <input
                                 type="text"
@@ -271,14 +297,11 @@ Record Environmental Data
                                 readonly
                             >
 
-
                             <span class="input-unit">
                                 ha
                             </span>
 
-
                         </div>
-
 
                         <small class="form-help">
 
@@ -287,62 +310,143 @@ Record Environmental Data
 
                         </small>
 
-
                     </div>
 
-
                 </div>
-
 
             </section>
 
 
-
             <!-- =================================================
-                 CLIMATE CONDITIONS
+                 WEEKLY CLIMATE CONDITIONS
             ================================================== -->
 
             <section class="form-section">
 
-
                 <div class="section-heading">
-
 
                     <div class="section-icon climate-icon">
 
-                        <i class="fa-solid fa-temperature-half"></i>
+                        <i class="fa-solid fa-cloud-sun"></i>
 
                     </div>
-
 
                     <div>
 
                         <h3>
-                            Climate Conditions
+                            Weekly Climate Conditions
                         </h3>
 
                         <p>
-                            Record temperature and rainfall measurements.
+                            Temperature and rainfall are obtained
+                            automatically from SASSCAL WeatherNet when
+                            available. Manual entry is available when
+                            automatic weather retrieval fails.
                         </p>
 
                     </div>
 
+                </div>
+
+
+                <!-- =================================================
+                     AUTOMATIC WEATHER AVAILABLE
+                ================================================== -->
+
+                {% if weekly_weather %}
+
+                <div class="weather-source-card">
+
+                    <div class="weather-source-header">
+
+                        <div class="weather-source-icon">
+
+                            <i class="fa-solid fa-cloud-sun"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                SASSCAL WeatherNet
+                            </strong>
+
+                            <span>
+                                Automatic weekly weather data
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="weather-source-details">
+
+                        <div class="weather-detail">
+
+                            <span class="detail-label">
+                                Station
+                            </span>
+
+                            <strong>
+                                {{ weekly_weather.station_id }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="weather-detail">
+
+                            <span class="detail-label">
+                                Reporting Period
+                            </span>
+
+                            <strong>
+
+                                {{ weekly_weather.start_date }}
+
+                                to
+
+                                {{ weekly_weather.end_date }}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="weather-detail">
+
+                            <span class="detail-label">
+                                Records Used
+                            </span>
+
+                            <strong>
+
+                                {{ weekly_weather.days_used }}
+
+                                days
+
+                            </strong>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
+                <!-- WEATHER VALUES -->
 
                 <div class="form-grid">
 
 
-                    <!-- Temperature -->
+                    <!-- TEMPERATURE -->
 
                     <div class="form-group">
 
-
                         <label for="temperature">
 
-                            Temperature
+                            Weekly Average Temperature
 
                             <span class="unit">
                                 (°C)
@@ -350,42 +454,42 @@ Record Environmental Data
 
                         </label>
 
-
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-temperature-half"></i>
-
 
                             <input
                                 type="number"
                                 id="temperature"
                                 name="temperature"
                                 step="0.01"
-                                placeholder="e.g. 24.50"
+                                value="{{ weekly_weather.temperature }}"
+                                readonly
                             >
-
 
                             <span class="input-unit">
                                 °C
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+
+                            Automatically retrieved from SASSCAL
+                            WeatherNet Station {{ weekly_weather.station_id }}.
+
+                        </small>
 
                     </div>
 
 
-
-                    <!-- Rainfall -->
+                    <!-- RAINFALL -->
 
                     <div class="form-group">
 
-
                         <label for="rainfall">
 
-                            Rainfall
+                            Weekly Total Rainfall
 
                             <span class="unit">
                                 (mm)
@@ -393,12 +497,9 @@ Record Environmental Data
 
                         </label>
 
-
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-cloud-rain"></i>
-
 
                             <input
                                 type="number"
@@ -406,26 +507,220 @@ Record Environmental Data
                                 name="rainfall"
                                 step="0.01"
                                 min="0"
-                                placeholder="e.g. 12.50"
+                                value="{{ weekly_weather.rainfall }}"
+                                readonly
                             >
-
 
                             <span class="input-unit">
                                 mm
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+
+                            Automatically calculated from the latest
+                            seven available SASSCAL daily records.
+
+                        </small>
 
                     </div>
-
 
                 </div>
 
 
-            </section>
+                <!-- SUCCESS -->
 
+                <div class="weather-status success">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <div>
+
+                        <strong>
+                            Automatic weather data available
+                        </strong>
+
+                        <p>
+
+                            Weekly weather data was successfully
+                            retrieved from SASSCAL WeatherNet
+                            Station {{ weekly_weather.station_id }}.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% else %}
+
+
+                <!-- =================================================
+                     AUTOMATIC WEATHER FAILED
+                ================================================== -->
+
+                <div class="weather-status error">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <div>
+
+                        <strong>
+                            Automatic weather data unavailable
+                        </strong>
+
+                        <p>
+
+                            SASSCAL WeatherNet could not be reached
+                            or did not return valid weather data.
+
+                            <strong>
+                                You can enter the weekly temperature
+                                and rainfall manually below.
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MANUAL WEATHER ENTRY
+                ================================================== -->
+
+                <div class="form-grid">
+
+
+                    <!-- MANUAL TEMPERATURE -->
+
+                    <div class="form-group">
+
+                        <label for="temperature">
+
+                            Weekly Average Temperature
+
+                            <span class="unit">
+                                (°C)
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-temperature-half"></i>
+
+                            <input
+                                type="number"
+                                id="temperature"
+                                name="temperature"
+                                step="0.01"
+                                required
+                                value="{{ request.form.get('temperature', '') }}"
+                                placeholder="Enter average temperature"
+                            >
+
+                            <span class="input-unit">
+                                °C
+                            </span>
+
+                        </div>
+
+                        <small class="form-help">
+
+                            Enter the average temperature for the
+                            monitoring period manually.
+
+                        </small>
+
+                    </div>
+
+
+                    <!-- MANUAL RAINFALL -->
+
+                    <div class="form-group">
+
+                        <label for="rainfall">
+
+                            Weekly Total Rainfall
+
+                            <span class="unit">
+                                (mm)
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-cloud-rain"></i>
+
+                            <input
+                                type="number"
+                                id="rainfall"
+                                name="rainfall"
+                                step="0.01"
+                                min="0"
+                                required
+                                value="{{ request.form.get('rainfall', '') }}"
+                                placeholder="Enter total rainfall"
+                            >
+
+                            <span class="input-unit">
+                                mm
+                            </span>
+
+                        </div>
+
+                        <small class="form-help">
+
+                            Enter the total rainfall for the monitoring
+                            period manually.
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MANUAL STATUS -->
+
+                <div class="weather-status warning">
+
+                    <i class="fa-solid fa-pen-to-square"></i>
+
+                    <div>
+
+                        <strong>
+                            Manual weather entry
+                        </strong>
+
+                        <p>
+
+                            The environmental record will be saved
+                            using the temperature and rainfall values
+                            entered manually.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </section>
 
 
             <!-- =================================================
@@ -434,16 +729,13 @@ Record Environmental Data
 
             <section class="form-section">
 
-
                 <div class="section-heading">
-
 
                     <div class="section-icon soil-icon">
 
                         <i class="fa-solid fa-seedling"></i>
 
                     </div>
-
 
                     <div>
 
@@ -457,31 +749,23 @@ Record Environmental Data
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="form-grid">
 
 
-                    <!-- Soil pH -->
+                    <!-- SOIL PH -->
 
                     <div class="form-group">
 
-
                         <label for="soil_ph">
-
                             Soil pH
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-flask"></i>
-
 
                             <input
                                 type="number"
@@ -490,39 +774,34 @@ Record Environmental Data
                                 step="0.01"
                                 min="0"
                                 max="14"
+                                value="{{ request.form.get('soil_ph', '') }}"
                                 placeholder="e.g. 6.50"
                             >
-
 
                             <span class="input-unit">
                                 pH
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Enter a soil pH value between 0 and 14.
+                        </small>
 
                     </div>
 
 
-
-                    <!-- Soil Moisture -->
+                    <!-- SOIL MOISTURE -->
 
                     <div class="form-group">
 
-
                         <label for="soil_moisture">
-
                             Soil Moisture
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-droplet"></i>
-
 
                             <input
                                 type="number"
@@ -531,26 +810,25 @@ Record Environmental Data
                                 min="0"
                                 max="100"
                                 step="0.01"
+                                value="{{ request.form.get('soil_moisture', '') }}"
                                 placeholder="e.g. 45.00"
                             >
-
 
                             <span class="input-unit">
                                 %
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Enter soil moisture as a percentage.
+                        </small>
 
                     </div>
 
-
                 </div>
 
-
             </section>
-
 
 
             <!-- =================================================
@@ -559,16 +837,13 @@ Record Environmental Data
 
             <section class="form-section">
 
-
                 <div class="section-heading">
-
 
                     <div class="section-icon water-icon">
 
                         <i class="fa-solid fa-water"></i>
 
                     </div>
-
 
                     <div>
 
@@ -582,31 +857,23 @@ Record Environmental Data
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="form-grid">
 
 
-                    <!-- Water pH -->
+                    <!-- WATER PH -->
 
                     <div class="form-group">
 
-
                         <label for="water_ph">
-
                             Water pH
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-flask"></i>
-
 
                             <input
                                 type="number"
@@ -615,39 +882,34 @@ Record Environmental Data
                                 step="0.01"
                                 min="0"
                                 max="14"
+                                value="{{ request.form.get('water_ph', '') }}"
                                 placeholder="e.g. 7.00"
                             >
-
 
                             <span class="input-unit">
                                 pH
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Enter a water pH value between 0 and 14.
+                        </small>
 
                     </div>
 
 
-
-                    <!-- Water Turbidity -->
+                    <!-- TURBIDITY -->
 
                     <div class="form-group">
 
-
                         <label for="water_turbidity">
-
                             Water Turbidity
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-water"></i>
-
 
                             <input
                                 type="number"
@@ -655,21 +917,25 @@ Record Environmental Data
                                 name="water_turbidity"
                                 step="0.01"
                                 min="0"
+                                value="{{ request.form.get('water_turbidity', '') }}"
                                 placeholder="Enter turbidity"
                             >
 
+                            <span class="input-unit">
+                                NTU
+                            </span>
 
                         </div>
 
+                        <small class="form-help">
+                            Enter the measured turbidity of the water.
+                        </small>
 
                     </div>
 
-
                 </div>
 
-
             </section>
-
 
 
             <!-- =================================================
@@ -678,16 +944,13 @@ Record Environmental Data
 
             <section class="form-section">
 
-
                 <div class="section-heading">
-
 
                     <div class="section-icon vegetation-icon">
 
                         <i class="fa-solid fa-tree"></i>
 
                     </div>
-
 
                     <div>
 
@@ -701,31 +964,23 @@ Record Environmental Data
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="form-grid">
 
 
-                    <!-- Vegetation Cover -->
+                    <!-- VEGETATION COVER -->
 
                     <div class="form-group">
 
-
                         <label for="vegetation_cover">
-
                             Vegetation Cover
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-leaf"></i>
-
 
                             <input
                                 type="number"
@@ -734,39 +989,35 @@ Record Environmental Data
                                 min="0"
                                 max="100"
                                 step="0.01"
+                                value="{{ request.form.get('vegetation_cover', '') }}"
                                 placeholder="e.g. 75.00"
                             >
-
 
                             <span class="input-unit">
                                 %
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Estimated percentage of the area covered
+                            by vegetation.
+                        </small>
 
                     </div>
 
 
-
-                    <!-- Vegetation Density -->
+                    <!-- VEGETATION DENSITY -->
 
                     <div class="form-group">
 
-
                         <label for="vegetation_density">
-
                             Vegetation Density
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-tree"></i>
-
 
                             <input
                                 type="number"
@@ -775,39 +1026,35 @@ Record Environmental Data
                                 min="0"
                                 max="100"
                                 step="0.01"
+                                value="{{ request.form.get('vegetation_density', '') }}"
                                 placeholder="e.g. 60.00"
                             >
-
 
                             <span class="input-unit">
                                 %
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Estimated density of vegetation within
+                            the monitoring area.
+                        </small>
 
                     </div>
 
 
-
-                    <!-- Grass Availability -->
+                    <!-- GRASS AVAILABILITY -->
 
                     <div class="form-group">
 
-
                         <label for="grass_availability">
-
                             Grass Availability
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-wheat-awn"></i>
-
 
                             <input
                                 type="number"
@@ -816,39 +1063,35 @@ Record Environmental Data
                                 min="0"
                                 max="100"
                                 step="0.01"
+                                value="{{ request.form.get('grass_availability', '') }}"
                                 placeholder="e.g. 80.00"
                             >
-
 
                             <span class="input-unit">
                                 %
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Estimated availability of grass
+                            at the monitoring site.
+                        </small>
 
                     </div>
 
 
-
-                    <!-- Tree Density -->
+                    <!-- TREE DENSITY -->
 
                     <div class="form-group">
 
-
                         <label for="tree_density">
-
                             Tree Density
-
                         </label>
-
 
                         <div class="input-wrapper">
 
-
                             <i class="fa-solid fa-tree"></i>
-
 
                             <input
                                 type="number"
@@ -857,26 +1100,26 @@ Record Environmental Data
                                 min="0"
                                 max="100"
                                 step="0.01"
+                                value="{{ request.form.get('tree_density', '') }}"
                                 placeholder="e.g. 55.00"
                             >
-
 
                             <span class="input-unit">
                                 %
                             </span>
 
-
                         </div>
 
+                        <small class="form-help">
+                            Estimated density of trees within
+                            the monitoring site.
+                        </small>
 
                     </div>
 
-
                 </div>
 
-
             </section>
-
 
 
             <!-- =================================================
@@ -885,16 +1128,13 @@ Record Environmental Data
 
             <section class="form-section">
 
-
                 <div class="section-heading">
-
 
                     <div class="section-icon notes-icon">
 
                         <i class="fa-solid fa-note-sticky"></i>
 
                     </div>
-
 
                     <div>
 
@@ -909,34 +1149,25 @@ Record Environmental Data
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="form-group">
 
-
                     <label for="notes">
-
                         Notes
-
                     </label>
-
 
                     <textarea
                         id="notes"
                         name="notes"
                         rows="5"
                         placeholder="Describe any unusual environmental conditions, visible changes, weather conditions, or other relevant observations..."
-                    ></textarea>
-
+                    >{{ request.form.get('notes', '') }}</textarea>
 
                 </div>
 
-
             </section>
-
 
 
             <!-- =================================================
@@ -944,7 +1175,6 @@ Record Environmental Data
             ================================================== -->
 
             <div class="form-actions">
-
 
                 <a
                     href="{{ url_for('view_field_Officer') }}"
@@ -958,6 +1188,9 @@ Record Environmental Data
                 </a>
 
 
+                <!-- IMPORTANT:
+                     DO NOT DISABLE THIS BUTTON WHEN WEATHER FAILS.
+                -->
 
                 <button
                     type="submit"
@@ -970,18 +1203,13 @@ Record Environmental Data
 
                 </button>
 
-
             </div>
-
 
         </form>
 
-
     </div>
 
-
 </div>
-
 
 
 <!-- =========================================================
@@ -989,7 +1217,9 @@ Record Environmental Data
 ========================================================= -->
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
+
     const siteSelect =
         document.getElementById("monitoring_site_id");
 
@@ -1000,28 +1230,428 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("area_display");
 
 
+    if (!siteSelect) {
+        return;
+    }
+
+
     function updateSiteInformation() {
+
         const selectedOption =
             siteSelect.options[siteSelect.selectedIndex];
 
-        if (!selectedOption || !selectedOption.value) {
-            locationDisplay.value = "";
-            areaDisplay.value = "";
+
+        if (
+            !selectedOption ||
+            !selectedOption.value
+        ) {
+
+            if (locationDisplay) {
+                locationDisplay.value = "";
+            }
+
+            if (areaDisplay) {
+                areaDisplay.value = "";
+            }
+
             return;
         }
+
+
         const location =
-            selectedOption.dataset.location;
+            selectedOption.dataset.location || "";
 
         const area =
-            selectedOption.dataset.area;
-        locationDisplay.value =
-            location || "";
-        areaDisplay.value =area ? parseFloat(area).toFixed(2) : "";
+            selectedOption.dataset.area || "";
+
+
+        if (locationDisplay) {
+
+            locationDisplay.value =
+                location;
+
+        }
+
+
+        if (areaDisplay) {
+
+            const numericArea =
+                parseFloat(area);
+
+            if (!isNaN(numericArea)) {
+
+                areaDisplay.value =
+                    numericArea.toFixed(2);
+
+            } else {
+
+                areaDisplay.value =
+                    area;
+
+            }
+
+        }
+
     }
+
+
     siteSelect.addEventListener(
         "change",
         updateSiteInformation
     );
+
+
+    updateSiteInformation();
+
+});
+
+</script>
+
+
+<!-- =========================================================
+     FORM VALIDATION
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form =
+        document.querySelector(
+            ".environment-card form"
+        );
+
+
+    if (!form) {
+        return;
+    }
+
+
+    form.addEventListener(
+        "submit",
+        function (event) {
+
+            const site =
+                document.getElementById(
+                    "monitoring_site_id"
+                );
+
+
+            if (!site || !site.value) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please select a monitoring site."
+                );
+
+                if (site) {
+                    site.focus();
+                }
+
+                return;
+            }
+
+
+            /*
+             * Temperature
+             */
+
+            const temperature =
+                document.getElementById(
+                    "temperature"
+                );
+
+
+            if (
+                temperature &&
+                temperature.value !== ""
+            ) {
+
+                const temperatureValue =
+                    parseFloat(
+                        temperature.value
+                    );
+
+
+                if (isNaN(temperatureValue)) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Temperature must be a valid number."
+                    );
+
+                    temperature.focus();
+
+                    return;
+                }
+
+            } else {
+
+                /*
+                 * Temperature is required when
+                 * SASSCAL is unavailable.
+                 */
+
+                event.preventDefault();
+
+                alert(
+                    "Please enter the weekly average temperature."
+                );
+
+                if (temperature) {
+                    temperature.focus();
+                }
+
+                return;
+            }
+
+
+            /*
+             * Rainfall
+             */
+
+            const rainfall =
+                document.getElementById(
+                    "rainfall"
+                );
+
+
+            if (
+                rainfall &&
+                rainfall.value !== ""
+            ) {
+
+                const rainfallValue =
+                    parseFloat(
+                        rainfall.value
+                    );
+
+
+                if (
+                    isNaN(rainfallValue) ||
+                    rainfallValue < 0
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Rainfall must be a valid number greater than or equal to 0."
+                    );
+
+                    rainfall.focus();
+
+                    return;
+                }
+
+            } else {
+
+                event.preventDefault();
+
+                alert(
+                    "Please enter the weekly total rainfall."
+                );
+
+                if (rainfall) {
+                    rainfall.focus();
+                }
+
+                return;
+            }
+
+
+            /*
+             * Soil pH
+             */
+
+            const soilPh =
+                document.getElementById(
+                    "soil_ph"
+                );
+
+
+            if (
+                soilPh &&
+                soilPh.value !== ""
+            ) {
+
+                const value =
+                    parseFloat(
+                        soilPh.value
+                    );
+
+
+                if (
+                    isNaN(value) ||
+                    value < 0 ||
+                    value > 14
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Soil pH must be between 0 and 14."
+                    );
+
+                    soilPh.focus();
+
+                    return;
+                }
+
+            }
+
+
+            /*
+             * Water pH
+             */
+
+            const waterPh =
+                document.getElementById(
+                    "water_ph"
+                );
+
+
+            if (
+                waterPh &&
+                waterPh.value !== ""
+            ) {
+
+                const value =
+                    parseFloat(
+                        waterPh.value
+                    );
+
+
+                if (
+                    isNaN(value) ||
+                    value < 0 ||
+                    value > 14
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Water pH must be between 0 and 14."
+                    );
+
+                    waterPh.focus();
+
+                    return;
+                }
+
+            }
+
+
+            /*
+             * Percentage fields
+             */
+
+            const percentageFields = [
+
+                "soil_moisture",
+
+                "vegetation_cover",
+
+                "vegetation_density",
+
+                "grass_availability",
+
+                "tree_density"
+
+            ];
+
+
+            for (
+                const fieldId of percentageFields
+            ) {
+
+                const field =
+                    document.getElementById(
+                        fieldId
+                    );
+
+
+                if (
+                    field &&
+                    field.value !== ""
+                ) {
+
+                    const value =
+                        parseFloat(
+                            field.value
+                        );
+
+
+                    if (
+                        isNaN(value) ||
+                        value < 0 ||
+                        value > 100
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            fieldId
+                                .replace(/_/g, " ")
+                                .replace(/\b\w/g, function (c) {
+                                    return c.toUpperCase();
+                                }) +
+                            " must be between 0 and 100."
+                        );
+
+                        field.focus();
+
+                        return;
+                    }
+
+                }
+
+            }
+
+
+            /*
+             * Turbidity
+             */
+
+            const turbidity =
+                document.getElementById(
+                    "water_turbidity"
+                );
+
+
+            if (
+                turbidity &&
+                turbidity.value !== ""
+            ) {
+
+                const value =
+                    parseFloat(
+                        turbidity.value
+                    );
+
+
+                if (
+                    isNaN(value) ||
+                    value < 0
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Water turbidity cannot be negative."
+                    );
+
+                    turbidity.focus();
+
+                    return;
+                }
+
+            }
+
+        }
+    );
+
 });
 
 </script>

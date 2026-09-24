@@ -1230,6 +1230,49 @@
 /* =========================================================
    AI TABLE
 ========================================================= */
+/* ============================================================
+   POPULATION CHANGE
+============================================================ */
+
+.change {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Population increasing */
+.change.positive {
+    color: #176b3a;
+}
+
+/* Population decreasing */
+.change.negative {
+    color: #dc2626;
+}
+
+/* No population change */
+.change.neutral {
+    color: #6b7280;
+}
+
+
+/* ============================================================
+   CHANGE ICONS
+============================================================ */
+
+.change.positive i {
+    color: #176b3a;
+}
+
+.change.negative i {
+    color: #dc2626;
+}
+
+.change.neutral i {
+    color: #6b7280;
+}
 
 .ai-table {
 
@@ -1739,6 +1782,855 @@
     }
 
 }
+/* =========================================================
+   SECTION ECOLOGICAL ANALYSIS
+========================================================= */
+
+.section-analysis {
+    margin-top: 32px;
+}
+
+
+/* HEADER */
+
+.section-analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.section-analysis-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.section-analysis-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e6f4ea;
+    color: #176b3a;
+    font-size: 22px;
+}
+
+.section-label,
+.card-label,
+.overview-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #176b3a;
+    margin-bottom: 5px;
+}
+
+.section-analysis-title h2 {
+    margin: 0;
+    font-size: 25px;
+    color: #183028;
+}
+
+.section-analysis-title p {
+    margin: 7px 0 0;
+    color: #718078;
+    font-size: 14px;
+    max-width: 650px;
+}
+
+
+/* SELECTOR */
+
+.section-selector {
+    min-width: 300px;
+}
+
+.section-selector label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #52645b;
+}
+
+.section-selector select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #dbe5df;
+    border-radius: 10px;
+    background: white;
+    color: #24382f;
+    font-size: 14px;
+    outline: none;
+}
+
+.section-selector select:focus {
+    border-color: #176b3a;
+    box-shadow: 0 0 0 3px rgba(23,107,58,.08);
+}
+
+
+/* EMPTY / LOADING */
+
+.section-empty,
+.section-loading {
+    background: white;
+    border: 1px solid #e4ebe7;
+    border-radius: 18px;
+    padding: 55px 25px;
+    text-align: center;
+}
+
+.section-loading {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.section-empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef7f1;
+    color: #176b3a;
+    font-size: 25px;
+}
+
+.section-empty-icon.error {
+    background: #fff0ef;
+    color: #c43d32;
+}
+
+.section-empty h3 {
+    margin: 17px 0 7px;
+    color: #26382f;
+}
+
+.section-empty p {
+    margin: 0;
+    color: #7a8881;
+}
+
+
+/* SPINNER */
+
+.loading-spinner {
+    width: 38px;
+    height: 38px;
+    border: 3px solid #e0ebe4;
+    border-top-color: #176b3a;
+    border-radius: 50%;
+    animation: sectionSpin .8s linear infinite;
+}
+
+@keyframes sectionSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* SECTION OVERVIEW */
+
+.section-overview-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    margin-bottom: 18px;
+    background: linear-gradient(
+        135deg,
+        #ffffff,
+        #f4faf6
+    );
+    border: 1px solid #dfeae3;
+    border-radius: 18px;
+}
+
+.section-overview-card h2 {
+    margin: 0;
+    font-size: 26px;
+    color: #183028;
+}
+
+.section-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 12px;
+    color: #728079;
+    font-size: 13px;
+}
+
+.section-meta i {
+    margin-right: 5px;
+    color: #176b3a;
+}
+
+.section-meta strong {
+    color: #36483f;
+}
+
+
+.land-condition-display {
+    min-width: 230px;
+    padding: 18px;
+    border-radius: 14px;
+    background: #f7faf8;
+    border: 1px solid #e2ebe5;
+}
+
+.land-condition-display span {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #78867f;
+}
+
+.land-condition-display strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 20px;
+    color: #176b3a;
+}
+
+.land-condition-display small {
+    color: #7b8982;
+}
+
+
+/* KPI CARDS */
+
+.section-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.section-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 19px;
+    background: white;
+    border: 1px solid #e4ebe7;
+    border-radius: 16px;
+}
+
+.section-kpi-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.section-kpi-icon.biodiversity {
+    background: #e8f2ff;
+    color: #2670bd;
+}
+
+.section-kpi-icon.population {
+    background: #edf7ef;
+    color: #2f8750;
+}
+
+.section-kpi-icon.density {
+    background: #fff4df;
+    color: #bd7a18;
+}
+
+.section-kpi-icon.diversity {
+    background: #f2ecff;
+    color: #7751b8;
+}
+
+.section-kpi-card span {
+    display: block;
+    font-size: 12px;
+    color: #7a8881;
+}
+
+.section-kpi-card strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 23px;
+    color: #24382f;
+}
+
+.section-kpi-card small {
+    color: #9aa59f;
+    font-size: 10px;
+}
+
+
+/* ANALYSIS GRID */
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+
+.analysis-card {
+    padding: 22px;
+    background: white;
+    border: 1px solid #e4ebe7;
+    border-radius: 18px;
+}
+
+.analysis-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.analysis-card-header h3 {
+    margin: 0;
+    color: #26382f;
+    font-size: 18px;
+}
+
+.analysis-card-header > i {
+    color: #176b3a;
+    font-size: 20px;
+}
+
+
+/* WATER */
+
+.water-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.water-metric {
+    padding: 13px;
+    border-radius: 10px;
+    background: #f5faf8;
+}
+
+.water-metric span {
+    display: block;
+    font-size: 11px;
+    color: #7b8882;
+}
+
+.water-metric strong {
+    display: block;
+    margin-top: 4px;
+    color: #24382f;
+    font-size: 17px;
+}
+
+
+.suitability-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.suitability-box {
+    padding: 15px;
+    border-radius: 12px;
+    background: #f9fbfa;
+    border: 1px solid #e5ebe7;
+}
+
+.suitability-box span {
+    display: block;
+    font-size: 12px;
+    color: #66766e;
+}
+
+.suitability-box strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 17px;
+}
+
+.suitability-box small {
+    display: block;
+    margin-top: 3px;
+    color: #8b9690;
+}
+
+
+/* WATER NOTICE */
+
+.analysis-notice {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 10px;
+    background: #fff8e8;
+    color: #795e23;
+    font-size: 12px;
+}
+
+.analysis-notice strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.analysis-notice ul {
+    margin: 5px 0 0 18px;
+    padding: 0;
+}
+
+
+/* CLIMATE */
+
+.climate-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1ee;
+}
+
+.climate-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.climate-icon.temperature {
+    background: #fff0e7;
+    color: #c56527;
+}
+
+.climate-icon.rainfall {
+    background: #eaf4ff;
+    color: #397ab2;
+}
+
+.climate-main {
+    flex: 1;
+}
+
+.climate-main span {
+    display: block;
+    font-size: 11px;
+    color: #7a8881;
+}
+
+.climate-main strong {
+    font-size: 18px;
+    color: #26382f;
+}
+
+.climate-change {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.climate-change small {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    color: #89958f;
+}
+
+.climate-change.increase {
+    color: #c35a30;
+}
+
+.climate-change.decrease {
+    color: #287b55;
+}
+
+.climate-change.neutral {
+    color: #89958f;
+}
+
+.effect-box {
+    margin: 10px 0 4px 54px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: #f7faf8;
+    color: #617068;
+    font-size: 11px;
+}
+
+
+/* VEGETATION */
+
+.vegetation-status {
+    padding: 14px;
+    border-radius: 11px;
+    background: #f3f8f4;
+    margin-bottom: 15px;
+}
+
+.vegetation-status span {
+    display: block;
+    font-size: 11px;
+    color: #78867f;
+}
+
+.vegetation-status strong {
+    display: block;
+    margin-top: 5px;
+    color: #176b3a;
+    font-size: 18px;
+}
+
+.vegetation-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.vegetation-metrics div {
+    padding: 11px;
+    background: #fafcfb;
+    border-radius: 9px;
+}
+
+.vegetation-metrics span {
+    display: block;
+    font-size: 10px;
+    color: #89958f;
+}
+
+.vegetation-metrics strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 15px;
+    color: #33463d;
+}
+
+.vegetation-change-list {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.vegetation-change-list div {
+    flex: 1;
+    padding: 9px 11px;
+    border-radius: 8px;
+    background: #f8faf9;
+}
+
+.vegetation-change-list span {
+    display: block;
+    font-size: 10px;
+    color: #7c8983;
+}
+
+.vegetation-change-list strong {
+    font-size: 16px;
+}
+
+
+/* RESOURCE PRESSURE */
+
+.pressure-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px;
+    border-radius: 13px;
+    background: #f8faf9;
+}
+
+.pressure-score strong {
+    font-size: 35px;
+    color: #26382f;
+}
+
+.pressure-score span {
+    display: block;
+    color: #88948e;
+    font-size: 10px;
+}
+
+.pressure-display > div:last-child span {
+    display: block;
+    font-size: 11px;
+    color: #7c8983;
+}
+
+.pressure-display > div:last-child strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 19px;
+}
+
+
+/* REASONS */
+
+.reason-list {
+    margin-top: 15px;
+}
+
+.reason-item {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    padding: 9px 0;
+    border-bottom: 1px solid #edf1ee;
+    font-size: 12px;
+    color: #5f6d66;
+}
+
+.reason-item i {
+    color: #bd7a18;
+    margin-top: 2px;
+}
+
+
+/* LAND IMPACT */
+
+.land-impact-card {
+    margin-top: 18px;
+    padding: 24px;
+    background: linear-gradient(
+        135deg,
+        #ffffff,
+        #f4f9f5
+    );
+    border: 1px solid #dfe9e3;
+    border-radius: 18px;
+}
+
+.land-impact-header {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.impact-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e6f3e9;
+    color: #176b3a;
+    font-size: 21px;
+}
+
+.land-impact-header h3 {
+    margin: 0;
+    color: #26382f;
+}
+
+.land-impact-header p {
+    margin: 6px 0 0;
+    color: #79867f;
+    font-size: 12px;
+}
+
+.land-impact-body {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 30px;
+    margin-top: 22px;
+}
+
+.impact-condition {
+    padding: 18px;
+    border-radius: 13px;
+    background: white;
+    border: 1px solid #e3ebe6;
+}
+
+.impact-condition > span {
+    display: block;
+    color: #7d8983;
+    font-size: 11px;
+}
+
+.impact-condition > strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 21px;
+    color: #176b3a;
+}
+
+.impact-score-bar {
+    height: 8px;
+    margin-top: 15px;
+    border-radius: 20px;
+    background: #e8eeea;
+    overflow: hidden;
+}
+
+.impact-score-fill {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: #176b3a;
+    transition: width .5s ease;
+}
+
+.impact-condition small {
+    display: block;
+    margin-top: 8px;
+    color: #8a9690;
+}
+
+
+.impact-factors h4 {
+    margin: 0 0 10px;
+    color: #35473e;
+    font-size: 14px;
+}
+
+.impact-factors ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.impact-factors li {
+    display: flex;
+    gap: 9px;
+    padding: 9px 0;
+    border-bottom: 1px solid #e8eee9;
+    color: #65736c;
+    font-size: 12px;
+}
+
+.impact-factors li i {
+    color: #bd7a18;
+    margin-top: 2px;
+}
+
+
+/* SPECIES */
+
+.species-section-card {
+    margin-top: 18px;
+    padding: 22px;
+    background: white;
+    border: 1px solid #e4ebe7;
+    border-radius: 18px;
+}
+
+.section-species-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.species-tag {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 30px;
+    background: #eef7f1;
+    color: #316447;
+    font-size: 12px;
+}
+
+.species-tag i {
+    font-size: 10px;
+}
+
+.species-empty {
+    padding: 25px;
+    text-align: center;
+    color: #89958f;
+}
+
+
+/* STATUS */
+
+.status-good {
+    color: #217347 !important;
+}
+
+.status-warning {
+    color: #a16d16 !important;
+}
+
+.status-danger {
+    color: #b84c3e !important;
+}
+
+.status-neutral {
+    color: #718078 !important;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .section-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .section-analysis-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .section-selector {
+        min-width: 0;
+    }
+
+    .section-overview-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .land-condition-display {
+        min-width: 0;
+    }
+
+    .section-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .land-impact-body {
+        grid-template-columns: 1fr;
+    }
+
+    .section-meta {
+        flex-direction: column;
+        gap: 7px;
+    }
+
+}
 
 
 @media (max-width: 800px) {
@@ -1870,4 +2762,15 @@
 
     }
 
+}
+.change.positive {
+    color: #198754 !important;
+}
+
+.change.negative {
+    color: #dc3545 !important;
+}
+
+.change.neutral {
+    color: #6c757d !important;
 }

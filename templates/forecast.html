@@ -1,9 +1,9 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}Population Forecast | CBU Nature Park{% endblock %}
 
 {% block css %}
+
 <link rel="stylesheet"
       href="{{ url_for('static', filename='forecast.css') }}">
 
@@ -11,6 +11,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% endblock %}
 
 
@@ -18,9 +19,10 @@
 
 <div class="forecast-page">
 
-    <!-- =========================
+    <!-- =========================================================
          PAGE HEADER
-    ========================== -->
+    ========================================================== -->
+
     <header class="forecast-header">
 
         <div class="header-left">
@@ -30,6 +32,7 @@
             </div>
 
             <div>
+
                 <span class="eyebrow">
                     CBU NATURE PARK
                 </span>
@@ -42,9 +45,11 @@
                     Project future species population trends using
                     historical biodiversity observations.
                 </p>
+
             </div>
 
         </div>
+
 
         <div class="header-actions">
 
@@ -62,14 +67,16 @@
     </header>
 
 
-    <!-- =========================
+    <!-- =========================================================
          FORECAST CONTROL PANEL
-    ========================== -->
+    ========================================================== -->
+
     <section class="forecast-control-card">
 
         <div class="section-heading">
 
             <div>
+
                 <span class="section-label">
                     FORECAST CONFIGURATION
                 </span>
@@ -82,10 +89,13 @@
                     Select a species and define how many years
                     into the future you want to project.
                 </p>
+
             </div>
 
             <div class="configuration-icon">
+
                 <i class="fa-solid fa-sliders"></i>
+
             </div>
 
         </div>
@@ -94,12 +104,17 @@
         <div class="forecast-form">
 
             <!-- Species -->
+
             <div class="form-group">
 
                 <label for="speciesSelect">
+
                     <i class="fa-solid fa-leaf"></i>
+
                     Species
+
                 </label>
+
 
                 <select id="speciesSelect">
 
@@ -110,10 +125,15 @@
                     {% for species in species_list %}
 
                     <option value="{{ species.specie_Common_Name }}">
+
                         {{ species.specie_Common_Name }}
+
                         {% if species.scientificName %}
+
                             — {{ species.scientificName }}
+
                         {% endif %}
+
                     </option>
 
                     {% endfor %}
@@ -124,12 +144,17 @@
 
 
             <!-- Forecast period -->
+
             <div class="form-group">
 
                 <label for="yearsSelect">
+
                     <i class="fa-solid fa-calendar-days"></i>
+
                     Forecast Period
+
                 </label>
+
 
                 <select id="yearsSelect">
 
@@ -179,6 +204,7 @@
 
 
             <!-- Generate -->
+
             <div class="form-action">
 
                 <button id="forecastButton"
@@ -187,7 +213,9 @@
 
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
 
-                    Generate Forecast
+                    <span id="forecastButtonText">
+                        Generate Forecast
+                    </span>
 
                 </button>
 
@@ -197,6 +225,7 @@
 
 
         <!-- Error -->
+
         <div id="forecastError"
              class="forecast-error hidden">
 
@@ -211,10 +240,10 @@
     </section>
 
 
-
-    <!-- =========================
+    <!-- =========================================================
          EMPTY STATE
-    ========================== -->
+    ========================================================== -->
+
     <section id="emptyState"
              class="empty-state">
 
@@ -236,17 +265,18 @@
     </section>
 
 
-
-    <!-- =========================
+    <!-- =========================================================
          FORECAST RESULTS
-    ========================== -->
+    ========================================================== -->
+
     <section id="forecastResults"
              class="forecast-results hidden">
 
 
-        <!-- =========================
+        <!-- =====================================================
              SPECIES SUMMARY
-        ========================== -->
+        ====================================================== -->
+
         <div class="result-title">
 
             <div>
@@ -260,10 +290,12 @@
                 </h2>
 
                 <p id="resultDescription">
-                    Projected population trend based on historical observations.
+                    Projected population trend based on historical
+                    observations.
                 </p>
 
             </div>
+
 
             <div class="forecast-status">
 
@@ -276,16 +308,19 @@
         </div>
 
 
-
-        <!-- =========================
+        <!-- =====================================================
              SUMMARY CARDS
-        ========================== -->
+        ====================================================== -->
+
         <div class="summary-grid">
+
 
             <div class="summary-card">
 
                 <div class="summary-icon blue">
+
                     <i class="fa-solid fa-database"></i>
+
                 </div>
 
                 <div>
@@ -306,7 +341,9 @@
             <div class="summary-card">
 
                 <div class="summary-icon green">
+
                     <i class="fa-solid fa-chart-line"></i>
+
                 </div>
 
                 <div>
@@ -327,16 +364,18 @@
             <div class="summary-card">
 
                 <div class="summary-icon orange">
-                    <i class="fa-solid fa-bullseye"></i>
+
+                    <i class="fa-solid fa-clock"></i>
+
                 </div>
 
                 <div>
 
                     <span>
-                        MAE
+                        Data Interval
                     </span>
 
-                    <strong id="modelMAE">
+                    <strong id="dataInterval">
                         —
                     </strong>
 
@@ -348,16 +387,18 @@
             <div class="summary-card">
 
                 <div class="summary-icon purple">
-                    <i class="fa-solid fa-square-poll-vertical"></i>
+
+                    <i class="fa-solid fa-layer-group"></i>
+
                 </div>
 
                 <div>
 
                     <span>
-                        R²
+                        Forecast Points
                     </span>
 
-                    <strong id="modelR2">
+                    <strong id="forecastPoints">
                         —
                     </strong>
 
@@ -368,14 +409,15 @@
         </div>
 
 
-
-        <!-- =========================
+        <!-- =====================================================
              CHART + FORECAST SUMMARY
-        ========================== -->
+        ====================================================== -->
+
         <div class="main-grid">
 
 
             <!-- Chart -->
+
             <div class="chart-card">
 
                 <div class="card-header">
@@ -400,6 +442,7 @@
 
                 </div>
 
+
                 <div class="chart-container">
 
                     <canvas id="forecastChart"></canvas>
@@ -409,8 +452,8 @@
             </div>
 
 
-
             <!-- Forecast overview -->
+
             <div class="overview-card">
 
                 <div class="card-header">
@@ -437,6 +480,7 @@
 
 
                 <div class="overview-content">
+
 
                     <div class="overview-row">
 
@@ -489,6 +533,20 @@
 
                     </div>
 
+
+                    <div class="overview-row">
+
+                        <span>
+                            Overall Trend
+                        </span>
+
+                        <strong id="forecastTrend">
+                            —
+                        </strong>
+
+                    </div>
+
+
                 </div>
 
 
@@ -497,10 +555,11 @@
                     <i class="fa-solid fa-circle-info"></i>
 
                     <p>
-                        This projection is based on historical population
-                        trends. Future environmental conditions and
-                        unexpected ecological events are not directly
-                        predicted by the model.
+                        The forecast uses approved historical observations
+                        and assumes each observation represents a
+                        three-month monitoring interval. Future environmental
+                        conditions and unexpected ecological events are
+                        not guaranteed by the model.
                     </p>
 
                 </div>
@@ -510,289 +569,510 @@
         </div>
 
 
+        <!-- =====================================================
+             CAPACITY / RESOURCE ASSESSMENT
+        ====================================================== -->
 
-        <!-- =========================
-             FORECAST TABLE
-        ========================== -->
-        <div class="table-card">
+        <div class="capacity-card">
 
             <div class="card-header">
 
                 <div>
 
                     <span class="card-label">
-                        PROJECTED VALUES
+                        HABITAT &amp; RESOURCE ASSESSMENT
                     </span>
 
                     <h3>
-                        Year-by-Year Forecast
+                        Can CBU Nature Park Support This Population?
                     </h3>
 
                 </div>
 
-                <div class="table-icon">
+                <div class="chart-icon">
 
-                    <i class="fa-solid fa-table"></i>
+                    <i class="fa-solid fa-tree"></i>
 
                 </div>
 
             </div>
 
 
-            <div class="table-wrapper">
+            <div class="capacity-grid">
 
-                <table>
 
-                    <thead>
+                <div class="capacity-item">
 
-                        <tr>
+                    <span>
+                        Park / Monitoring Area
+                    </span>
 
-                            <th>
-                                Year
-                            </th>
+                    <strong id="capacityArea">
+                        —
+                    </strong>
 
-                            <th>
-                                Population
-                            </th>
+                </div>
 
-                            <th>
-                                Change
-                            </th>
 
-                            <th>
-                                Direction
-                            </th>
+                <div class="capacity-item">
 
-                        </tr>
+                    <span>
+                        Estimated Resource Level
+                    </span>
 
-                    </thead>
+                    <strong id="resourceScore">
+                        —
+                    </strong>
 
-                    <tbody id="forecastTableBody">
+                </div>
 
-                    </tbody>
 
-                </table>
+                <div class="capacity-item">
+
+                    <span>
+                        Estimated Support Capacity
+                    </span>
+
+                    <strong id="estimatedCapacity">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="capacity-item">
+
+                    <span>
+                        Population Utilisation
+                    </span>
+
+                    <strong id="capacityUtilisation">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div id="capacityStatus"
+                 class="capacity-status">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <div>
+
+                    <strong id="capacityStatusTitle">
+                        Capacity assessment
+                    </strong>
+
+                    <p id="capacityStatusMessage">
+                        Generate a forecast to see the estimated
+                        habitat/resource assessment.
+                    </p>
+
+                </div>
 
             </div>
 
         </div>
-
-
-
-        <!-- =========================
-             MODEL INFORMATION
-        ========================== -->
-        <div class="model-info">
-
-            <div class="model-info-icon">
-
-                <i class="fa-solid fa-brain"></i>
-
-            </div>
-
-            <div>
-
-                <h3>
-                    About This Forecast
-                </h3>
-
-                <p>
-                    The population forecast uses a time-trend
-                    regression model trained on approved historical
-                    biodiversity observations. The projection should
-                    be interpreted as an estimate of the expected
-                    population trajectory rather than a guaranteed
-                    future population.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
 
 </div>
 
 
-
 <script>
+
+/* ============================================================
+   GLOBAL CHART INSTANCE
+============================================================ */
 
 let forecastChart = null;
 
 
-/* =========================================
+/* ============================================================
+   DOM READY
+============================================================ */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const speciesSelect =
+        document.getElementById("speciesSelect");
+
+    const yearsSelect =
+        document.getElementById("yearsSelect");
+
+    const forecastButton =
+        document.getElementById("forecastButton");
+
+
+    /*
+     * Allow pressing ENTER after selecting a species.
+     */
+
+    if (speciesSelect) {
+
+        speciesSelect.addEventListener(
+            "change",
+            hideForecastError
+        );
+
+    }
+
+
+    if (yearsSelect) {
+
+        yearsSelect.addEventListener(
+            "change",
+            hideForecastError
+        );
+
+    }
+
+
+    /*
+     * Extra event listener so the button works even if
+     * inline onclick is removed by another script.
+     */
+
+    if (forecastButton) {
+
+        forecastButton.addEventListener(
+            "click",
+            generateForecast
+        );
+
+    }
+
+});
+
+
+/* ============================================================
    GENERATE FORECAST
-========================================= */
+============================================================ */
 
 async function generateForecast() {
 
-    const species =
-        document.getElementById("speciesSelect").value;
+    const speciesSelect =
+        document.getElementById("speciesSelect");
 
-    const years =
-        document.getElementById("yearsSelect").value;
+    const yearsSelect =
+        document.getElementById("yearsSelect");
 
     const button =
         document.getElementById("forecastButton");
 
-    const errorBox =
-        document.getElementById("forecastError");
-
-    const emptyState =
-        document.getElementById("emptyState");
-
-    const results =
-        document.getElementById("forecastResults");
+    const buttonText =
+        document.getElementById("forecastButtonText");
 
 
-    /* Hide previous error */
+    if (!speciesSelect || !yearsSelect) {
 
-    errorBox.classList.add("hidden");
-
-
-    /* Validate species */
-
-    if (!species) {
-
-        showError("Please select a species first.");
+        showForecastError(
+            "The forecast controls could not be found on this page."
+        );
 
         return;
 
     }
 
 
-    /* Loading state */
+    const species =
+        speciesSelect.value.trim();
 
-    button.disabled = true;
+    const years =
+        yearsSelect.value;
 
-    button.innerHTML = `
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        Generating Forecast...
-    `;
+
+    /* ========================================================
+       VALIDATION
+    ======================================================== */
+
+    if (!species) {
+
+        showForecastError(
+            "Please select a species before generating a forecast."
+        );
+
+        speciesSelect.focus();
+
+        return;
+
+    }
+
+
+    const yearsNumber =
+        Number(years);
+
+
+    if (
+        !Number.isInteger(yearsNumber) ||
+        yearsNumber < 1 ||
+        yearsNumber > 10
+    ) {
+
+        showForecastError(
+            "Please select a forecast period between 1 and 10 years."
+        );
+
+        return;
+
+    }
+
+
+    /* ========================================================
+       BUTTON LOADING STATE
+    ======================================================== */
+
+    hideForecastError();
+
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.classList.add("loading");
+
+    }
+
+
+    if (buttonText) {
+
+        buttonText.textContent =
+            "Generating Forecast...";
+
+    }
+
+
+    /*
+     * Hide old results while generating a new forecast.
+     */
+
+    const results =
+        document.getElementById("forecastResults");
+
+    if (results) {
+
+        results.classList.add("hidden");
+
+    }
 
 
     try {
 
-        const url =
-            `/analysis/forecast?species=${encodeURIComponent(species)}&years=${encodeURIComponent(years)}`;
+        /* ====================================================
+           BUILD API URL
+        ==================================================== */
 
+        const params =
+            new URLSearchParams({
+
+                species: species,
+
+                years: String(yearsNumber)
+
+            });
+
+
+        const url =
+            "{{ url_for('population_forecast') }}"
+            + "?"
+            + params.toString();
+
+
+        console.log(
+            "Forecast request:",
+            url
+        );
+
+
+        /* ====================================================
+           CALL FLASK API
+        ==================================================== */
 
         const response =
-            await fetch(url);
+            await fetch(
+                url,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept": "application/json"
+                    },
+
+                    credentials: "same-origin"
+                }
+            );
 
 
-        const data =
-            await response.json();
+        /* ====================================================
+           READ RESPONSE
+        ==================================================== */
 
+        let data;
 
-        if (!response.ok || !data.success) {
+        try {
+
+            data =
+                await response.json();
+
+        }
+        catch (jsonError) {
 
             throw new Error(
-                data.error || "Unable to generate forecast."
+                "The server returned an invalid response."
             );
 
         }
 
 
-        /* Hide empty state */
+        console.log(
+            "Forecast response:",
+            data
+        );
 
-        emptyState.classList.add("hidden");
+
+        /* ====================================================
+           SERVER ERROR
+        ==================================================== */
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                `Forecast request failed (${response.status}).`
+            );
+
+        }
 
 
-        /* Display results */
+        if (!data || data.success === false) {
 
-        results.classList.remove("hidden");
+            throw new Error(
+                data?.error ||
+                "The forecast could not be generated."
+            );
 
+        }
+
+
+        /* ====================================================
+           DISPLAY RESULTS
+        ==================================================== */
 
         displayForecast(data);
 
 
-        results.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        /*
+         * Hide empty state.
+         */
 
+        const emptyState =
+            document.getElementById("emptyState");
+
+        if (emptyState) {
+
+            emptyState.classList.add("hidden");
+
+        }
+
+
+        /*
+         * Show results.
+         */
+
+        if (results) {
+
+            results.classList.remove("hidden");
+
+        }
+
+
+        /*
+         * Scroll to results.
+         */
+
+        if (results) {
+
+            setTimeout(function () {
+
+                results.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }, 100);
+
+        }
 
     }
-
     catch (error) {
 
         console.error(
-            "Forecast error:",
+            "Forecast generation error:",
             error
         );
 
-        showError(
+
+        showForecastError(
             error.message ||
-            "Unable to generate population forecast."
+            "Unable to generate forecast. Please try again."
         );
 
     }
-
     finally {
 
-        button.disabled = false;
+        /* ====================================================
+           RESTORE BUTTON
+        ==================================================== */
 
-        button.innerHTML = `
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            Generate Forecast
-        `;
+        if (button) {
+
+            button.disabled = false;
+
+            button.classList.remove("loading");
+
+        }
+
+
+        if (buttonText) {
+
+            buttonText.textContent =
+                "Generate Forecast";
+
+        }
 
     }
 
 }
 
 
-
-/* =========================================
+/* ============================================================
    DISPLAY FORECAST
-========================================= */
+============================================================ */
 
 function displayForecast(data) {
 
-    /*
-        The JavaScript below supports common
-        forecast response field names.
-
-        Adjust the property names only if your
-        forecast_species_population() returns
-        different names.
-    */
-
-
     const species =
         data.species ||
-        data.species_name ||
-        document.getElementById("speciesSelect").value;
+        document.getElementById("speciesSelect").value ||
+        "Selected Species";
 
 
     const historical =
-        data.historical ||
-        data.historical_data ||
-        data.history ||
-        [];
+        Array.isArray(data.historical)
+            ? data.historical
+            : [];
 
 
     const forecast =
-        data.forecast ||
-        data.forecast_data ||
-        data.predictions ||
-        [];
+        Array.isArray(data.forecast)
+            ? data.forecast
+            : [];
 
 
-    const metrics =
-        data.metrics ||
-        data.model_metrics ||
-        {};
-
-
-    const model =
-        data.model ||
-        data.model_type ||
-        "Time-trend Linear Regression";
-
-
-    /* Title */
+    /* ========================================================
+       TITLE
+    ======================================================== */
 
     document.getElementById(
         "resultSpecies"
@@ -803,125 +1083,140 @@ function displayForecast(data) {
     document.getElementById(
         "resultDescription"
     ).textContent =
-        `Projected population trajectory for ${species} based on approved historical observations.`;
+        `Quarterly population projection for ${species} based on approved historical observations, recent population change, and available habitat/resource conditions.`;
 
 
-    /* Summary */
+    /* ========================================================
+       SUMMARY
+    ======================================================== */
 
     document.getElementById(
         "historicalRecords"
     ).textContent =
+        data.approved_observations ??
         historical.length;
 
 
     document.getElementById(
         "modelName"
     ).textContent =
-        model;
-
-
-    const mae =
-        metrics.mae ??
-        data.mae ??
-        null;
-
-
-    const r2 =
-        metrics.r2 ??
-        data.r2 ??
-        null;
+        data.model ||
+        "Quarterly Trend + Habitat Capacity";
 
 
     document.getElementById(
-        "modelMAE"
+        "dataInterval"
     ).textContent =
-        mae !== null
-            ? Number(mae).toFixed(2)
-            : "N/A";
+        `${data.data_interval_months || 3} months`;
 
 
     document.getElementById(
-        "modelR2"
+        "forecastPoints"
     ).textContent =
-        r2 !== null
-            ? Number(r2).toFixed(3)
-            : "N/A";
+        data.forecast_quarters ??
+        forecast.length;
 
 
-    /* Extract populations */
-
-    const historicalValues =
-        historical.map(item =>
-            Number(
-                item.population ??
-                item.count ??
-                item.value
-            )
-        );
-
-
-    const forecastValues =
-        forecast.map(item =>
-            Number(
-                item.population ??
-                item.predicted_population ??
-                item.prediction ??
-                item.value
-            )
-        );
-
-
-    /* Current population */
+    /* ========================================================
+       CURRENT POPULATION
+    ======================================================== */
 
     const currentPopulation =
-        historicalValues.length
-            ? historicalValues[historicalValues.length - 1]
-            : 0;
+        Number(
+            data.current_population ??
+            data.last_observed_population ??
+            0
+        );
 
 
     const finalPopulation =
-        forecastValues.length
-            ? forecastValues[forecastValues.length - 1]
-            : currentPopulation;
+        Number(
+            data.final_forecast ??
+            (
+                forecast.length
+                    ? forecast[
+                        forecast.length - 1
+                    ].predicted_population
+                    : currentPopulation
+            )
+        );
 
 
     const change =
-        finalPopulation - currentPopulation;
+        Number(
+            data.forecast_change ??
+            (
+                finalPopulation -
+                currentPopulation
+            )
+        );
 
 
     document.getElementById(
         "currentPopulation"
     ).textContent =
-        formatNumber(currentPopulation);
+        formatPopulation(
+            currentPopulation
+        );
 
 
     document.getElementById(
         "finalForecast"
     ).textContent =
-        formatNumber(finalPopulation);
+        formatPopulation(
+            finalPopulation
+        );
 
 
     document.getElementById(
         "forecastChange"
     ).textContent =
-        `${change >= 0 ? "+" : ""}${formatNumber(change)}`;
+        `${change >= 0 ? "+" : ""}${formatPopulation(change)}`;
 
 
     document.getElementById(
         "forecastPeriod"
     ).textContent =
-        `${document.getElementById("yearsSelect").value} years`;
+        `${data.forecast_years || 0} years`;
 
 
-    /* Table */
+    document.getElementById(
+        "forecastTrend"
+    ).textContent =
+        data.trend ||
+        "Stable";
+
+
+    /* ========================================================
+       CAPACITY
+    ======================================================== */
+
+    displayCapacity(
+        data
+    );
+
+
+    /* ========================================================
+       REASONS
+    ======================================================== */
+
+    displayForecastReasons(
+        data
+    );
+
+
+    /* ========================================================
+       TABLE
+    ======================================================== */
 
     populateForecastTable(
-        historical,
         forecast
     );
 
 
-    /* Chart */
+    /* ========================================================
+       CHART
+    ======================================================== */
 
     createForecastChart(
         historical,
@@ -932,10 +1227,391 @@ function displayForecast(data) {
 }
 
 
+/* ============================================================
+   DISPLAY CAPACITY
+============================================================ */
 
-/* =========================================
-   CREATE CHART
-========================================= */
+function displayCapacity(data) {
+
+    const capacity =
+        data.capacity_assessment ||
+        {};
+
+
+    /* ========================================================
+       AREA
+    ======================================================== */
+
+    const areaElement =
+        document.getElementById(
+            "capacityArea"
+        );
+
+
+    if (
+        capacity.area_hectares !== null &&
+        capacity.area_hectares !== undefined
+    ) {
+
+        areaElement.textContent =
+            `${Number(
+                capacity.area_hectares
+            ).toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 2
+                }
+            )} ha`;
+
+    }
+    else {
+
+        areaElement.textContent =
+            "Not available";
+
+    }
+
+
+    /* ========================================================
+       RESOURCE SCORE
+    ======================================================== */
+
+    const resourceElement =
+        document.getElementById(
+            "resourceScore"
+        );
+
+
+    if (
+        capacity.resource_score !== null &&
+        capacity.resource_score !== undefined
+    ) {
+
+        resourceElement.textContent =
+            `${Math.round(
+                Number(
+                    capacity.resource_score
+                )
+            )}/100`;
+
+    }
+    else {
+
+        resourceElement.textContent =
+            "Not available";
+
+    }
+
+
+    /* ========================================================
+       SUPPORT CAPACITY
+    ======================================================== */
+
+    const capacityElement =
+        document.getElementById(
+            "estimatedCapacity"
+        );
+
+
+    if (
+        capacity.estimated_capacity !== null &&
+        capacity.estimated_capacity !== undefined
+    ) {
+
+        capacityElement.textContent =
+            `${formatPopulation(
+                capacity.estimated_capacity
+            )} individuals`;
+
+    }
+    else {
+
+        capacityElement.textContent =
+            "Not available";
+
+    }
+
+
+    /* ========================================================
+       UTILISATION
+    ======================================================== */
+
+    const utilisationElement =
+        document.getElementById(
+            "capacityUtilisation"
+        );
+
+
+    if (
+        capacity.utilisation_percent !== null &&
+        capacity.utilisation_percent !== undefined
+    ) {
+
+        utilisationElement.textContent =
+            `${Number(
+                capacity.utilisation_percent
+            ).toFixed(1)}%`;
+
+    }
+    else {
+
+        utilisationElement.textContent =
+            "Not available";
+
+    }
+
+
+    /* ========================================================
+       STATUS
+    ======================================================== */
+
+    const statusTitle =
+        document.getElementById(
+            "capacityStatusTitle"
+        );
+
+
+    const statusMessage =
+        document.getElementById(
+            "capacityStatusMessage"
+        );
+
+
+    const status =
+        capacity.status ||
+        "Assessment unavailable";
+
+
+    statusTitle.textContent =
+        status;
+
+
+    statusMessage.textContent =
+        capacity.message ||
+        "The backend did not return enough environmental information to estimate habitat support capacity.";
+
+}
+
+
+/* ============================================================
+   DISPLAY FORECAST REASONS
+============================================================ */
+
+function displayForecastReasons(data) {
+
+    const container =
+        document.getElementById(
+            "forecastReasons"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    const reasons =
+        Array.isArray(
+            data.reason_analysis
+        )
+            ? data.reason_analysis
+            : [];
+
+
+    /*
+     * If backend supplies a simple trend reason but no
+     * reason_analysis array.
+     */
+
+    if (
+        reasons.length === 0 &&
+        data.trend_reason
+    ) {
+
+        reasons.push({
+            type: "trend",
+            title: "Population trend",
+            message: data.trend_reason
+        });
+
+    }
+
+
+    /*
+     * Nothing available.
+     */
+
+    if (reasons.length === 0) {
+
+        const empty =
+            document.createElement(
+                "div"
+            );
+
+
+        empty.className =
+            "reason-item";
+
+
+        empty.innerHTML = `
+            <div class="reason-icon">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+
+            <div>
+                <strong>Model interpretation</strong>
+
+                <p>
+                    The backend did not return a detailed
+                    explanation for the population change.
+                </p>
+            </div>
+        `;
+
+
+        container.appendChild(
+            empty
+        );
+
+
+        return;
+
+    }
+
+
+    /* ========================================================
+       CREATE REASON ITEMS
+    ======================================================== */
+
+    reasons.forEach(
+        function(reason) {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                `reason-item ${
+                    reason.type || "trend"
+                }`;
+
+
+            let icon =
+                "fa-circle-info";
+
+
+            if (
+                reason.type === "trend"
+            ) {
+
+                icon =
+                    data.trend === "Increasing"
+                        ? "fa-arrow-trend-up"
+                        : data.trend === "Declining"
+                            ? "fa-arrow-trend-down"
+                            : "fa-minus";
+
+            }
+            else if (
+                reason.type === "resource"
+            ) {
+
+                icon =
+                    "fa-leaf";
+
+            }
+            else if (
+                reason.type === "capacity"
+            ) {
+
+                icon =
+                    "fa-tree";
+
+            }
+
+
+            const iconWrapper =
+                document.createElement(
+                    "div"
+                );
+
+
+            iconWrapper.className =
+                "reason-icon";
+
+
+            iconWrapper.innerHTML =
+                `<i class="fa-solid ${icon}"></i>`;
+
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+
+            const title =
+                document.createElement(
+                    "strong"
+                );
+
+
+            title.textContent =
+                reason.title ||
+                "Model factor";
+
+
+            const message =
+                document.createElement(
+                    "p"
+                );
+
+
+            message.textContent =
+                reason.message ||
+                "No additional explanation was provided.";
+
+
+            content.appendChild(
+                title
+            );
+
+
+            content.appendChild(
+                message
+            );
+
+
+            item.appendChild(
+                iconWrapper
+            );
+
+
+            item.appendChild(
+                content
+            );
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   CREATE FORECAST CHART
+============================================================ */
 
 function createForecastChart(
     historical,
@@ -949,47 +1625,87 @@ function createForecastChart(
         );
 
 
-    if (forecastChart) {
+    if (!canvas) {
 
-        forecastChart.destroy();
+        return;
 
     }
 
 
+    /*
+     * Destroy previous chart.
+     */
+
+    if (forecastChart) {
+
+        forecastChart.destroy();
+
+        forecastChart = null;
+
+    }
+
+
+    /* ========================================================
+       HISTORICAL LABELS
+    ======================================================== */
+
     const historicalLabels =
-        historical.map(item =>
-            item.year ||
-            item.date ||
-            item.label
+        historical.map(
+            function(item) {
+
+                return (
+                    item.period ||
+                    item.date ||
+                    `Observation ${item.index || ""}`
+                );
+
+            }
         );
 
 
+    /* ========================================================
+       FORECAST LABELS
+    ======================================================== */
+
     const forecastLabels =
-        forecast.map(item =>
-            item.year ||
-            item.date ||
-            item.label
+        forecast.map(
+            function(item) {
+
+                return (
+                    item.period ||
+                    (
+                        item.quarter &&
+                        item.year
+                            ? `${item.quarter} ${item.year}`
+                            : `Forecast ${item.index || ""}`
+                    )
+                );
+
+            }
         );
 
 
     const historicalValues =
-        historical.map(item =>
-            Number(
-                item.population ??
-                item.count ??
-                item.value
-            )
+        historical.map(
+            function(item) {
+
+                return Number(
+                    item.population ?? 0
+                );
+
+            }
         );
 
 
     const forecastValues =
-        forecast.map(item =>
-            Number(
-                item.population ??
-                item.predicted_population ??
-                item.prediction ??
-                item.value
-            )
+        forecast.map(
+            function(item) {
+
+                return Number(
+                    item.predicted_population ?? 0
+                );
+
+            }
         );
 
 
@@ -999,15 +1715,27 @@ function createForecastChart(
     ];
 
 
+    /* ========================================================
+       HISTORICAL LINE
+    ======================================================== */
+
     const historicalDataset = [
+
         ...historicalValues,
+
         ...new Array(
             forecastValues.length
         ).fill(null)
+
     ];
 
 
+    /* ========================================================
+       FORECAST LINE
+    ======================================================== */
+
     const forecastDataset = [
+
         ...new Array(
             Math.max(
                 historicalValues.length - 1,
@@ -1015,144 +1743,195 @@ function createForecastChart(
             )
         ).fill(null),
 
+
         historicalValues.length
             ? historicalValues[
                 historicalValues.length - 1
               ]
             : null,
 
+
         ...forecastValues
+
     ];
 
 
+    /* ========================================================
+       CREATE CHART
+    ======================================================== */
+
     forecastChart =
-        new Chart(canvas, {
+        new Chart(
+            canvas,
+            {
 
-            type: "line",
+                type: "line",
 
-            data: {
 
-                labels: labels,
+                data: {
 
-                datasets: [
+                    labels: labels,
 
-                    {
-                        label:
-                            "Historical Population",
 
-                        data:
-                            historicalDataset,
+                    datasets: [
 
-                        borderWidth: 3,
+                        {
 
-                        tension: 0.35,
+                            label:
+                                "Observed Population",
 
-                        pointRadius: 4,
+                            data:
+                                historicalDataset,
 
-                        pointHoverRadius: 6
+                            borderWidth: 3,
 
-                    },
+                            tension: 0.25,
 
-                    {
-                        label:
-                            "Forecast Population",
+                            pointRadius: 4,
 
-                        data:
-                            forecastDataset,
+                            pointHoverRadius: 6
 
-                        borderWidth: 3,
+                        },
 
-                        borderDash: [8, 6],
 
-                        tension: 0.35,
+                        {
 
-                        pointRadius: 4,
+                            label:
+                                "Forecast Population",
 
-                        pointHoverRadius: 6
+                            data:
+                                forecastDataset,
 
-                    }
+                            borderWidth: 3,
 
-                ]
+                            borderDash: [
+                                8,
+                                6
+                            ],
 
-            },
+                            tension: 0.25,
 
-            options: {
+                            pointRadius: 4,
 
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                interaction: {
-
-                    intersect: false,
-
-                    mode: "index"
-
-                },
-
-                plugins: {
-
-                    legend: {
-
-                        position: "top",
-
-                        labels: {
-
-                            usePointStyle: true,
-
-                            padding: 20
+                            pointHoverRadius: 6
 
                         }
 
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+
+                    interaction: {
+
+                        intersect: false,
+
+                        mode: "index"
+
                     },
 
-                    tooltip: {
 
-                        callbacks: {
+                    plugins: {
 
-                            label: function(context) {
+                        legend: {
 
-                                return (
-                                    context.dataset.label +
-                                    ": " +
-                                    Number(
-                                        context.raw
-                                    ).toLocaleString()
-                                );
+                            position: "top",
+
+                            labels: {
+
+                                usePointStyle: true,
+
+                                padding: 20
+
+                            }
+
+                        },
+
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function(context) {
+
+                                        if (
+                                            context.raw === null
+                                        ) {
+
+                                            return null;
+
+                                        }
+
+
+                                        return (
+                                            context.dataset.label
+                                            +
+                                            ": "
+                                            +
+                                            formatPopulation(
+                                                context.raw
+                                            )
+                                        );
+
+                                    }
 
                             }
 
                         }
 
-                    }
-
-                },
-
-                scales: {
-
-                    y: {
-
-                        beginAtZero: true,
-
-                        title: {
-
-                            display: true,
-
-                            text:
-                                "Population"
-
-                        }
-
                     },
 
-                    x: {
 
-                        title: {
+                    scales: {
 
-                            display: true,
+                        y: {
 
-                            text:
-                                "Year"
+                            beginAtZero: true,
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    "Population"
+
+                            },
+
+
+                            ticks: {
+
+                                callback:
+                                    function(value) {
+
+                                        return Number(
+                                            value
+                                        ).toLocaleString();
+
+                                    }
+
+                            }
+
+                        },
+
+
+                        x: {
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    "Observation / 3-Month Period"
+
+                            }
 
                         }
 
@@ -1161,19 +1940,16 @@ function createForecastChart(
                 }
 
             }
-
-        });
+        );
 
 }
 
 
-
-/* =========================================
-   FORECAST TABLE
-========================================= */
+/* ============================================================
+   POPULATE FORECAST TABLE
+============================================================ */
 
 function populateForecastTable(
-    historical,
     forecast
 ) {
 
@@ -1183,129 +1959,310 @@ function populateForecastTable(
         );
 
 
+    if (!tbody) {
+
+        return;
+
+    }
+
+
     tbody.innerHTML = "";
 
 
-    let previousPopulation = null;
+    if (!forecast.length) {
 
-
-    forecast.forEach(item => {
-
-        const year =
-            item.year ||
-            item.date ||
-            item.label ||
-            "—";
-
-
-        const population =
-            Number(
-                item.population ??
-                item.predicted_population ??
-                item.prediction ??
-                item.value
+        const row =
+            document.createElement(
+                "tr"
             );
 
 
-        let change = "—";
-
-        let direction = "Stable";
-
-        let directionClass = "stable";
-
-
-        if (previousPopulation !== null) {
-
-            const difference =
-                population -
-                previousPopulation;
+        row.innerHTML = `
+            <td colspan="4">
+                No forecast values were returned.
+            </td>
+        `;
 
 
-            change =
-                `${difference >= 0 ? "+" : ""}${formatNumber(difference)}`;
+        tbody.appendChild(
+            row
+        );
 
 
-            if (difference > 0) {
+        return;
 
-                direction =
-                    "Increasing";
+    }
+
+
+    forecast.forEach(
+        function(item) {
+
+            const period =
+                item.period ||
+                (
+                    item.quarter &&
+                    item.year
+                        ? `${item.quarter} ${item.year}`
+                        : "Forecast"
+                );
+
+
+            const population =
+                Number(
+                    item.predicted_population ?? 0
+                );
+
+
+            const change =
+                Number(
+                    item.quarterly_change ??
+                    item.change_from_current ??
+                    0
+                );
+
+
+            let direction =
+                item.direction ||
+                "Stable";
+
+
+            let directionClass =
+                "stable";
+
+
+            if (
+                direction === "Increasing"
+            ) {
 
                 directionClass =
                     "increasing";
 
             }
-
-            else if (difference < 0) {
-
-                direction =
-                    "Declining";
+            else if (
+                direction === "Declining" ||
+                direction === "Decreasing"
+            ) {
 
                 directionClass =
                     "declining";
 
             }
 
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const periodCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            const periodStrong =
+                document.createElement(
+                    "strong"
+                );
+
+
+            periodStrong.textContent =
+                period;
+
+
+            periodCell.appendChild(
+                periodStrong
+            );
+
+
+            const populationCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            const populationStrong =
+                document.createElement(
+                    "strong"
+                );
+
+
+            populationStrong.textContent =
+                formatPopulation(
+                    population
+                );
+
+
+            populationCell.appendChild(
+                populationStrong
+            );
+
+
+            const changeCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            changeCell.textContent =
+                `${change >= 0 ? "+" : ""}${formatPopulation(change)}`;
+
+
+            const directionCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            const directionSpan =
+                document.createElement(
+                    "span"
+                );
+
+
+            directionSpan.className =
+                `direction ${directionClass}`;
+
+
+            let icon =
+                "fa-minus";
+
+
+            if (
+                direction === "Increasing"
+            ) {
+
+                icon =
+                    "fa-arrow-trend-up";
+
+            }
+            else if (
+                direction === "Declining" ||
+                direction === "Decreasing"
+            ) {
+
+                icon =
+                    "fa-arrow-trend-down";
+
+            }
+
+
+            directionSpan.innerHTML =
+                `<i class="fa-solid ${icon}"></i>`;
+
+
+            const directionText =
+                document.createTextNode(
+                    ` ${direction}`
+                );
+
+
+            directionSpan.appendChild(
+                directionText
+            );
+
+
+            directionCell.appendChild(
+                directionSpan
+            );
+
+
+            row.appendChild(
+                periodCell
+            );
+
+
+            row.appendChild(
+                populationCell
+            );
+
+
+            row.appendChild(
+                changeCell
+            );
+
+
+            row.appendChild(
+                directionCell
+            );
+
+
+            tbody.appendChild(
+                row
+            );
+
         }
-
-
-        previousPopulation =
-            population;
-
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                <strong>
-                    ${year}
-                </strong>
-            </td>
-
-            <td>
-                ${formatNumber(population)}
-            </td>
-
-            <td>
-                ${change}
-            </td>
-
-            <td>
-
-                <span class="direction ${directionClass}">
-
-                    <i class="fa-solid ${
-                        direction === "Increasing"
-                            ? "fa-arrow-trend-up"
-                            : direction === "Declining"
-                                ? "fa-arrow-trend-down"
-                                : "fa-minus"
-                    }"></i>
-
-                    ${direction}
-
-                </span>
-
-            </td>
-
-        `;
-
-
-        tbody.appendChild(row);
-
-    });
+    );
 
 }
 
 
+/* ============================================================
+   FORMAT POPULATION
+============================================================ */
 
-/* =========================================
-   ERROR
-========================================= */
+function formatPopulation(value) {
 
-function showError(message) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === "" ||
+        Number.isNaN(
+            Number(value)
+        )
+    ) {
+
+        return "—";
+
+    }
+
+
+    return Math.round(
+        Number(value)
+    ).toLocaleString();
+
+}
+
+
+/* ============================================================
+   FORMAT NUMBER
+============================================================ */
+
+function formatNumber(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === "" ||
+        Number.isNaN(
+            Number(value)
+        )
+    ) {
+
+        return "—";
+
+    }
+
+
+    return Number(value)
+        .toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits: 1
+            }
+        );
+
+}
+
+
+/* ============================================================
+   SHOW ERROR
+============================================================ */
+
+function showForecastError(
+    message
+) {
 
     const errorBox =
         document.getElementById(
@@ -1319,42 +2276,44 @@ function showError(message) {
         );
 
 
-    errorMessage.textContent =
-        message;
+    if (errorMessage) {
 
-
-    errorBox.classList.remove(
-        "hidden"
-    );
-
-}
-
-
-
-/* =========================================
-   NUMBER FORMATTER
-========================================= */
-
-function formatNumber(value) {
-
-    if (
-        value === null ||
-        value === undefined ||
-        Number.isNaN(Number(value))
-    ) {
-
-        return "—";
+        errorMessage.textContent =
+            message;
 
     }
 
 
-    return Number(value)
-        .toLocaleString(
-            undefined,
-            {
-                maximumFractionDigits: 2
-            }
+    if (errorBox) {
+
+        errorBox.classList.remove(
+            "hidden"
         );
+
+    }
+
+}
+
+
+/* ============================================================
+   HIDE ERROR
+============================================================ */
+
+function hideForecastError() {
+
+    const errorBox =
+        document.getElementById(
+            "forecastError"
+        );
+
+
+    if (errorBox) {
+
+        errorBox.classList.add(
+            "hidden"
+        );
+
+    }
 
 }
 

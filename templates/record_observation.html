@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}
@@ -7,12 +6,13 @@ Record Biodiversity Observation
 
 {% block css %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='obs.css') }}">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 {% endblock %}
-
 
 {% block content %}
 
@@ -23,51 +23,73 @@ Record Biodiversity Observation
     ====================================================== -->
 
     <div class="environment-header">
+
         <div class="header-title">
-            <div class="header-icon"><i class="fa-solid fa-binoculars"></i>  </div>
-            <div>
-                <h1>Record Biodiversity Observation</h1>
-                <p> Record a species observed during an environmental monitoring survey within CBU Nature Park.</p>
 
-            </div>
-
-        </div>
-
-        <div class="header-badge">
-            <i class="fa-solid fa-paw"></i>
-            Species Monitoring
-        </div>
-
-    </div>
-    <!-- MAIN FORM CARD -->
-
-    <div class="environment-card">
-
-
-        <!-- FORM INTRODUCTION -->
-
-        <div class="form-introduction">
-
-            <div class="intro-icon">
-
-                <i class="fa-solid fa-clipboard-check"></i>
-
+            <div class="header-icon">
+                <i class="fa-solid fa-binoculars"></i>
             </div>
 
             <div>
 
-                <h2>Observation Data</h2>
+                <h1>
+                    Record Biodiversity Observation
+                </h1>
 
                 <p>
-                    Select the environmental survey under which the
-                    species was observed, then enter the species
-                    population and supporting evidence.
+                    Record a species observed during an
+                    environmental monitoring survey within
+                    CBU Nature Park.
                 </p>
 
             </div>
 
         </div>
 
+        <div class="header-badge">
+
+            <i class="fa-solid fa-paw"></i>
+
+            Species Monitoring
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN FORM CARD
+    ====================================================== -->
+
+    <div class="environment-card">
+
+
+        <!-- =================================================
+             FORM INTRODUCTION
+        ================================================== -->
+
+        <div class="form-introduction">
+
+            <div class="intro-icon">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+
+            <div>
+
+                <h2>
+                    Observation Data
+                </h2>
+
+                <p>
+                    Select the environmental monitoring section
+                    under which the species was observed, then
+                    enter the species population and supporting
+                    evidence.
+                </p>
+
+            </div>
+
+        </div>
 
 
         <!-- =================================================
@@ -79,7 +101,7 @@ Record Biodiversity Observation
 
 
             <!-- =================================================
-                 MONITORING SURVEY
+                 MONITORING SECTION
             ================================================== -->
 
             <section class="form-section">
@@ -87,66 +109,119 @@ Record Biodiversity Observation
                 <div class="section-heading">
 
                     <div class="section-icon location-icon">
-
                         <i class="fa-solid fa-map-location-dot"></i>
-
                     </div>
 
                     <div>
-                        <h3>Monitoring Survey</h3>
-                        <p> Select the environmental monitoring record  where this species was observed.</p>
+
+                        <h3>
+                            Monitoring Section
+                        </h3>
+
+                        <p>
+                            Select the environmental monitoring
+                            section and survey where this species
+                            was observed.
+                        </p>
+
                     </div>
 
                 </div>
 
 
+                <!-- Monitoring Section Select -->
 
-                <div class="form-grid">
+                <div class="form-group full-width">
 
+                    <label for="environmental_observation_id">
 
-                    <!-- ENVIRONMENTAL OBSERVATION -->
+                        Monitoring Section
 
-                    <div class="form-group full-width">
+                        <span class="required">
+                            *
+                        </span>
 
-                        <label for="environmental_observation_id">
-
-                            Environmental Survey
-
-                            <span class="required">*</span>
-
-                        </label>
+                    </label>
 
 
-                        <div class="input-wrapper">
+                    <div class="input-wrapper">
 
-                            <i class="fa-solid fa-location-dot"></i>
-                            <select id="environmental_observation_id" name="environmental_observation_id" required>
-                                <option value="" disabled selected> Select environmental survey </option>
-                                {% for env in environmental_observations %}
+                        <i class="fa-solid fa-location-dot"></i>
 
-                                <option value="{{ env.id }}">
+                        <select
+                            id="environmental_observation_id"
+                            name="environmental_observation_id"
+                            required
+                        >
 
-                                    {{ env.location }}
+                            <option value=""
+                                    disabled
+                                    selected>
 
-                                    —
-                                    {{ env.area_hectares or 'Area not recorded' }} ha
+                                Select monitoring section
 
-                                    —
-                                    {{ env.observation_date.strftime('%d %b %Y') if env.observation_date else 'Date not recorded' }}
-                                </option>
-                                {% endfor %}
+                            </option>
 
-                            </select>
-                        </div>
 
-                        <small class="form-help">  Location, survey area and environmental conditions are taken from the selected
-                             environmental monitoring record. </small>
+                            {# =====================================================
+                               GROUP ENVIRONMENTAL OBSERVATIONS BY LOCATION
+
+                               Each monitoring section appears ONLY ONCE.
+
+                               The first observation in each group is selected.
+                               Therefore, the Python route should order the
+                               environmental observations from newest to oldest.
+                            ====================================================== #}
+
+                            {% for location, observations in environmental_observations|groupby('location') %}
+
+                                {% if location %}
+
+                                    {% set env = observations|list|first %}
+
+                                    <option value="{{ env.id }}">
+
+                                        {{ location }}
+
+                                        {% if env.area_hectares %}
+                                            — {{ env.area_hectares }} ha
+                                        {% endif %}
+
+                                        {% if env.observation_date %}
+                                            — {{ env.observation_date.strftime('%d %b %Y') }}
+                                        {% endif %}
+
+                                    </option>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </select>
+
                     </div>
+
+
+                    <small class="form-help">
+
+                        Select the monitoring section where the
+                        species was observed.
+
+                    </small>
+
+
+                    <small class="form-help">
+
+                        The selected monitoring section, survey
+                        area and environmental conditions will
+                        be associated with this biodiversity
+                        observation.
+
+                    </small>
 
                 </div>
 
             </section>
-
 
 
             <!-- =================================================
@@ -158,23 +233,23 @@ Record Biodiversity Observation
                 <div class="section-heading">
 
                     <div class="section-icon vegetation-icon">
-
                         <i class="fa-solid fa-paw"></i>
-
                     </div>
 
                     <div>
 
-                        <h3>Species Information</h3>
+                        <h3>
+                            Species Information
+                        </h3>
 
                         <p>
-                            Select the species observed during the survey.
+                            Select the species observed during
+                            the survey.
                         </p>
 
                     </div>
 
                 </div>
-
 
 
                 <div class="form-grid">
@@ -184,16 +259,49 @@ Record Biodiversity Observation
 
                     <div class="form-group full-width">
 
-                        <label for="species_id"> Species <span class="required">*</span></label>
+                        <label for="species_id">
+
+                            Species
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
                         <div class="input-wrapper">
+
                             <i class="fa-solid fa-leaf"></i>
-                            <select id="species_id" name="species_id" required >
-                                <option value="" disabled selected> Select observed species </option>
-                                {% for sp in species_list %}
-                                <option value="{{ sp.id }}">
-                                    {{ sp.specie_Common_Name }}
-                                    ({{ sp.scientificName }})
+
+                            <select
+                                id="species_id"
+                                name="species_id"
+                                required
+                            >
+
+                                <option value=""
+                                        disabled
+                                        selected>
+
+                                    Select observed species
+
                                 </option>
+
+
+                                {% for sp in species_list %}
+
+                                    <option value="{{ sp.id }}">
+
+                                        {{ sp.specie_Common_Name }}
+
+                                        {% if sp.scientificName %}
+
+                                            ({{ sp.scientificName }})
+
+                                        {% endif %}
+
+                                    </option>
 
                                 {% endfor %}
 
@@ -207,31 +315,82 @@ Record Biodiversity Observation
 
             </section>
 
-            <!-- POPULATION -->
+
+            <!-- =================================================
+                 POPULATION INFORMATION
+            ================================================== -->
+
             <section class="form-section">
+
                 <div class="section-heading">
+
                     <div class="section-icon climate-icon">
                         <i class="fa-solid fa-chart-simple"></i>
                     </div>
 
                     <div>
-                        <h3>Population Information</h3>
-                        <p> Enter the number of individuals observed during the survey.</p>
+
+                        <h3>
+                            Population Information
+                        </h3>
+
+                        <p>
+                            Enter the number of individuals
+                            observed during the survey.
+                        </p>
 
                     </div>
 
                 </div>
 
+
                 <div class="form-grid">
+
+
                     <!-- POPULATION COUNT -->
+
                     <div class="form-group full-width">
-                        <label for="population">Population Count<span class="required">*</span> </label>
+
+                        <label for="population">
+
+                            Population Count
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
                         <div class="input-wrapper">
+
                             <i class="fa-solid fa-hashtag"></i>
-                            <input type="number" id="population" name="population" min="0"   step="1"   placeholder="e.g. 12"   required>
-                            <span class="input-unit">individuals</span>
+
+                            <input
+                                type="number"
+                                id="population"
+                                name="population"
+                                min="0"
+                                step="1"
+                                placeholder="e.g. 12"
+                                required
+                            >
+
+                            <span class="input-unit">
+                                individuals
+                            </span>
+
                         </div>
-                        <small class="form-help"> Enter the number of individuals of this species observed during the selected survey.</small>
+
+
+                        <small class="form-help">
+
+                            Enter the number of individuals of
+                            this species observed during the
+                            selected survey.
+
+                        </small>
+
                     </div>
 
                 </div>
@@ -239,68 +398,142 @@ Record Biodiversity Observation
             </section>
 
 
-
             <!-- =================================================
-                 NOTES
+                 OBSERVATION NOTES
             ================================================== -->
 
             <section class="form-section">
+
                 <div class="section-heading">
+
                     <div class="section-icon notes-icon">
                         <i class="fa-solid fa-note-sticky"></i>
                     </div>
 
                     <div>
-                        <h3>Observation Notes</h3>
-                        <p> Describe any relevant details about the species.</p>
+
+                        <h3>
+                            Observation Notes
+                        </h3>
+
+                        <p>
+                            Describe any relevant details about
+                            the species.
+                        </p>
+
                     </div>
+
                 </div>
 
 
-
                 <div class="form-group">
-                    <label for="note">Notes </label>
-                    <textarea id="note" name="note" rows="6" placeholder="Describe the species behaviour, group size,
-                     habitat use, visible activity, unusual observations, or other relevant information..."></textarea>
+
+                    <label for="note">
+                        Notes
+                    </label>
+
+
+                    <textarea
+                        id="note"
+                        name="note"
+                        rows="6"
+                        placeholder="Describe the species behaviour, group size, habitat use, visible activity, unusual observations, or other relevant information..."
+                    ></textarea>
 
                 </div>
 
             </section>
 
-            <!-- PHOTO EVIDENCE -->
+
+            <!-- =================================================
+                 PHOTO EVIDENCE
+            ================================================== -->
+
             <section class="form-section">
+
                 <div class="section-heading">
+
                     <div class="section-icon water-icon">
                         <i class="fa-solid fa-camera"></i>
                     </div>
 
                     <div>
-                        <h3>Observation Evidence</h3>
-                        <p> Upload a photograph when available.</p>
+
+                        <h3>
+                            Observation Evidence
+                        </h3>
+
+                        <p>
+                            Upload a photograph when available.
+                        </p>
+
                     </div>
 
                 </div>
 
+
                 <div class="form-group">
-                    <label for="image"> Observation Photo</label>
+
+                    <label for="image">
+
+                        Observation Photo
+
+                    </label>
+
+
                     <div class="input-wrapper">
+
                         <i class="fa-solid fa-image"></i>
-                        <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/jpg,image/webp">
+
+                        <input
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept="image/png,image/jpeg,image/jpg,image/webp"
+                        >
+
                     </div>
-                    <small class="form-help"> Recommended formats:  JPG, JPEG, PNG or WEBP.</small>
+
+
+                    <small class="form-help">
+
+                        Recommended formats:
+                        JPG, JPEG, PNG or WEBP.
+
+                    </small>
+
                 </div>
 
             </section>
 
+
+            <!-- =================================================
+                 FORM ACTIONS
+            ================================================== -->
+
             <div class="form-actions">
-                <a  href="{{ url_for('record_observation') }}"   class="cancel-button">
+
+                <a
+                    href="{{ url_for('record_observation') }}"
+                    class="cancel-button"
+                >
+
                     <i class="fa-solid fa-arrow-left"></i>
+
                     Cancel
+
                 </a>
 
-                <button type="submit" class="save-button">
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+
                     <i class="fa-solid fa-floppy-disk"></i>
+
                     Save Observation
+
                 </button>
 
             </div>
@@ -313,4 +546,3 @@ Record Biodiversity Observation
 </div>
 
 {% endblock %}
-
